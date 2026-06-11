@@ -1,0 +1,20 @@
+# Secrets and local config
+.env
+db.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+
+# Django
+staticfiles/
+.cache/
+
+# Annexes (screenshots and form exports — keep locally only)
+Annexes/
+
+# Editor
+.vscode/
+*.swp

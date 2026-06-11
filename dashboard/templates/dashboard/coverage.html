@@ -1,0 +1,154 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{ form_name }} — Couverture{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+  <div>
+    <h2 class="h4 mb-0">{{ form_name }}</h2>
+    <span class="text-muted small">Matrice de couverture Do Not Harm</span>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="/dashboard/{{ uid }}/refresh/?next=/dashboard/{{ uid }}/"
+       class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-arrow-clockwise me-1"></i>Actualiser
+    </a>
+    <a href="/dashboard/{{ uid }}/export/csv/" class="btn btn-sm btn-outline-success">
+      <i class="bi bi-filetype-csv me-1"></i>CSV
+    </a>
+    <a href="/dashboard/{{ uid }}/export/xlsx/" class="btn btn-sm btn-outline-success">
+      <i class="bi bi-file-earmark-spreadsheet me-1"></i>XLSX
+    </a>
+  </div>
+</div>
+
+{% if error %}
+  <div class="alert alert-danger"><i class="bi bi-x-circle-fill me-1"></i>{{ error }}</div>
+{% else %}
+<div class="row g-3">
+
+  {# ── Filter panel ─────────────────────────────────────────────────────── #}
+  <div class="col-12 col-xl-2 col-lg-3">
+    <form method="get" id="filterForm">
+      <div class="card shadow-sm mb-2">
+        <div class="card-header py-2 fw-semibold small bg-danger text-white">
+          <i class="bi bi-funnel-fill me-1"></i>Filtres
+        </div>
+        <div class="card-body p-2">
+
+          <label class="form-label small fw-semibold mb-1">Pays</label>
+          <select name="country" class="form-select form-select-sm mb-3"
+                  onchange="this.form.submit()">
+            <option value="">Tous les pays</option>
+            {% for c in countries %}
+              <option value="{{ c.code }}"
+                      {% if c.code == f_country %}selected{% endif %}>
+                {{ c.label }}
+              </option>
+            {% endfor %}
+          </select>
+
+          <label class="form-label small fw-semibold mb-1">Résultat</label>
+          <select name="result" class="form-select form-select-sm mb-3"
+                  onchange="this.form.submit()">
+            <option value="">Tous les résultats</option>
+            {% for r in all_results %}
+              <option value="{{ r.code }}"
+                      {% if r.code == f_result %}selected{% endif %}>
+                {{ r.code }} — {{ r.label }}
+              </option>
+            {% endfor %}
+          </select>
+
+          <label class="form-label small fw-semibold mb-1">Responsable</label>
+          <select name="responsible" class="form-select form-select-sm mb-3"
+                  onchange="this.form.submit()">
+            <option value="">Tous</option>
+            {% for name in responsibles %}
+              <option value="{{ name }}"
+                      {% if name == f_responsible %}selected{% endif %}>
+                {{ name }}
+              </option>
+            {% endfor %}
+          </select>
+
+          {% if f_country or f_result or f_responsible %}
+            <a href="/dashboard/{{ uid }}/"
+               class="btn btn-sm btn-outline-secondary w-100">
+              <i class="bi bi-x-circle me-1"></i>Réinitialiser
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <a href="/dashboard/{{ uid }}/submissions/?country={{ f_country }}&responsible={{ f_responsible }}"
+         class="btn btn-sm btn-outline-primary w-100">
+        <i class="bi bi-list-ul me-1"></i>Liste des soumissions
+      </a>
+    </form>
+  </div>
+
+  {# ── Matrix ───────────────────────────────────────────────────────────── #}
+  <div class="col-12 col-xl-10 col-lg-9">
+
+    {# Legend #}
+    <div class="d-flex gap-3 mb-2 small">
+      <span><span class="badge bg-success">&nbsp;3&nbsp;</span> soumissions effectuées</span>
+      <span><span class="badge bg-warning text-dark">&nbsp;0&nbsp;</span> activité applicable, non soumise</span>
+      <span><span class="badge bg-light text-muted border">&nbsp;—&nbsp;</span> activité non applicable dans ce pays</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm align-middle"
+             style="font-size:.82rem; table-layout:auto">
+        <thead class="table-dark">
+          <tr>
+            <th style="min-width:200px">Activité principale</th>
+            {% for c in display_countries %}
+              <th class="text-center" style="min-width:80px">{{ c.label }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for block in matrix %}
+            <tr class="table-secondary">
+              <td colspan="{{ display_countries|length|add:1 }}" class="fw-bold py-1">
+                {{ block.result.code }} — {{ block.result.label }}
+              </td>
+            </tr>
+            {% for row in block.rows %}
+              <tr>
+                <td>
+                  <span class="fw-semibold">{{ row.code }}</span><br>
+                  <span class="text-muted" style="font-size:.76rem">{{ row.label }}</span>
+                </td>
+                {% for cell in row.cells %}
+                  <td class="text-center p-1
+                      {% if not cell.applicable %}table-light text-muted{% endif %}">
+                    {% if cell.applicable %}
+                      {% if cell.count > 0 %}
+                        <a href="{{ cell.sub_url }}"
+                           class="badge text-decoration-none
+                           {% if cell.responsible_match %}bg-success{% else %}bg-secondary{% endif %}"
+                           title="{{ cell.count }} soumission(s)">
+                          {{ cell.count }}
+                        </a>
+                      {% else %}
+                        <span class="badge bg-warning text-dark">0</span>
+                      {% endif %}
+                    {% else %}
+                      <span class="text-muted">—</span>
+                    {% endif %}
+                  </td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endif %}
+{% endblock %}

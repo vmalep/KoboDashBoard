@@ -1,0 +1,109 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Gestion des utilisateurs{% endblock %}
+
+{% block content %}
+<h2 class="h4 mb-4"><i class="bi bi-people me-2"></i>Gestion des utilisateurs</h2>
+
+{# ── Pending ── #}
+<h5 class="mb-3">
+  En attente de validation
+  {% if pending %}
+    <span class="badge bg-warning text-dark ms-1">{{ pending|length }}</span>
+  {% endif %}
+</h5>
+
+{% if not pending %}
+  <p class="text-muted mb-4">Aucun compte en attente.</p>
+{% else %}
+  <div class="table-responsive mb-5">
+    <table class="table table-sm table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Pays</th>
+          <th>Demande le</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in pending %}
+          <tr>
+            <td>{{ user.profile.full_name|default:"—" }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.profile.get_country_display|default:"—" }}</td>
+            <td class="text-muted small">{{ user.date_joined|date:"d/m/Y H:i" }}</td>
+            <td class="text-end">
+              <form method="post" action="/dashboard/users/{{ user.pk }}/activate/"
+                    class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-success">
+                  <i class="bi bi-check-lg me-1"></i>Activer
+                </button>
+              </form>
+              <form method="post" action="/dashboard/users/{{ user.pk }}/delete/"
+                    class="d-inline ms-1"
+                    onsubmit="return confirm('Supprimer ce compte ?')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+
+{# ── Active users ── #}
+<h5 class="mb-3">Utilisateurs actifs</h5>
+
+{% if not active %}
+  <p class="text-muted">Aucun utilisateur actif (hors administrateurs).</p>
+{% else %}
+  <div class="table-responsive">
+    <table class="table table-sm table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Pays</th>
+          <th>Créé le</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in active %}
+          <tr>
+            <td>{{ user.profile.full_name|default:"—" }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.profile.get_country_display|default:"—" }}</td>
+            <td class="text-muted small">{{ user.date_joined|date:"d/m/Y H:i" }}</td>
+            <td class="text-end">
+              <form method="post" action="/dashboard/users/{{ user.pk }}/deactivate/"
+                    class="d-inline"
+                    onsubmit="return confirm('Désactiver ce compte ?')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-warning">
+                  <i class="bi bi-pause-circle me-1"></i>Désactiver
+                </button>
+              </form>
+              <form method="post" action="/dashboard/users/{{ user.pk }}/delete/"
+                    class="d-inline ms-1"
+                    onsubmit="return confirm('Supprimer définitivement ce compte ?')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+
+{% endblock %}

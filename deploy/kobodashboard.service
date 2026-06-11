@@ -1,0 +1,20 @@
+[Unit]
+Description=KoboToolBox Dashboard (gunicorn)
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/srv/kobodashboard
+Environment="PATH=/srv/kobodashboard/.venv/bin"
+EnvironmentFile=/srv/kobodashboard/.env
+ExecStart=/srv/kobodashboard/.venv/bin/gunicorn \
+    --workers 2 \
+    --bind 127.0.0.1:8001 \
+    --access-logfile /var/log/kobodashboard/access.log \
+    --error-logfile /var/log/kobodashboard/error.log \
+    kobodashboard.wsgi:application
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

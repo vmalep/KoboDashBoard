@@ -1,0 +1,101 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Paramètres — KoboToolBox Dashboard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-7">
+
+    <h2 class="h4 mb-4"><i class="bi bi-gear me-2"></i>Paramètres de connexion</h2>
+
+    {% if error %}
+      <div class="alert alert-danger">
+        <i class="bi bi-x-circle-fill me-1"></i>{{ error }}
+      </div>
+    {% endif %}
+    {% if success %}
+      <div class="alert alert-success">
+        <i class="bi bi-check-circle-fill me-1"></i>Paramètres enregistrés.
+      </div>
+    {% endif %}
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header fw-semibold">Serveur KoboToolBox</div>
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">URL du serveur</label>
+            <input type="url" name="server_url" class="form-control"
+                   value="{{ config.server_url }}" placeholder="https://kobo.ifrc.org" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Token API</label>
+            <input type="password" name="api_token" class="form-control"
+                   placeholder="{% if config.api_token %}(token enregistré — laisser vide pour conserver){% else %}Entrer le token API{% endif %}">
+            <div class="form-text">
+              Obtenir votre token sur
+              <code>{{ config.server_url }}/token/?format=json</code>
+            </div>
+          </div>
+          <button type="submit" name="action" value="load"
+                  class="btn btn-outline-primary">
+            <i class="bi bi-plug me-1"></i>Tester & charger les formulaires
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {% if assets %}
+    <div class="card shadow-sm mb-4">
+      <div class="card-header fw-semibold">Formulaire actif</div>
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="server_url" value="{{ config.server_url }}">
+          <input type="hidden" name="api_token" value="">
+          <div class="mb-3">
+            <label class="form-label">Sélectionner le formulaire à afficher</label>
+            <select name="selected_form_uid" class="form-select"
+                    id="formSelect" onchange="updateFormName(this)">
+              <option value="">— Choisir un formulaire —</option>
+              {% for asset in assets %}
+                <option value="{{ asset.uid }}"
+                        data-name="{{ asset.name }}"
+                        {% if asset.uid == config.selected_form_uid %}selected{% endif %}>
+                  {{ asset.name }}
+                  ({{ asset.deployment__submission_count|default:"?" }} soumissions)
+                </option>
+              {% endfor %}
+            </select>
+            <input type="hidden" name="selected_form_name" id="formName"
+                   value="{{ config.selected_form_name }}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Durée du cache (secondes)</label>
+            <input type="number" name="cache_ttl_seconds" class="form-control"
+                   value="{{ config.cache_ttl_seconds }}" min="60" max="3600" style="max-width:160px">
+            <div class="form-text">300 = 5 minutes. Augmenter si la connexion est lente.</div>
+          </div>
+          <button type="submit" name="action" value="save" class="btn btn-danger">
+            <i class="bi bi-check-lg me-1"></i>Enregistrer et ouvrir le tableau de bord
+          </button>
+        </form>
+      </div>
+    </div>
+    {% elif config.api_token %}
+      <p class="text-muted">
+        <i class="bi bi-info-circle me-1"></i>
+        Cliquez sur « Tester & charger les formulaires » pour afficher la liste des formulaires disponibles.
+      </p>
+    {% endif %}
+
+  </div>
+</div>
+
+<script>
+function updateFormName(sel) {
+  const opt = sel.options[sel.selectedIndex];
+  document.getElementById('formName').value = opt.dataset.name || '';
+}
+</script>
+{% endblock %}

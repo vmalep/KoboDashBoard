@@ -1,0 +1,48 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Forms — KoboToolBox Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="h4 mb-0">Available Forms</h2>
+</div>
+
+{% if config_missing %}
+  <div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle-fill me-1"></i>
+    No API token configured. Please set one in the
+    <a href="/admin/kobo/koboconfig/">Admin settings</a>.
+  </div>
+{% elif error %}
+  <div class="alert alert-danger">
+    <i class="bi bi-x-circle-fill me-1"></i>
+    Could not reach KoboToolBox: <code>{{ error }}</code>
+  </div>
+{% elif not assets %}
+  <p class="text-muted">No survey forms found on the server.</p>
+{% else %}
+  <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+    {% for asset in assets %}
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">{{ asset.name }}</h5>
+            <p class="card-text text-muted small mb-1">
+              <i class="bi bi-hash"></i> {{ asset.uid }}
+            </p>
+            <p class="card-text text-muted small">
+              <i class="bi bi-file-text"></i>
+              {{ asset.deployment__submission_count|default:"?" }} submission{{ asset.deployment__submission_count|pluralize }}
+            </p>
+          </div>
+          <div class="card-footer bg-transparent">
+            <a href="/dashboard/{{ asset.uid }}/" class="btn btn-sm btn-danger">
+              <i class="bi bi-table me-1"></i>View data
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}
