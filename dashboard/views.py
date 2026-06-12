@@ -11,12 +11,7 @@ from openpyxl.styles import Font, PatternFill, Alignment
 
 from kobo import api_client, cache_helpers
 from kobo.models import KoboConfig
-from kobo.program_structure import (
-    parse_program_structure,
-    extract_main_activity,
-    extract_result,
-    COUNTRY_LABELS,
-)
+from form_modules import get_module
 
 PAGE_SIZE = 25
 
@@ -26,7 +21,7 @@ def _config():
 
 
 def _load(uid):
-    """Return (schema, submissions, program_structure) from cache."""
+    """Return (schema, submissions, structure, module) from cache."""
     config = _config()
     schema = cache_helpers.get_cached(
         cache_helpers.schema_key(uid),
@@ -36,11 +31,15 @@ def _load(uid):
         cache_helpers.submissions_key(uid),
         lambda: api_client.get_submissions(uid, config),
     )
-    structure = cache_helpers.get_cached(
-        f'kobo_structure_{uid}',
-        lambda: parse_program_structure(schema),
-    )
-    return schema, submissions, structure
+    module = get_module(uid)
+    if module is not None:
+        structure = cache_helpers.get_cached(
+            f'kobo_structure_{uid}',
+            lambda: module.parse_structure(schema),
+        )
+    else:
+        structure = {}
+    return schema, submissions, structure, module
 
 
 # ── Form list / entry point ────────────────────────────────────────────────────
@@ -50,7 +49,6 @@ def form_list(request):
     config = _config()
     if config.selected_form_uid:
         return redirect(f'/dashboard/{config.selected_form_uid}/')
-    # No form selected yet — send staff to settings, others to a placeholder
     if request.user.is_staff:
         return redirect('/dashboard/settings/')
     return render(request, 'dashboard/no_form.html', {})
@@ -73,7 +71,6 @@ def settings_view(request):
         server_url = request.POST.get('server_url', '').strip().rstrip('/')
         api_token = request.POST.get('api_token', '').strip()
 
-        # Always persist server + token on any POST
         config.server_url = server_url or config.server_url
         if api_token:
             config.api_token = api_token
@@ -81,7 +78,6 @@ def settings_view(request):
         cache_helpers.invalidate(cache_helpers.asset_list_key())
 
         if action == 'load':
-            # Just reload the form list
             try:
                 assets = api_client.list_assets(config)
             except api_client.KoboAPIError as exc:
@@ -98,7 +94,6 @@ def settings_view(request):
             except ValueError:
                 pass
             config.save()
-            # Clear caches for old and new form
             for key in [
                 cache_helpers.asset_list_key(),
                 cache_helpers.schema_key(selected_uid),
@@ -123,11 +118,70 @@ def settings_view(request):
             except api_client.KoboAPIError as exc:
                 error = str(exc)
 
+    module = get_module(config.selected_form_uid) if config.selected_form_uid else None
+
     return render(request, 'dashboard/settings.html', {
         'config': config,
         'assets': assets,
         'error': error,
         'success': success,
+        'module_name': module.form_label if module else None,
+    })
+
+
+# ── Generic form detail (fallback for forms with no module) ───────────────────
+
+@login_required
+def form_detail(request, uid):
+    error = None
+    tabs = []
+    columns = []
+    page_obj = None
+    form_name = uid
+    total_submissions = 0
+    active_group = ''
+
+    try:
+        config = _config()
+        schema = cache_helpers.get_cached(
+            cache_helpers.schema_key(uid),
+            lambda: api_client.get_schema(uid, config),
+        )
+        submissions = cache_helpers.get_cached(
+            cache_helpers.submissions_key(uid),
+            lambda: api_client.get_submissions(uid, config),
+        )
+        form_name = schema.get('name', uid)
+        total_submissions = len(submissions)
+
+        group_order, groups = api_client.parse_groups(schema)
+        question_labels = api_client.get_question_labels(schema)
+
+        tabs = [{'key': k, 'label': groups[k]['label']} for k in group_order]
+        active_group = request.GET.get('group', group_order[0] if group_order else '')
+
+        if active_group and active_group in groups:
+            questions = groups[active_group]['questions']
+            columns = [{'label': question_labels.get(q, q)} for q in questions]
+            rows = [
+                {'id': sub.get('_id', ''), 'values': [sub.get(q, '') for q in questions]}
+                for sub in submissions
+            ]
+            paginator = Paginator(rows, PAGE_SIZE)
+            page_obj = paginator.get_page(request.GET.get('page'))
+
+    except api_client.KoboAPIError as exc:
+        error = str(exc)
+
+    return render(request, 'dashboard/form_detail.html', {
+        'uid': uid,
+        'form_name': form_name,
+        'total_submissions': total_submissions,
+        'tabs': tabs,
+        'active_group': active_group,
+        'columns': columns,
+        'page_obj': page_obj,
+        'error': error,
     })
 
 
@@ -137,47 +191,46 @@ def settings_view(request):
 def coverage(request, uid):
     error = None
     structure = {}
-    coverage_data = {}   # (main_code, country_code) → submission count
-    responsibles = []    # unique responsible names for the filter
+    coverage_data = {}
+    responsibles = []
+    module = None
 
-    # Active filters
     f_country = request.GET.get('country', '')
     f_result = request.GET.get('result', '')
     f_activity = request.GET.get('activity', '')
     f_responsible = request.GET.get('responsible', '')
 
     try:
-        schema, submissions, structure = _load(uid)
+        schema, submissions, structure, module = _load(uid)
+    except api_client.KoboAPIError as exc:
+        error = str(exc)
 
-        # Build coverage counts and collect responsible names
-        resp_by_country = {}  # country_code → {name, ...}
+    if module is None and not error:
+        return form_detail(request, uid)
+
+    if not error:
+        fp = module.FIELD_PATHS
+        resp_by_country = {}
         for sub in submissions:
-            act_code = sub.get('group_ActivityDetails/activity_code', '')
-            country = sub.get('group_ActivityDetails/country', '')
-            main = extract_main_activity(act_code)
-            responsible = sub.get('group_ActivityDetails/activity_responsible', '').strip()
+            act_code = sub.get(fp['activity_code'], '')
+            country = sub.get(fp['country'], '')
+            main = module.extract_main_activity(act_code)
+            responsible = sub.get(fp['activity_responsible'], '').strip()
             if main and country:
-                key = (main, country)
-                coverage_data[key] = coverage_data.get(key, 0) + 1
+                coverage_data[(main, country)] = coverage_data.get((main, country), 0) + 1
             if country and responsible:
                 resp_by_country.setdefault(country, set()).add(responsible)
 
-        # Responsibles for selected country (or all if no country filter)
         if f_country:
             resp_set = resp_by_country.get(f_country, set())
         else:
             resp_set = {name for names in resp_by_country.values() for name in names}
         responsibles = sorted(resp_set)
 
-    except api_client.KoboAPIError as exc:
-        error = str(exc)
-
-    # Filter results/activities for display
     applicable = structure.get('applicable', set())
     results = structure.get('results', [])
     if f_result:
         results = [r for r in results if r['code'] == f_result]
-    # When a country is selected, hide activities not applicable in that country
     if f_country:
         results = [
             {**r, 'activities': [
@@ -191,29 +244,27 @@ def coverage(request, uid):
     countries = structure.get('countries', [])
     display_countries = [c for c in countries if not f_country or c['code'] == f_country]
 
-    # If a responsible filter is active, compute which (main, country) pairs match
     responsible_keys = set()
     if f_responsible and not error:
-        _, submissions_raw, _ = _load(uid)
+        _, submissions_raw, _, _ = _load(uid)
+        fp = module.FIELD_PATHS
         for sub in submissions_raw:
-            act_code = sub.get('group_ActivityDetails/activity_code', '')
-            country = sub.get('group_ActivityDetails/country', '')
-            responsible = sub.get('group_ActivityDetails/activity_responsible', '').strip()
-            main = extract_main_activity(act_code)
+            act_code = sub.get(fp['activity_code'], '')
+            country = sub.get(fp['country'], '')
+            responsible = sub.get(fp['activity_responsible'], '').strip()
+            main = module.extract_main_activity(act_code)
             if responsible == f_responsible and main and country:
                 responsible_keys.add((main, country))
 
-    form_name = structure.get('form_name', uid)
-    if not error:
-        try:
-            form_name = cache_helpers.get_cached(
-                cache_helpers.schema_key(uid),
-                lambda: api_client.get_schema(uid, _config()),
-            ).get('name', uid)
-        except Exception:
-            pass
+    form_name = uid
+    try:
+        form_name = cache_helpers.get_cached(
+            cache_helpers.schema_key(uid),
+            lambda: api_client.get_schema(uid, _config()),
+        ).get('name', uid)
+    except Exception:
+        pass
 
-    # Build template-friendly matrix: list of {result, rows: [{code, label, cells: [...]}]}
     matrix = []
     for result in results:
         rows = []
@@ -244,6 +295,7 @@ def coverage(request, uid):
     return render(request, 'dashboard/coverage.html', {
         'uid': uid,
         'form_name': form_name,
+        'form_label': module.form_label if module else '',
         'matrix': matrix,
         'all_results': structure.get('results', []),
         'countries': countries,
@@ -266,20 +318,20 @@ def submission_list(request, uid):
     structure = {}
 
     f_country = request.GET.get('country', '')
-    f_activity = request.GET.get('activity', '')   # main code e.g. R1A1
+    f_activity = request.GET.get('activity', '')
     f_responsible = request.GET.get('responsible', '')
 
     try:
-        schema, submissions, structure = _load(uid)
-        risk_labels = structure.get('risk_labels', {})
-        activity_specific_labels = structure.get('activity_specific_labels', {})
-        country_labels = structure.get('country_labels', {})
+        schema, submissions, structure, module = _load(uid)
+        if module is None:
+            return redirect(f'/dashboard/{uid}/')
 
+        fp = module.FIELD_PATHS
         for sub in submissions:
-            act_code = sub.get('group_ActivityDetails/activity_code', '')
-            country = sub.get('group_ActivityDetails/country', '')
-            main = extract_main_activity(act_code)
-            responsible = sub.get('group_ActivityDetails/activity_responsible', '').strip()
+            act_code = sub.get(fp['activity_code'], '')
+            country = sub.get(fp['country'], '')
+            main = module.extract_main_activity(act_code)
+            responsible = sub.get(fp['activity_responsible'], '').strip()
 
             if f_activity and main != f_activity:
                 continue
@@ -288,11 +340,7 @@ def submission_list(request, uid):
             if f_responsible and responsible != f_responsible:
                 continue
 
-            parsed_submissions.append(
-                api_client.parse_submission_detail(
-                    sub, risk_labels, activity_specific_labels, country_labels
-                )
-            )
+            parsed_submissions.append(module.parse_submission_detail(sub, structure))
 
     except api_client.KoboAPIError as exc:
         error = str(exc)
@@ -312,7 +360,7 @@ def submission_list(request, uid):
         'f_activity': f_activity,
         'f_responsible': f_responsible,
         'activity_label': activity_label,
-        'country_label': COUNTRY_LABELS.get(f_country, f_country),
+        'country_label': structure.get('country_labels', {}).get(f_country, f_country),
         'error': error,
     })
 
@@ -325,18 +373,15 @@ def submission_detail(request, uid, sub_id):
     parsed = None
 
     try:
-        schema, submissions, structure = _load(uid)
-        risk_labels = structure.get('risk_labels', {})
-        activity_specific_labels = structure.get('activity_specific_labels', {})
-        country_labels = structure.get('country_labels', {})
+        schema, submissions, structure, module = _load(uid)
+        if module is None:
+            return redirect(f'/dashboard/{uid}/')
 
         raw = next((s for s in submissions if s.get('_id') == sub_id), None)
         if raw is None:
             error = f'Submission #{sub_id} not found.'
         else:
-            parsed = api_client.parse_submission_detail(
-                raw, risk_labels, activity_specific_labels, country_labels
-            )
+            parsed = module.parse_submission_detail(raw, structure)
     except api_client.KoboAPIError as exc:
         error = str(exc)
 
@@ -370,28 +415,21 @@ class _Echo:
 @login_required
 def export_csv(request, uid):
     try:
-        schema, submissions, structure = _load(uid)
+        schema, submissions, structure, module = _load(uid)
     except api_client.KoboAPIError as exc:
         return HttpResponse(f'API error: {exc}', status=502)
 
-    risk_labels = structure.get('risk_labels', {})
-    activity_specific_labels = structure.get('activity_specific_labels', {})
-    country_labels = structure.get('country_labels', {})
+    if module is None:
+        return HttpResponse('Export non disponible sans module de formulaire.', status=400)
 
     pseudo_buffer = _Echo()
     writer = csv.writer(pseudo_buffer)
 
     def rows():
-        yield writer.writerow([
-            '#', 'Pays', 'Lieu', 'Code activité', 'Activité',
-            'Responsable', 'Date début', 'Date fin',
-            'Catégorie risque', 'Description risque', 'Mesures de mitigation',
-        ])
+        yield writer.writerow(module.EXPORT_HEADERS)
         i = 1
         for sub in submissions:
-            p = api_client.parse_submission_detail(
-                sub, risk_labels, activity_specific_labels, country_labels
-            )
+            p = module.parse_submission_detail(sub, structure)
             act = p['activity']
             if not p['risks']:
                 yield writer.writerow([
@@ -420,24 +458,18 @@ def export_csv(request, uid):
 @login_required
 def export_xlsx(request, uid):
     try:
-        schema, submissions, structure = _load(uid)
+        schema, submissions, structure, module = _load(uid)
     except api_client.KoboAPIError as exc:
         return HttpResponse(f'API error: {exc}', status=502)
 
-    risk_labels = structure.get('risk_labels', {})
-    activity_specific_labels = structure.get('activity_specific_labels', {})
-    country_labels = structure.get('country_labels', {})
+    if module is None:
+        return HttpResponse('Export non disponible sans module de formulaire.', status=400)
 
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = 'Données'
 
-    headers = [
-        '#', 'Pays', 'Lieu', 'Code activité', 'Description activité',
-        'Responsable', 'Date début', 'Date fin',
-        'Catégorie du risque', 'Description du risque', 'Mesures de mitigation',
-    ]
-    ws.append(headers)
+    ws.append(module.EXPORT_HEADERS)
     header_fill = PatternFill('solid', fgColor='C00000')
     for cell in ws[1]:
         cell.font = Font(bold=True, color='FFFFFF')
@@ -446,9 +478,7 @@ def export_xlsx(request, uid):
 
     i = 1
     for sub in submissions:
-        p = api_client.parse_submission_detail(
-            sub, risk_labels, activity_specific_labels, country_labels
-        )
+        p = module.parse_submission_detail(sub, structure)
         act = p['activity']
         if not p['risks']:
             ws.append([
@@ -469,7 +499,6 @@ def export_xlsx(request, uid):
                 ])
                 i += 1
 
-    # Auto-width (approximate)
     for col in ws.columns:
         max_len = max((len(str(c.value or '')) for c in col), default=10)
         ws.column_dimensions[col[0].column_letter].width = min(max_len + 2, 60)
