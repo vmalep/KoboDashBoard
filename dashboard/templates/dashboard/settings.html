@@ -69,18 +69,23 @@
             <div class="list-group-item py-3">
               <div class="d-flex justify-content-between align-items-start mb-2">
                 <div>
-                  <div class="fw-semibold">{{ f.name }}</div>
-                  <code class="text-muted small">{{ f.uid }}</code>
+                  <a href="/dashboard/{{ f.uid }}/" class="fw-semibold text-decoration-none">{{ f.name }}</a>
+                  <div><code class="text-muted small">{{ f.uid }}</code></div>
                 </div>
-                <form method="post" class="ms-2">
-                  {% csrf_token %}
-                  <input type="hidden" name="action" value="remove_form">
-                  <input type="hidden" name="form_uid" value="{{ f.uid }}">
-                  <button type="submit" class="btn btn-sm btn-outline-danger"
-                          onclick="return confirm('Supprimer ce formulaire ?')">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </form>
+                <div class="d-flex gap-1 ms-2">
+                  <a href="/dashboard/{{ f.uid }}/" class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-bar-chart-line"></i>
+                  </a>
+                  <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="remove_form">
+                    <input type="hidden" name="form_uid" value="{{ f.uid }}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Supprimer ce formulaire ?')">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </form>
+                </div>
               </div>
 
               {# Module row #}

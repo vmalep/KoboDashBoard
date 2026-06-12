@@ -19,28 +19,35 @@
       <div class="card-body">
         <h5 class="card-title">{{ card.name }}</h5>
         {% if card.module_label %}
-          <p class="card-text mb-1">
-            <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle">
-              <i class="bi bi-puzzle-fill me-1"></i>{{ card.module_label }}
-            </span>
+          <p class="card-text text-success small mb-1">
+            <i class="bi bi-puzzle-fill me-1"></i>{{ card.module_label }}
           </p>
         {% else %}
-          <p class="card-text mb-1">
-            <span class="badge bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
-              <i class="bi bi-table me-1"></i>Vue générique
-            </span>
+          <p class="card-text text-muted small mb-1">
+            <i class="bi bi-table me-1"></i>Vue générique
           </p>
         {% endif %}
         {% if card.sub_count is not None %}
-        <p class="card-text text-muted small mt-2">
+        <p class="card-text text-muted small mt-1">
           <i class="bi bi-inbox me-1"></i>{{ card.sub_count }} soumission{{ card.sub_count|pluralize }} en cache
         </p>
         {% endif %}
       </div>
-      <div class="card-footer bg-transparent">
-        <a href="/dashboard/{{ card.uid }}/" class="btn btn-sm btn-danger">
-          <i class="bi bi-bar-chart-line me-1"></i>Ouvrir le tableau de bord
+      <div class="card-footer bg-transparent d-flex gap-2">
+        <a href="/dashboard/{{ card.uid }}/" class="btn btn-danger flex-grow-1">
+          <i class="bi bi-bar-chart-line me-1"></i>Visionner le dashboard
         </a>
+        {% if request.user.is_staff %}
+        <form method="post" action="/dashboard/settings/">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="remove_form">
+          <input type="hidden" name="form_uid" value="{{ card.uid }}">
+          <button type="submit" class="btn btn-outline-danger"
+                  onclick="return confirm('Supprimer « {{ card.name }} » ?')">
+            <i class="bi bi-trash me-1"></i>Supprimer le formulaire
+          </button>
+        </form>
+        {% endif %}
       </div>
     </div>
   </div>
