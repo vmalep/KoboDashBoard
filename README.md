@@ -184,6 +184,7 @@ sudo systemctl restart kobodashboard
 | Module file | Form | Description |
 |---|---|---|
 | `form_modules/dnh.py` | CheckList Do Not Harm | Coverage matrix showing which Do Not Harm activities are covered per country, with risk analysis drill-down |
+| `form_modules/amopah3.py` | FORMULAIRE_DASHBOARD_AMOPAH III | Indicator monitoring dashboard for the AMOPAH III program (5 countries, 4 results, 48 indicators). Charts by country/result/period, disaggregation breakdowns (age/sex, disability, population status), data table, CSV/XLSX export |
 
 ---
 

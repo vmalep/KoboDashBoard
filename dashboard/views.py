@@ -250,6 +250,7 @@ def amopah_dashboard(request, uid):
     countries_used = []
     results_used = []
     parsed_all = []
+    filtered = []
     total_beneficiaries = 0
     total_reports = 0
 
@@ -354,10 +355,53 @@ def amopah_dashboard(request, uid):
         period_labels = sorted({ps['period'] for ps in filtered if ps['period']})
         period_data = [agg['by_period'].get(p, 0) for p in period_labels]
 
+        # Disaggregation chart: aggregate age/sex across all filtered indicators
+        age_totals = {'male_0_5': 0, 'male_6_18': 0, 'male_19_49': 0, 'male_50p': 0,
+                      'fem_0_5': 0, 'fem_6_18': 0, 'fem_19_49': 0, 'fem_50p': 0}
+        disability_totals = {'with': 0, 'without': 0}
+        status_totals = {'pdi': 0, 'host': 0, 'refugee': 0, 'returnees': 0,
+                         'stateless': 0, 'other': 0}
+        has_disagg = False
+        for ps in filtered:
+            for ind in ps['indicators']:
+                if f_result and ind['result_key'] != f_result:
+                    continue
+                if ind['age']:
+                    has_disagg = True
+                    for k in age_totals:
+                        age_totals[k] += ind['age'].get(k, 0)
+                if ind['disability']:
+                    for k in disability_totals:
+                        disability_totals[k] += ind['disability'].get(k, 0)
+                if ind['status']:
+                    for k in status_totals:
+                        status_totals[k] += ind['status'].get(k, 0)
+
+        disagg_chart = None
+        if has_disagg:
+            age_labels = ['0–5 H', '6–18 H', '19–49 H', '50+ H',
+                          '0–5 F', '6–18 F', '19–49 F', '50+ F']
+            age_data = [age_totals[k] for k in age_totals]
+            age_colors = (['#156082'] * 4) + (['#c00000'] * 4)
+
+            status_labels = ['PDI', 'Hôte', 'Réfugié', 'Rapatrié', 'Migrant', 'Autre']
+            status_data = [status_totals[k] for k in status_totals]
+
+            disagg_chart = {
+                'age': {'labels': age_labels, 'data': age_data, 'colors': age_colors},
+                'disability': {
+                    'labels': ['Avec handicap', 'Sans handicap'],
+                    'data': [disability_totals['with'], disability_totals['without']],
+                    'colors': ['#e97132', '#196b24'],
+                },
+                'status': {'labels': status_labels, 'data': status_data},
+            }
+
         chart_data = {
             'country_summary': country_summary,
             'period_trend': {'labels': period_labels, 'data': period_data},
             'result_charts': result_charts,
+            'disagg': disagg_chart,
         }
 
     except api_client.KoboAPIError as exc:

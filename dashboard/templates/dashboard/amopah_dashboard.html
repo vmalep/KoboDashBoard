@@ -315,6 +315,70 @@ function buildCharts() {
     msg.textContent = 'Aucune donnée pour les filtres sélectionnés.';
     container.appendChild(msg);
   }
+
+  // ── Disaggregation charts ──
+  if (DATA.disagg) {
+    const d = DATA.disagg;
+    const section = document.createElement('div');
+    section.className = 'card shadow-sm mb-4';
+    section.innerHTML = `
+      <div class="card-header fw-semibold">
+        <i class="bi bi-people-fill me-1 text-danger"></i>Désagrégation des bénéficiaires
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-12 col-lg-6">
+            <p class="fw-semibold small text-muted mb-1">Par âge et sexe</p>
+            <canvas id="chart-age" style="max-height:240px"></canvas>
+          </div>
+          <div class="col-12 col-md-6 col-lg-3">
+            <p class="fw-semibold small text-muted mb-1">Par statut de population</p>
+            <canvas id="chart-status" style="max-height:240px"></canvas>
+          </div>
+          <div class="col-12 col-md-6 col-lg-3">
+            <p class="fw-semibold small text-muted mb-1">Handicap</p>
+            <canvas id="chart-disability" style="max-height:240px"></canvas>
+          </div>
+        </div>
+      </div>`;
+    container.appendChild(section);
+
+    new Chart(document.getElementById('chart-age'), {
+      type: 'bar',
+      data: {
+        labels: d.age.labels,
+        datasets: [{
+          label: 'Bénéficiaires',
+          data: d.age.data,
+          backgroundColor: d.age.colors,
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } },
+      },
+    });
+
+    new Chart(document.getElementById('chart-status'), {
+      type: 'doughnut',
+      data: {
+        labels: d.status.labels,
+        datasets: [{ data: d.status.data,
+          backgroundColor: ['#c00000','#e97132','#156082','#196b24','#7f7f7f','#b0b0b0'] }],
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom' } } },
+    });
+
+    new Chart(document.getElementById('chart-disability'), {
+      type: 'doughnut',
+      data: {
+        labels: d.disability.labels,
+        datasets: [{ data: d.disability.data, backgroundColor: d.disability.colors }],
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom' } } },
+    });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', buildCharts);
