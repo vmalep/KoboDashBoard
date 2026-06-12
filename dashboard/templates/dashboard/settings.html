@@ -3,23 +3,9 @@
 
 {% block content %}
 <div class="row justify-content-center">
-  <div class="col-12 col-lg-7">
+  <div class="col-12 col-lg-8">
 
-    <h2 class="h4 mb-4"><i class="bi bi-gear me-2"></i>Paramètres de connexion</h2>
-
-    {% if config.selected_form_name %}
-    <div class="alert alert-light border d-flex align-items-center gap-2 py-2 mb-4">
-      <i class="bi bi-collection-fill text-danger"></i>
-      <span>
-        Formulaire actif : <strong>{{ config.selected_form_name }}</strong>
-        {% if module_name %}
-          &mdash; <span class="text-success"><i class="bi bi-puzzle-fill me-1"></i>{{ module_name }}</span>
-        {% else %}
-          &mdash; <span class="text-muted">Vue générique (aucun module)</span>
-        {% endif %}
-      </span>
-    </div>
-    {% endif %}
+    <h2 class="h4 mb-4"><i class="bi bi-gear me-2"></i>Paramètres</h2>
 
     {% if error %}
       <div class="alert alert-danger">
@@ -28,12 +14,15 @@
     {% endif %}
     {% if success %}
       <div class="alert alert-success">
-        <i class="bi bi-check-circle-fill me-1"></i>Paramètres enregistrés.
+        <i class="bi bi-check-circle-fill me-1"></i>{{ success }}
       </div>
     {% endif %}
 
+    {# ── Server connection ── #}
     <div class="card shadow-sm mb-4">
-      <div class="card-header fw-semibold">Serveur KoboToolBox</div>
+      <div class="card-header fw-semibold">
+        <i class="bi bi-cloud me-1"></i>Serveur KoboToolBox
+      </div>
       <div class="card-body">
         <form method="post">
           {% csrf_token %}
@@ -47,60 +36,146 @@
             <input type="password" name="api_token" class="form-control"
                    placeholder="{% if config.api_token %}(token enregistré — laisser vide pour conserver){% else %}Entrer le token API{% endif %}">
             <div class="form-text">
-              Obtenir votre token sur
-              <code>{{ config.server_url }}/token/?format=json</code>
+              Obtenir votre token sur <code>{{ config.server_url }}/token/?format=json</code>
             </div>
           </div>
-          <button type="submit" name="action" value="load"
-                  class="btn btn-outline-primary">
-            <i class="bi bi-plug me-1"></i>Tester & charger les formulaires
-          </button>
+          <div class="d-flex gap-2">
+            <button type="submit" name="action" value="save_server" class="btn btn-outline-primary">
+              <i class="bi bi-save me-1"></i>Enregistrer
+            </button>
+            <button type="submit" name="action" value="load_assets" class="btn btn-outline-secondary">
+              <i class="bi bi-plug me-1"></i>Tester & charger les formulaires
+            </button>
+          </div>
         </form>
       </div>
     </div>
 
-    {% if assets %}
+    {# ── Configured forms list ── #}
     <div class="card shadow-sm mb-4">
-      <div class="card-header fw-semibold">Formulaire actif</div>
+      <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-collection me-1"></i>Formulaires configurés</span>
+        <span class="badge bg-secondary">{{ configured_forms|length }}</span>
+      </div>
+      <div class="card-body p-0">
+        {% if not configured_forms %}
+          <p class="text-muted p-3 mb-0">
+            <i class="bi bi-info-circle me-1"></i>
+            Aucun formulaire configuré. Chargez la liste ci-dessus pour en ajouter un.
+          </p>
+        {% else %}
+          <div class="list-group list-group-flush">
+            {% for f in configured_forms %}
+            <div class="list-group-item py-3">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <div class="fw-semibold">{{ f.name }}</div>
+                  <code class="text-muted small">{{ f.uid }}</code>
+                </div>
+                <form method="post" class="ms-2">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="remove_form">
+                  <input type="hidden" name="form_uid" value="{{ f.uid }}">
+                  <button type="submit" class="btn btn-sm btn-outline-danger"
+                          onclick="return confirm('Supprimer ce formulaire ?')">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+              </div>
+
+              {# Module row #}
+              <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                {% if f.module_label %}
+                  <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle">
+                    <i class="bi bi-puzzle-fill me-1"></i>{{ f.module_label }}
+                  </span>
+                {% else %}
+                  <span class="badge bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
+                    <i class="bi bi-table me-1"></i>Vue générique
+                  </span>
+                {% endif %}
+
+                {% if f.has_module_file %}
+                <a href="/dashboard/settings/module-download/{{ f.uid }}/"
+                   class="btn btn-sm btn-outline-secondary">
+                  <i class="bi bi-download me-1"></i>Télécharger le module
+                </a>
+                {% endif %}
+
+                <form method="post" action="/dashboard/settings/module-upload/{{ f.uid }}/"
+                      enctype="multipart/form-data" class="d-flex align-items-center gap-1">
+                  {% csrf_token %}
+                  <input type="file" name="module_file" accept=".py" class="form-control form-control-sm"
+                         style="max-width:220px" required>
+                  <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-upload me-1"></i>Charger un module
+                  </button>
+                </form>
+              </div>
+
+              {# TTL row #}
+              <form method="post" class="d-flex align-items-center gap-2">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_ttl">
+                <input type="hidden" name="form_uid" value="{{ f.uid }}">
+                <label class="form-label mb-0 small text-muted">Cache (s) :</label>
+                <input type="number" name="cache_ttl_seconds" value="{{ f.cache_ttl_seconds }}"
+                       min="30" max="86400" class="form-control form-control-sm" style="width:90px">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                  <i class="bi bi-save"></i>
+                </button>
+              </form>
+            </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {# ── Add form (asset picker) ── #}
+    {% if show_add_form %}
+    <div class="card shadow-sm mb-4">
+      <div class="card-header fw-semibold">
+        <i class="bi bi-plus-circle me-1"></i>Ajouter un formulaire
+      </div>
       <div class="card-body">
+        {% if assets %}
         <form method="post">
           {% csrf_token %}
-          <input type="hidden" name="server_url" value="{{ config.server_url }}">
-          <input type="hidden" name="api_token" value="">
           <div class="mb-3">
-            <label class="form-label">Sélectionner le formulaire à afficher</label>
+            <label class="form-label">Formulaire disponible sur le serveur</label>
             <select name="selected_form_uid" class="form-select"
-                    id="formSelect" onchange="updateFormName(this)">
+                    id="formSelect" onchange="updateFormName(this)" required>
               <option value="">— Choisir un formulaire —</option>
               {% for asset in assets %}
-                <option value="{{ asset.uid }}"
-                        data-name="{{ asset.name }}"
-                        {% if asset.uid == config.selected_form_uid %}selected{% endif %}>
-                  {{ asset.name }}
-                  ({{ asset.deployment__submission_count|default:"?" }} soumissions)
-                </option>
+              <option value="{{ asset.uid }}" data-name="{{ asset.name }}">
+                {{ asset.name }}
+                ({{ asset.deployment__submission_count|default:"?" }} soumissions)
+              </option>
               {% endfor %}
             </select>
-            <input type="hidden" name="selected_form_name" id="formName"
-                   value="{{ config.selected_form_name }}">
+            <input type="hidden" name="selected_form_name" id="formName" value="">
           </div>
           <div class="mb-3">
             <label class="form-label">Durée du cache (secondes)</label>
-            <input type="number" name="cache_ttl_seconds" class="form-control"
-                   value="{{ config.cache_ttl_seconds }}" min="60" max="3600" style="max-width:160px">
-            <div class="form-text">300 = 5 minutes. Augmenter si la connexion est lente.</div>
+            <input type="number" name="cache_ttl_seconds" value="300"
+                   min="30" max="86400" class="form-control" style="max-width:120px">
           </div>
-          <button type="submit" name="action" value="save" class="btn btn-danger">
-            <i class="bi bi-check-lg me-1"></i>Enregistrer et ouvrir le tableau de bord
+          <button type="submit" name="action" value="add_form" class="btn btn-danger">
+            <i class="bi bi-plus-lg me-1"></i>Ajouter ce formulaire
           </button>
         </form>
+        {% else %}
+          <p class="text-muted mb-0">Aucun formulaire trouvé sur le serveur.</p>
+        {% endif %}
       </div>
     </div>
-    {% elif config.api_token %}
-      <p class="text-muted">
-        <i class="bi bi-info-circle me-1"></i>
-        Cliquez sur « Tester & charger les formulaires » pour afficher la liste des formulaires disponibles.
-      </p>
+    {% else %}
+    <p class="text-muted small">
+      <i class="bi bi-info-circle me-1"></i>
+      Pour ajouter un nouveau formulaire, cliquez sur « Tester & charger les formulaires » ci-dessus,
+      puis sélectionnez-en un dans la liste.
+    </p>
     {% endif %}
 
   </div>

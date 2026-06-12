@@ -1,57 +1,87 @@
 import csv
 import io
+import re
+from pathlib import Path
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http import HttpResponse, StreamingHttpResponse
+from django.http import FileResponse, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment
 
 from kobo import api_client, cache_helpers
-from kobo.models import KoboConfig
+from kobo.models import KoboConfig, ConfiguredForm
 from form_modules import get_module
 
 PAGE_SIZE = 25
+MODULES_DIR = Path(__file__).resolve().parent.parent / 'form_modules'
 
 
 def _config():
     return KoboConfig.get()
 
 
+def _get_form(uid):
+    """Return ConfiguredForm for uid, or None."""
+    try:
+        return ConfiguredForm.objects.get(uid=uid)
+    except ConfiguredForm.DoesNotExist:
+        return None
+
+
 def _load(uid):
     """Return (schema, submissions, structure, module) from cache."""
     config = _config()
+    form = _get_form(uid)
+    ttl = form.cache_ttl_seconds if form else 300
+
     schema = cache_helpers.get_cached(
         cache_helpers.schema_key(uid),
         lambda: api_client.get_schema(uid, config),
+        ttl=ttl,
     )
     submissions = cache_helpers.get_cached(
         cache_helpers.submissions_key(uid),
         lambda: api_client.get_submissions(uid, config),
+        ttl=ttl,
     )
     module = get_module(uid)
     if module is not None:
         structure = cache_helpers.get_cached(
             f'kobo_structure_{uid}',
             lambda: module.parse_structure(schema),
+            ttl=ttl,
         )
     else:
         structure = {}
     return schema, submissions, structure, module
 
 
-# ── Form list / entry point ────────────────────────────────────────────────────
+# ── Form list ──────────────────────────────────────────────────────────────────
 
 @login_required
 def form_list(request):
-    config = _config()
-    if config.selected_form_uid:
-        return redirect(f'/dashboard/{config.selected_form_uid}/')
-    if request.user.is_staff:
-        return redirect('/dashboard/settings/')
-    return render(request, 'dashboard/no_form.html', {})
+    forms = ConfiguredForm.objects.all()
+    if not forms.exists():
+        if request.user.is_staff:
+            return redirect('/dashboard/settings/')
+        return render(request, 'dashboard/no_form.html', {})
+
+    form_cards = []
+    for f in forms:
+        module = get_module(f.uid)
+        cached_subs = cache_helpers.get_if_cached(cache_helpers.submissions_key(f.uid))
+        form_cards.append({
+            'uid': f.uid,
+            'name': f.name,
+            'module_label': module.form_label if module else None,
+            'sub_count': len(cached_subs) if cached_subs is not None else None,
+        })
+
+    return render(request, 'dashboard/form_list.html', {'form_cards': form_cards})
 
 
 # ── Settings ───────────────────────────────────────────────────────────────────
@@ -64,68 +94,125 @@ def settings_view(request):
     config = _config()
     assets = []
     error = None
-    success = False
+    success = None
+    show_add_form = False
 
     if request.method == 'POST':
         action = request.POST.get('action', '')
-        server_url = request.POST.get('server_url', '').strip().rstrip('/')
-        api_token = request.POST.get('api_token', '').strip()
 
-        config.server_url = server_url or config.server_url
-        if api_token:
-            config.api_token = api_token
-        config.save()
-        cache_helpers.invalidate(cache_helpers.asset_list_key())
-
-        if action == 'load':
-            try:
-                assets = api_client.list_assets(config)
-            except api_client.KoboAPIError as exc:
-                error = str(exc)
-
-        elif action == 'save':
-            selected_uid = request.POST.get('selected_form_uid', '').strip()
-            selected_name = request.POST.get('selected_form_name', '').strip()
-            cache_ttl = request.POST.get('cache_ttl_seconds', '300').strip()
-            config.selected_form_uid = selected_uid
-            config.selected_form_name = selected_name
-            try:
-                config.cache_ttl_seconds = int(cache_ttl)
-            except ValueError:
-                pass
+        if action == 'save_server':
+            server_url = request.POST.get('server_url', '').strip().rstrip('/')
+            api_token = request.POST.get('api_token', '').strip()
+            if server_url:
+                config.server_url = server_url
+            if api_token:
+                config.api_token = api_token
             config.save()
-            for key in [
-                cache_helpers.asset_list_key(),
-                cache_helpers.schema_key(selected_uid),
-                cache_helpers.submissions_key(selected_uid),
-                f'kobo_structure_{selected_uid}',
-            ]:
-                cache_helpers.invalidate(key)
-            if selected_uid:
-                return redirect(f'/dashboard/{selected_uid}/')
-            success = True
+            cache_helpers.invalidate(cache_helpers.asset_list_key())
+            success = 'Connexion enregistrée.'
+
+        elif action == 'load_assets':
+            server_url = request.POST.get('server_url', '').strip().rstrip('/')
+            api_token = request.POST.get('api_token', '').strip()
+            if server_url:
+                config.server_url = server_url
+            if api_token:
+                config.api_token = api_token
+            config.save()
+            cache_helpers.invalidate(cache_helpers.asset_list_key())
             try:
                 assets = api_client.list_assets(config)
-            except api_client.KoboAPIError as exc:
-                error = str(exc)
-    else:
-        if config.api_token:
-            try:
-                assets = cache_helpers.get_cached(
-                    cache_helpers.asset_list_key(),
-                    lambda: api_client.list_assets(config),
-                )
+                show_add_form = True
             except api_client.KoboAPIError as exc:
                 error = str(exc)
 
-    module = get_module(config.selected_form_uid) if config.selected_form_uid else None
+        elif action == 'add_form':
+            uid = request.POST.get('selected_form_uid', '').strip()
+            name = request.POST.get('selected_form_name', '').strip()
+            ttl = request.POST.get('cache_ttl_seconds', '300').strip()
+            if uid and not ConfiguredForm.objects.filter(uid=uid).exists():
+                ConfiguredForm.objects.create(
+                    uid=uid,
+                    name=name or uid,
+                    cache_ttl_seconds=int(ttl) if ttl.isdigit() else 300,
+                    order=ConfiguredForm.objects.count(),
+                )
+                success = f'Formulaire « {name} » ajouté.'
+            elif uid:
+                error = 'Ce formulaire est déjà configuré.'
+
+        elif action == 'remove_form':
+            uid = request.POST.get('form_uid', '').strip()
+            ConfiguredForm.objects.filter(uid=uid).delete()
+            for key in [cache_helpers.schema_key(uid),
+                        cache_helpers.submissions_key(uid),
+                        f'kobo_structure_{uid}']:
+                cache_helpers.invalidate(key)
+            success = 'Formulaire supprimé.'
+
+        elif action == 'update_ttl':
+            uid = request.POST.get('form_uid', '').strip()
+            ttl = request.POST.get('cache_ttl_seconds', '300').strip()
+            ConfiguredForm.objects.filter(uid=uid).update(
+                cache_ttl_seconds=int(ttl) if ttl.isdigit() else 300
+            )
+            success = 'Durée du cache mise à jour.'
+
+    configured_forms = []
+    for f in ConfiguredForm.objects.all():
+        module = get_module(f.uid)
+        configured_forms.append({
+            'uid': f.uid,
+            'name': f.name,
+            'cache_ttl_seconds': f.cache_ttl_seconds,
+            'module_label': module.form_label if module else None,
+            'has_module_file': module is not None,
+        })
 
     return render(request, 'dashboard/settings.html', {
         'config': config,
+        'configured_forms': configured_forms,
         'assets': assets,
+        'show_add_form': show_add_form,
         'error': error,
         'success': success,
-        'module_name': module.form_label if module else None,
+    })
+
+
+# ── Module download / upload ───────────────────────────────────────────────────
+
+@login_required
+def module_download(request, uid):
+    if not request.user.is_staff:
+        return redirect('/dashboard/')
+    module = get_module(uid)
+    if module is None:
+        return HttpResponse('Aucun module pour ce formulaire.', status=404)
+    path = Path(module._source_file)
+    return FileResponse(open(path, 'rb'), as_attachment=True, filename=path.name)
+
+
+@login_required
+def module_upload(request, uid):
+    if not request.user.is_staff or request.method != 'POST':
+        return redirect('/dashboard/settings/')
+
+    uploaded = request.FILES.get('module_file')
+    if not uploaded:
+        return redirect('/dashboard/settings/')
+
+    stem = Path(uploaded.name).stem
+    if not re.match(r'^[A-Za-z][A-Za-z0-9_]*$', stem):
+        return render(request, 'dashboard/settings.html',
+                      {'error': 'Nom de fichier invalide (doit être un identifiant Python valide).',
+                       'config': _config(), 'configured_forms': [], 'assets': [], 'show_add_form': False, 'success': None})
+
+    dest = MODULES_DIR / f'{stem}.py'
+    dest.write_bytes(uploaded.read())
+
+    return render(request, 'dashboard/module_uploaded.html', {
+        'filename': dest.name,
+        'uid': uid,
     })
 
 

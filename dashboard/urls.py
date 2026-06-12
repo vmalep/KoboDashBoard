@@ -4,6 +4,8 @@ from . import views
 urlpatterns = [
     path('', views.form_list, name='form_list'),
     path('settings/', views.settings_view, name='settings'),
+    path('settings/module-download/<str:uid>/', views.module_download, name='module_download'),
+    path('settings/module-upload/<str:uid>/', views.module_upload, name='module_upload'),
     path('users/', views.user_list, name='user_list'),
     path('users/<int:user_id>/activate/', views.user_activate, name='user_activate'),
     path('users/<int:user_id>/deactivate/', views.user_deactivate, name='user_deactivate'),

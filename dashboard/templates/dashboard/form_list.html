@@ -1,48 +1,49 @@
 {% extends "dashboard/base.html" %}
 
-{% block title %}Forms — KoboToolBox Dashboard{% endblock %}
+{% block title %}Formulaires — KoboToolBox Dashboard{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h2 class="h4 mb-0">Available Forms</h2>
+  <h2 class="h4 mb-0"><i class="bi bi-collection me-2"></i>Formulaires</h2>
+  {% if request.user.is_staff %}
+  <a href="/dashboard/settings/" class="btn btn-sm btn-outline-secondary">
+    <i class="bi bi-gear me-1"></i>Paramètres
+  </a>
+  {% endif %}
 </div>
 
-{% if config_missing %}
-  <div class="alert alert-warning">
-    <i class="bi bi-exclamation-triangle-fill me-1"></i>
-    No API token configured. Please set one in the
-    <a href="/admin/kobo/koboconfig/">Admin settings</a>.
-  </div>
-{% elif error %}
-  <div class="alert alert-danger">
-    <i class="bi bi-x-circle-fill me-1"></i>
-    Could not reach KoboToolBox: <code>{{ error }}</code>
-  </div>
-{% elif not assets %}
-  <p class="text-muted">No survey forms found on the server.</p>
-{% else %}
-  <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
-    {% for asset in assets %}
-      <div class="col">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">{{ asset.name }}</h5>
-            <p class="card-text text-muted small mb-1">
-              <i class="bi bi-hash"></i> {{ asset.uid }}
-            </p>
-            <p class="card-text text-muted small">
-              <i class="bi bi-file-text"></i>
-              {{ asset.deployment__submission_count|default:"?" }} submission{{ asset.deployment__submission_count|pluralize }}
-            </p>
-          </div>
-          <div class="card-footer bg-transparent">
-            <a href="/dashboard/{{ asset.uid }}/" class="btn btn-sm btn-danger">
-              <i class="bi bi-table me-1"></i>View data
-            </a>
-          </div>
-        </div>
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+  {% for card in form_cards %}
+  <div class="col">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">{{ card.name }}</h5>
+        {% if card.module_label %}
+          <p class="card-text mb-1">
+            <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle">
+              <i class="bi bi-puzzle-fill me-1"></i>{{ card.module_label }}
+            </span>
+          </p>
+        {% else %}
+          <p class="card-text mb-1">
+            <span class="badge bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
+              <i class="bi bi-table me-1"></i>Vue générique
+            </span>
+          </p>
+        {% endif %}
+        {% if card.sub_count is not None %}
+        <p class="card-text text-muted small mt-2">
+          <i class="bi bi-inbox me-1"></i>{{ card.sub_count }} soumission{{ card.sub_count|pluralize }} en cache
+        </p>
+        {% endif %}
       </div>
-    {% endfor %}
+      <div class="card-footer bg-transparent">
+        <a href="/dashboard/{{ card.uid }}/" class="btn btn-sm btn-danger">
+          <i class="bi bi-bar-chart-line me-1"></i>Ouvrir le tableau de bord
+        </a>
+      </div>
+    </div>
   </div>
-{% endif %}
+  {% endfor %}
+</div>
 {% endblock %}

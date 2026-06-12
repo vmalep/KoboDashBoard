@@ -1,18 +1,18 @@
 from django.core.cache import cache
-from .models import KoboConfig
 
 
-def _ttl():
-    return KoboConfig.get().cache_ttl_seconds
-
-
-def get_cached(key, fetch_fn):
+def get_cached(key, fetch_fn, ttl=300):
     """Return cached value for key, or call fetch_fn() to populate it."""
     value = cache.get(key)
     if value is None:
         value = fetch_fn()
-        cache.set(key, value, timeout=_ttl())
+        cache.set(key, value, timeout=ttl)
     return value
+
+
+def get_if_cached(key):
+    """Return cached value if present, else None (does not call any fetch_fn)."""
+    return cache.get(key)
 
 
 def invalidate(key):
