@@ -2,6 +2,17 @@
 
 {% block title %}{{ form_name }} — Couverture{% endblock %}
 
+{% block extra_head %}
+<style>
+  .badge-cell {
+    font-size: 1.1rem !important;
+    padding: .5em 1em !important;
+    min-width: 2.5rem;
+    display: inline-block;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
   <div>
@@ -94,7 +105,7 @@
     {# Legend #}
     <div class="d-flex gap-3 mb-2 small">
       <span><span class="badge bg-success">&nbsp;3&nbsp;</span> soumissions effectuées</span>
-      <span><span class="badge bg-warning text-dark">&nbsp;0&nbsp;</span> activité applicable, non soumise</span>
+      <span><span class="badge bg-secondary text-white">&nbsp;0&nbsp;</span> activité applicable, non soumise</span>
       <span><span class="badge bg-light text-muted border">&nbsp;—&nbsp;</span> activité non applicable dans ce pays</span>
     </div>
 
@@ -128,13 +139,13 @@
                     {% if cell.applicable %}
                       {% if cell.count > 0 %}
                         <a href="{{ cell.sub_url }}"
-                           class="badge text-decoration-none
+                           class="badge badge-cell text-decoration-none
                            {% if cell.responsible_match %}bg-success{% else %}bg-secondary{% endif %}"
                            title="{{ cell.count }} soumission(s)">
                           {{ cell.count }}
                         </a>
                       {% else %}
-                        <span class="badge bg-warning text-dark">0</span>
+                        <span class="badge badge-cell bg-secondary text-white">0</span>
                       {% endif %}
                     {% else %}
                       <span class="text-muted">—</span>
