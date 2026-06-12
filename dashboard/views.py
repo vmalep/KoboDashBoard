@@ -219,6 +219,152 @@ def module_upload(request, uid):
 # ── Generic form detail (fallback for forms with no module) ───────────────────
 
 @login_required
+def amopah_dashboard(request, uid):
+    """Dashboard for AMOPAH III indicator monitoring form."""
+    error = None
+    chart_data = {}
+    periods = []
+    countries_used = []
+    results_used = []
+    parsed_all = []
+    total_beneficiaries = 0
+    total_reports = 0
+
+    f_country = request.GET.get('country', '')
+    f_year = request.GET.get('year', '')
+    f_quarter = request.GET.get('quarter', '')
+    f_result = request.GET.get('result', '')
+
+    try:
+        schema, submissions, structure, module = _load(uid)
+        if module is None or not hasattr(module, 'parse_submissions'):
+            return form_detail(request, uid)
+
+        parsed_all = module.parse_submissions(submissions)
+
+        # Collect filter options from data
+        periods_set = sorted({ps['period'] for ps in parsed_all if ps['period']})
+        countries_used = sorted({ps['country'] for ps in parsed_all if ps['country']})
+        results_used_set = set()
+        for ps in parsed_all:
+            for ind in ps['indicators']:
+                results_used_set.add(ind['result_key'])
+        results_used = [r for r in ['result1', 'result2', 'result3', 'result4']
+                        if r in results_used_set]
+
+        # Apply filters
+        filtered = parsed_all
+        if f_country:
+            filtered = [ps for ps in filtered if ps['country'] == f_country]
+        if f_year:
+            filtered = [ps for ps in filtered if ps['year'] == f_year]
+        if f_quarter:
+            filtered = [ps for ps in filtered if ps['quarter'] == f_quarter]
+
+        total_reports = len(filtered)
+
+        # Build per-indicator aggregates for filtered set
+        from form_modules.amopah3 import (
+            COUNTRY_LABELS, RESULT_LABELS, INDICATOR_LABELS, aggregate
+        )
+
+        agg = aggregate(filtered)
+        total_beneficiaries = sum(agg['by_country'].values())
+
+        # Build Chart.js data: one chart per result, indicators on x-axis, countries stacked
+        country_colors = {
+            'burkina': '#c00000',
+            'niger':   '#e97132',
+            'mali':    '#156082',
+            'burundi': '#196b24',
+            'rdc':     '#7f7f7f',
+        }
+        country_list = [c for c in COUNTRY_LABELS if c in countries_used]
+        if f_country:
+            country_list = [f_country] if f_country in COUNTRY_LABELS else []
+
+        # Group indicators by result
+        from form_modules.amopah3 import RESULT_KEYS
+        result_charts = []
+        for rkey in RESULT_KEYS:
+            if f_result and rkey != f_result:
+                continue
+            # Collect indicators that appear in this result in filtered data
+            ind_codes = []
+            for ps in filtered:
+                for ind in ps['indicators']:
+                    if ind['result_key'] == rkey and ind['code'] not in ind_codes:
+                        ind_codes.append(ind['code'])
+
+            if not ind_codes:
+                continue
+
+            ind_labels = [INDICATOR_LABELS.get(c, c) for c in ind_codes]
+            datasets = []
+            for country in country_list:
+                data = []
+                for code in ind_codes:
+                    val = agg['by_indicator'].get(code, {}).get(country, 0)
+                    data.append(val)
+                datasets.append({
+                    'label': COUNTRY_LABELS.get(country, country),
+                    'data': data,
+                    'backgroundColor': country_colors.get(country, '#999'),
+                })
+
+            result_charts.append({
+                'result_key': rkey,
+                'result_label': RESULT_LABELS.get(rkey, rkey),
+                'indicator_labels': ind_labels,
+                'indicator_codes': ind_codes,
+                'datasets': datasets,
+            })
+
+        # Summary chart: total by country
+        country_summary = {
+            'labels': [COUNTRY_LABELS.get(c, c) for c in country_list],
+            'data': [agg['by_country'].get(c, 0) for c in country_list],
+            'colors': [country_colors.get(c, '#999') for c in country_list],
+        }
+
+        # Period trend chart
+        period_labels = sorted({ps['period'] for ps in filtered if ps['period']})
+        period_data = [agg['by_period'].get(p, 0) for p in period_labels]
+
+        chart_data = {
+            'country_summary': country_summary,
+            'period_trend': {'labels': period_labels, 'data': period_data},
+            'result_charts': result_charts,
+        }
+
+    except api_client.KoboAPIError as exc:
+        error = str(exc)
+
+    from form_modules.amopah3 import COUNTRY_LABELS, RESULT_LABELS
+    import json as _json
+
+    return render(request, 'dashboard/amopah_dashboard.html', {
+        'uid': uid,
+        'form_label': 'AMOPAH III — Suivi des indicateurs',
+        'error': error,
+        'total_beneficiaries': total_beneficiaries,
+        'total_reports': total_reports,
+        'countries_used': countries_used,
+        'results_used': results_used,
+        'periods': sorted({ps['period'] for ps in parsed_all if ps['period']}),
+        'years': sorted({ps['year'] for ps in parsed_all if ps['year']}),
+        'quarters': ['Q1', 'Q2', 'Q3', 'Q4'],
+        'f_country': f_country,
+        'f_year': f_year,
+        'f_quarter': f_quarter,
+        'f_result': f_result,
+        'country_labels': COUNTRY_LABELS,
+        'result_labels': RESULT_LABELS,
+        'chart_data_json': _json.dumps(chart_data),
+    })
+
+
+@login_required
 def form_detail(request, uid):
     error = None
     tabs = []
@@ -294,6 +440,10 @@ def coverage(request, uid):
 
     if module is None and not error:
         return form_detail(request, uid)
+
+    # Route modules that have their own dashboard view
+    if module is not None and hasattr(module, 'parse_submissions') and not error:
+        return amopah_dashboard(request, uid)
 
     if not error:
         fp = module.FIELD_PATHS
@@ -499,6 +649,38 @@ class _Echo:
         return value
 
 
+def _amopah_csv_rows(writer, submissions, module):
+    yield writer.writerow(module.EXPORT_HEADERS)
+    i = 1
+    for sub in submissions:
+        ps = module.parse_submissions([sub])[0]
+        if not ps['indicators']:
+            yield writer.writerow([
+                i, ps['country_label'], ps['year'], ps['quarter'], ps['reporter'],
+                '', '', '', 0,
+                '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+            ])
+            i += 1
+        else:
+            for ind in ps['indicators']:
+                age = ind['age']
+                dis = ind['disability']
+                sta = ind['status']
+                yield writer.writerow([
+                    i, ps['country_label'], ps['year'], ps['quarter'], ps['reporter'],
+                    ind['result_label'], ind['code'], ind['label'], ind['total'],
+                    age.get('male_total', ''), age.get('fem_total', ''),
+                    age.get('male_0_5', ''), age.get('male_6_18', ''),
+                    age.get('male_19_49', ''), age.get('male_50p', ''),
+                    age.get('fem_0_5', ''), age.get('fem_6_18', ''),
+                    age.get('fem_19_49', ''), age.get('fem_50p', ''),
+                    dis.get('with', ''), dis.get('without', ''),
+                    sta.get('pdi', ''), sta.get('host', ''), sta.get('refugee', ''),
+                    sta.get('returnees', ''), sta.get('stateless', ''), sta.get('other', ''),
+                ])
+                i += 1
+
+
 @login_required
 def export_csv(request, uid):
     try:
@@ -511,6 +693,15 @@ def export_csv(request, uid):
 
     pseudo_buffer = _Echo()
     writer = csv.writer(pseudo_buffer)
+
+    # AMOPAH-style export
+    if hasattr(module, 'parse_submissions'):
+        response = StreamingHttpResponse(
+            _amopah_csv_rows(writer, submissions, module),
+            content_type='text/csv; charset=utf-8-sig',
+        )
+        response['Content-Disposition'] = f'attachment; filename="{uid}_donnees.csv"'
+        return response
 
     def rows():
         yield writer.writerow(module.EXPORT_HEADERS)

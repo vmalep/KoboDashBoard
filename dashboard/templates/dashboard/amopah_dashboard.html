@@ -1,0 +1,276 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ form_label }} — KoboToolBox Dashboard{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+{# ── Header ── #}
+<div class="d-flex flex-wrap justify-content-between align-items-start mb-3 gap-2">
+  <div>
+    <a href="/dashboard/" class="text-decoration-none text-muted small">
+      <i class="bi bi-arrow-left me-1"></i>Formulaires
+    </a>
+    <h2 class="h4 mb-0 mt-1">{{ form_label }}</h2>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <a href="/dashboard/{{ uid }}/refresh/?next=/dashboard/{{ uid }}/"
+       class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-arrow-clockwise me-1"></i>Rafraîchir
+    </a>
+    <a href="/dashboard/{{ uid }}/export/xlsx/" class="btn btn-sm btn-outline-success">
+      <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export XLSX
+    </a>
+    <a href="/dashboard/{{ uid }}/export/csv/" class="btn btn-sm btn-outline-success">
+      <i class="bi bi-filetype-csv me-1"></i>Export CSV
+    </a>
+  </div>
+</div>
+
+{% if error %}
+  <div class="alert alert-danger"><i class="bi bi-x-circle-fill me-1"></i>{{ error }}</div>
+{% else %}
+
+{# ── Filters ── #}
+<form method="get" class="card shadow-sm mb-4">
+  <div class="card-body py-2">
+    <div class="row g-2 align-items-end">
+      <div class="col-auto">
+        <label class="form-label mb-1 small fw-semibold">Pays</label>
+        <select name="country" class="form-select form-select-sm">
+          <option value="">Tous les pays</option>
+          {% for code, label in country_labels.items %}
+            {% if code in countries_used %}
+            <option value="{{ code }}" {% if f_country == code %}selected{% endif %}>{{ label }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-auto">
+        <label class="form-label mb-1 small fw-semibold">Année</label>
+        <select name="year" class="form-select form-select-sm">
+          <option value="">Toutes</option>
+          {% for y in years %}
+            <option value="{{ y }}" {% if f_year == y %}selected{% endif %}>{{ y }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-auto">
+        <label class="form-label mb-1 small fw-semibold">Trimestre</label>
+        <select name="quarter" class="form-select form-select-sm">
+          <option value="">Tous</option>
+          {% for q in quarters %}
+            <option value="{{ q }}" {% if f_quarter == q %}selected{% endif %}>{{ q }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-auto">
+        <label class="form-label mb-1 small fw-semibold">Résultat</label>
+        <select name="result" class="form-select form-select-sm">
+          <option value="">Tous les résultats</option>
+          {% for rkey, rlabel in result_labels.items %}
+            {% if rkey in results_used %}
+            <option value="{{ rkey }}" {% if f_result == rkey %}selected{% endif %}>{{ rlabel }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-sm btn-danger">
+          <i class="bi bi-funnel me-1"></i>Filtrer
+        </button>
+        <a href="/dashboard/{{ uid }}/" class="btn btn-sm btn-outline-secondary ms-1">
+          <i class="bi bi-x me-1"></i>Réinitialiser
+        </a>
+      </div>
+    </div>
+  </div>
+</form>
+
+{# ── Summary cards ── #}
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card text-center shadow-sm h-100">
+      <div class="card-body">
+        <div class="display-6 fw-bold text-danger">{{ total_beneficiaries|default:0 }}</div>
+        <div class="text-muted small">Bénéficiaires rapportés</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card text-center shadow-sm h-100">
+      <div class="card-body">
+        <div class="display-6 fw-bold text-primary">{{ total_reports }}</div>
+        <div class="text-muted small">Rapports</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card text-center shadow-sm h-100">
+      <div class="card-body">
+        <div class="display-6 fw-bold text-success">{{ countries_used|length }}</div>
+        <div class="text-muted small">Pays</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card text-center shadow-sm h-100">
+      <div class="card-body">
+        <div class="display-6 fw-bold text-warning">{{ results_used|length }}</div>
+        <div class="text-muted small">Résultats actifs</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# ── Charts — rendered by JS from chart_data_json ── #}
+<div id="charts-container"></div>
+
+{% endif %}
+
+<script>
+const DATA = {{ chart_data_json|safe }};
+
+function buildCharts() {
+  const container = document.getElementById('charts-container');
+  if (!container) return;
+
+  const COUNTRY_COLORS = {
+    'Burkina Faso': '#c00000',
+    'Niger':        '#e97132',
+    'Mali':         '#156082',
+    'Burundi':      '#196b24',
+    'RD Congo':     '#7f7f7f',
+  };
+
+  // ── Summary: beneficiaries by country ──
+  if (DATA.country_summary && DATA.country_summary.labels.length > 0) {
+    const row = document.createElement('div');
+    row.className = 'row g-3 mb-4';
+
+    // Country bar chart
+    const col1 = document.createElement('div');
+    col1.className = 'col-12 col-lg-6';
+    col1.innerHTML = `
+      <div class="card shadow-sm h-100">
+        <div class="card-header fw-semibold">Bénéficiaires par pays</div>
+        <div class="card-body"><canvas id="chart-country"></canvas></div>
+      </div>`;
+    row.appendChild(col1);
+
+    // Period trend chart
+    if (DATA.period_trend && DATA.period_trend.labels.length > 0) {
+      const col2 = document.createElement('div');
+      col2.className = 'col-12 col-lg-6';
+      col2.innerHTML = `
+        <div class="card shadow-sm h-100">
+          <div class="card-header fw-semibold">Tendance par période</div>
+          <div class="card-body"><canvas id="chart-period"></canvas></div>
+        </div>`;
+      row.appendChild(col2);
+    }
+
+    container.appendChild(row);
+
+    new Chart(document.getElementById('chart-country'), {
+      type: 'bar',
+      data: {
+        labels: DATA.country_summary.labels,
+        datasets: [{
+          label: 'Bénéficiaires',
+          data: DATA.country_summary.data,
+          backgroundColor: DATA.country_summary.labels.map(l => COUNTRY_COLORS[l] || '#999'),
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } },
+      },
+    });
+
+    if (DATA.period_trend && DATA.period_trend.labels.length > 0) {
+      new Chart(document.getElementById('chart-period'), {
+        type: 'line',
+        data: {
+          labels: DATA.period_trend.labels,
+          datasets: [{
+            label: 'Bénéficiaires',
+            data: DATA.period_trend.data,
+            borderColor: '#c00000',
+            backgroundColor: 'rgba(192,0,0,0.1)',
+            fill: true,
+            tension: 0.3,
+          }],
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } },
+        },
+      });
+    }
+  }
+
+  // ── Per-result indicator charts ──
+  (DATA.result_charts || []).forEach((rc, i) => {
+    if (!rc.indicator_labels || rc.indicator_labels.length === 0) return;
+
+    const section = document.createElement('div');
+    section.className = 'card shadow-sm mb-4';
+
+    // Shorten indicator labels for chart axis
+    const shortLabels = rc.indicator_labels.map((l, idx) => rc.indicator_codes[idx] || l);
+
+    section.innerHTML = `
+      <div class="card-header fw-semibold">
+        <i class="bi bi-bar-chart-fill me-1 text-danger"></i>${rc.result_label}
+      </div>
+      <div class="card-body">
+        <canvas id="chart-result-${i}" style="max-height:320px"></canvas>
+      </div>
+      <div class="card-footer bg-transparent">
+        <div class="small text-muted">
+          ${rc.indicator_codes.map((c, j) => `<strong>${c}</strong>: ${rc.indicator_labels[j]}`).join('<br>')}
+        </div>
+      </div>`;
+    container.appendChild(section);
+
+    new Chart(document.getElementById(`chart-result-${i}`), {
+      type: 'bar',
+      data: {
+        labels: shortLabels,
+        datasets: rc.datasets.map(ds => ({
+          label: ds.label,
+          data: ds.data,
+          backgroundColor: ds.backgroundColor,
+        })),
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: {
+            callbacks: {
+              title: (items) => rc.indicator_labels[items[0].dataIndex] || items[0].label,
+            },
+          },
+        },
+        scales: {
+          x: { stacked: true },
+          y: { stacked: true, beginAtZero: true },
+        },
+      },
+    });
+  });
+
+  if (!DATA.result_charts || DATA.result_charts.length === 0) {
+    const msg = document.createElement('p');
+    msg.className = 'text-muted';
+    msg.textContent = 'Aucune donnée pour les filtres sélectionnés.';
+    container.appendChild(msg);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', buildCharts);
+</script>
+{% endblock %}
