@@ -12,7 +12,7 @@
     <div class="card shadow-sm">
       <div class="card-body p-4">
         <h1 class="h5 mb-1 text-center fw-bold">KoboToolBox Dashboard</h1>
-        <p class="text-center text-muted small mb-4">AMOPAH3 — Do Not Harm</p>
+
 
         {% if form.errors %}
           <div class="alert alert-danger py-2 small">
@@ -34,12 +34,15 @@
           </div>
           <input type="hidden" name="next" value="{{ next }}">
           <button type="submit" class="btn btn-danger w-100">Se connecter</button>
+          <div class="text-center mt-2">
+            <a href="/accounts/password-reset/" class="small text-muted">Mot de passe oublié ?</a>
+          </div>
         </form>
 
         <hr class="my-3">
         <p class="text-center small mb-0">
           Pas encore de compte ?
-          <a href="/accounts/register/">Demander un accès</a>
+          <a href="/accounts/register/">S'enregistrer</a>
         </p>
       </div>
     </div>
