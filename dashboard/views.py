@@ -216,6 +216,29 @@ def module_upload(request, uid):
     })
 
 
+def _build_table_rows(filtered, f_result):
+    """Return flat list of indicator rows for the data table."""
+    rows = []
+    for ps in filtered:
+        for ind in ps['indicators']:
+            if f_result and ind['result_key'] != f_result:
+                continue
+            rows.append({
+                'country': ps['country_label'],
+                'period': ps['period'],
+                'reporter': ps['reporter'],
+                'result': ind['result_label'],
+                'code': ind['code'],
+                'label': ind['label'],
+                'total': ind['total'],
+                'male': ind['age'].get('male_total', ''),
+                'female': ind['age'].get('fem_total', ''),
+                'disability': ind['disability'].get('with', ''),
+                'pdi': ind['status'].get('pdi', ''),
+            })
+    return rows
+
+
 # ── Generic form detail (fallback for forms with no module) ───────────────────
 
 @login_required
@@ -361,6 +384,7 @@ def amopah_dashboard(request, uid):
         'country_labels': COUNTRY_LABELS,
         'result_labels': RESULT_LABELS,
         'chart_data_json': _json.dumps(chart_data),
+        'table_rows': _build_table_rows(filtered, f_result),
     })
 
 
@@ -733,6 +757,51 @@ def export_csv(request, uid):
     return response
 
 
+def _amopah_xlsx(submissions, module):
+    """Build openpyxl Workbook for AMOPAH export."""
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = 'Données'
+
+    header_fill = PatternFill('solid', fgColor='C00000')
+    ws.append(module.EXPORT_HEADERS)
+    for cell in ws[1]:
+        cell.font = Font(bold=True, color='FFFFFF')
+        cell.fill = header_fill
+        cell.alignment = Alignment(wrap_text=True)
+
+    i = 1
+    for sub in submissions:
+        ps = module.parse_submissions([sub])[0]
+        if not ps['indicators']:
+            ws.append([i, ps['country_label'], ps['year'], ps['quarter'], ps['reporter'],
+                       '', '', '', 0, *([''] * 18)])
+            i += 1
+        else:
+            for ind in ps['indicators']:
+                age = ind['age']
+                dis = ind['disability']
+                sta = ind['status']
+                ws.append([
+                    i, ps['country_label'], ps['year'], ps['quarter'], ps['reporter'],
+                    ind['result_label'], ind['code'], ind['label'], ind['total'],
+                    age.get('male_total', ''), age.get('fem_total', ''),
+                    age.get('male_0_5', ''), age.get('male_6_18', ''),
+                    age.get('male_19_49', ''), age.get('male_50p', ''),
+                    age.get('fem_0_5', ''), age.get('fem_6_18', ''),
+                    age.get('fem_19_49', ''), age.get('fem_50p', ''),
+                    dis.get('with', ''), dis.get('without', ''),
+                    sta.get('pdi', ''), sta.get('host', ''), sta.get('refugee', ''),
+                    sta.get('returnees', ''), sta.get('stateless', ''), sta.get('other', ''),
+                ])
+                i += 1
+
+    for col in ws.columns:
+        max_len = max((len(str(c.value or '')) for c in col), default=10)
+        ws.column_dimensions[col[0].column_letter].width = min(max_len + 2, 50)
+    return wb
+
+
 @login_required
 def export_xlsx(request, uid):
     try:
@@ -742,6 +811,19 @@ def export_xlsx(request, uid):
 
     if module is None:
         return HttpResponse('Export non disponible sans module de formulaire.', status=400)
+
+    # AMOPAH-style export
+    if hasattr(module, 'parse_submissions'):
+        wb = _amopah_xlsx(submissions, module)
+        output = io.BytesIO()
+        wb.save(output)
+        output.seek(0)
+        response = HttpResponse(
+            output.read(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        )
+        response['Content-Disposition'] = f'attachment; filename="{uid}_donnees.xlsx"'
+        return response
 
     wb = openpyxl.Workbook()
     ws = wb.active

@@ -125,6 +125,52 @@
 {# ── Charts — rendered by JS from chart_data_json ── #}
 <div id="charts-container"></div>
 
+{# ── Data table ── #}
+{% if table_rows %}
+<div class="card shadow-sm mt-4">
+  <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+    <span><i class="bi bi-table me-1"></i>Données détaillées</span>
+    <span class="badge bg-secondary">{{ table_rows|length }} lignes</span>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-sm table-striped table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Pays</th>
+          <th>Période</th>
+          <th>Rapporteur</th>
+          <th>Résultat</th>
+          <th>Code</th>
+          <th>Indicateur</th>
+          <th class="text-end">Total</th>
+          <th class="text-end">Hommes</th>
+          <th class="text-end">Femmes</th>
+          <th class="text-end">Handicap</th>
+          <th class="text-end">PDI</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in table_rows %}
+        <tr>
+          <td>{{ row.country }}</td>
+          <td class="text-muted small">{{ row.period }}</td>
+          <td class="text-muted small">{{ row.reporter|default:"—" }}</td>
+          <td class="small">{{ row.result }}</td>
+          <td><code>{{ row.code }}</code></td>
+          <td class="small">{{ row.label }}</td>
+          <td class="text-end fw-semibold">{{ row.total }}</td>
+          <td class="text-end text-muted small">{{ row.male|default:"—" }}</td>
+          <td class="text-end text-muted small">{{ row.female|default:"—" }}</td>
+          <td class="text-end text-muted small">{{ row.disability|default:"—" }}</td>
+          <td class="text-end text-muted small">{{ row.pdi|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
 {% endif %}
 
 <script>
