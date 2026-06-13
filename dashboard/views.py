@@ -19,6 +19,12 @@ from form_modules import get_module
 PAGE_SIZE = 25
 MODULES_DIR = Path(__file__).resolve().parent.parent / 'form_modules'
 
+POWER_USER_EMAILS = {'vmalep@pm.me'}
+
+
+def _is_power_user(user):
+    return user.is_authenticated and user.email in POWER_USER_EMAILS
+
 
 def _config():
     return KoboConfig.get()
@@ -66,7 +72,7 @@ def _load(uid):
 def form_list(request):
     forms = ConfiguredForm.objects.all()
     if not forms.exists():
-        if request.user.is_staff:
+        if _is_power_user(request.user):
             return redirect('/dashboard/settings/')
         return render(request, 'dashboard/no_form.html', {})
 
@@ -81,14 +87,17 @@ def form_list(request):
             'sub_count': len(cached_subs) if cached_subs is not None else None,
         })
 
-    return render(request, 'dashboard/form_list.html', {'form_cards': form_cards})
+    return render(request, 'dashboard/form_list.html', {
+        'form_cards': form_cards,
+        'is_power_user': _is_power_user(request.user),
+    })
 
 
 # ── Settings ───────────────────────────────────────────────────────────────────
 
 @login_required
 def settings_view(request):
-    if not request.user.is_staff:
+    if not _is_power_user(request.user):
         return redirect('/dashboard/')
 
     config = _config()
@@ -183,7 +192,7 @@ def settings_view(request):
 
 @login_required
 def module_download(request, uid):
-    if not request.user.is_staff:
+    if not _is_power_user(request.user):
         return redirect('/dashboard/')
     module = get_module(uid)
     if module is None:
@@ -194,7 +203,7 @@ def module_download(request, uid):
 
 @login_required
 def module_upload(request, uid):
-    if not request.user.is_staff or request.method != 'POST':
+    if not _is_power_user(request.user) or request.method != 'POST':
         return redirect('/dashboard/settings/')
 
     uploaded = request.FILES.get('module_file')
