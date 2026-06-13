@@ -33,21 +33,27 @@ kobo/                 KoboToolBox integration
 accounts/             Email-based login, registration, password reset
 
 dashboard/            UI views and Bootstrap 5 templates
-  views.py            form_list, settings_view, coverage, submission_list,
-                      submission_detail, export_csv, export_xlsx,
-                      module_download, module_upload
+  views.py            form_list, settings_view, coverage, amopah_dashboard,
+                      submission_list, submission_detail, export_csv,
+                      export_xlsx, module_download, module_upload
 
 form_modules/         Dashboard module plugin system
   __init__.py         Registry + auto-discovery of *.py files
   base.py             FormModule base class
   dnh.py              Do Not Harm checklist module (AMOPAH project)
+  amopah3.py          AMOPAH III indicator monitoring module
+
+kobo/program_structure.py   Parses XLSForm choices into results/activities/
+                            countries hierarchy (used by DNH-style modules)
 ```
 
 ---
 
 ## Module system
 
-Each form type has a **module** — a Python file in `form_modules/` decorated with `@register('form-uid')`:
+Each form type has a **module** — a Python file in `form_modules/` decorated with `@register('form-uid')`. Two module patterns exist:
+
+**Coverage-matrix modules** (e.g. Do Not Harm): implement `parse_structure` and `parse_submission_detail`. The dashboard shows an activity×country coverage matrix with a submission drill-down.
 
 ```python
 from form_modules import register
@@ -59,8 +65,14 @@ class MyFormModule(FormModule):
     FIELD_PATHS = { ... }        # logical name → KoboToolBox field path
     EXPORT_HEADERS = [ ... ]     # CSV/XLSX column headers
 
-    def parse_structure(self, schema): ...
-    def parse_submission_detail(self, submission, structure): ...
+    def parse_structure(self, schema): ...          # → results/countries/applicable dict
+    def parse_submission_detail(self, sub, structure): ...  # → {'activity': {...}, 'risks': [...]}
+```
+
+**Indicator-monitoring modules** (e.g. AMOPAH III): also implement `parse_submissions`. The dashboard shows summary charts (by country, result, period), disaggregation breakdowns (age/sex, disability, population status), and a flat data table.
+
+```python
+    def parse_submissions(self, submissions): ...   # → list of parsed submission dicts
 ```
 
 Modules are **auto-discovered** at startup — drop a file in `form_modules/` and it registers itself. No other changes needed.
