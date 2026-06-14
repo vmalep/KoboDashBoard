@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from .models import COUNTRY_CHOICES
 
 User = get_user_model()
 
@@ -12,7 +11,6 @@ class RegistrationForm(forms.Form):
         max_length=200,
         widget=forms.TextInput(attrs={'placeholder': 'Prénom Nom'}),
     )
-    country = forms.ChoiceField(label='Pays / Entité', choices=[('', '— Sélectionner —')] + COUNTRY_CHOICES)
     email = forms.EmailField(label='Adresse email')
     password1 = forms.CharField(label='Mot de passe', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Confirmer le mot de passe', widget=forms.PasswordInput)
@@ -22,12 +20,6 @@ class RegistrationForm(forms.Form):
         if User.objects.filter(email__iexact=email).exists():
             raise forms.ValidationError('Cette adresse email est déjà enregistrée.')
         return email
-
-    def clean_country(self):
-        country = self.cleaned_data.get('country')
-        if not country:
-            raise forms.ValidationError('Veuillez sélectionner un pays ou une entité.')
-        return country
 
     def clean(self):
         cleaned = super().clean()
@@ -55,6 +47,5 @@ class RegistrationForm(forms.Form):
         UserProfile.objects.create(
             user=user,
             full_name=self.cleaned_data['full_name'],
-            country=self.cleaned_data['country'],
         )
         return user

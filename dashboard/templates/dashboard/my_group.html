@@ -24,7 +24,6 @@
           <tr>
             <th>Nom</th>
             <th>Email</th>
-            <th>Pays</th>
             <th></th>
           </tr>
         </thead>
@@ -33,7 +32,6 @@
           <tr>
             <td>{{ member.profile.full_name|default:"—" }}</td>
             <td>{{ member.email }}</td>
-            <td>{{ member.profile.get_country_display|default:"—" }}</td>
             <td class="text-end">
               <form method="post" action="/dashboard/users/{{ member.pk }}/reset-link/"
                     class="d-inline">

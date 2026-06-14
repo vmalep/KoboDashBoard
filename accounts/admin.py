@@ -14,21 +14,14 @@ class UserProfileInline(admin.StackedInline):
 
 class CustomUserAdmin(UserAdmin):
     inlines = [UserProfileInline]
-    list_display = ('email', 'get_full_name', 'get_country', 'is_active', 'is_staff', 'date_joined')
-    list_filter = ('is_active', 'is_staff', 'profile__country')
+    list_display = ('email', 'get_full_name', 'is_active', 'is_staff', 'date_joined')
+    list_filter = ('is_active', 'is_staff')
     ordering = ('date_joined',)
 
     @admin.display(description='Nom')
     def get_full_name(self, obj):
         try:
             return obj.profile.full_name
-        except UserProfile.DoesNotExist:
-            return '—'
-
-    @admin.display(description='Pays')
-    def get_country(self, obj):
-        try:
-            return obj.profile.get_country_display()
         except UserProfile.DoesNotExist:
             return '—'
 

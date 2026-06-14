@@ -21,7 +21,6 @@
         <tr>
           <th>Nom</th>
           <th>Email</th>
-          <th>Pays</th>
           <th>Demande le</th>
           <th></th>
         </tr>
@@ -31,7 +30,6 @@
           <tr>
             <td>{{ user.profile.full_name|default:"—" }}</td>
             <td>{{ user.email }}</td>
-            <td>{{ user.profile.get_country_display|default:"—" }}</td>
             <td class="text-muted small">{{ user.date_joined|date:"d/m/Y H:i" }}</td>
             <td class="text-end">
               <form method="post" action="/dashboard/users/{{ user.pk }}/activate/"
@@ -69,7 +67,6 @@
         <tr>
           <th>Nom</th>
           <th>Email</th>
-          <th>Pays</th>
           <th>Créé le</th>
           <th></th>
         </tr>
@@ -79,7 +76,6 @@
           <tr>
             <td>{{ user.profile.full_name|default:"—" }}</td>
             <td>{{ user.email }}</td>
-            <td>{{ user.profile.get_country_display|default:"—" }}</td>
             <td class="text-muted small">{{ user.date_joined|date:"d/m/Y H:i" }}</td>
             <td class="text-end">
               <form method="post" action="/dashboard/users/{{ user.pk }}/reset-link/"
