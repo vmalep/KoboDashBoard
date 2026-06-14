@@ -66,8 +66,26 @@
       </table>
     </div>
     {% else %}
-      <p class="text-muted small mb-4">Aucun membre dans ce groupe.</p>
+      <p class="text-muted small mb-3">Aucun membre dans ce groupe.</p>
     {% endif %}
+
+    {# Add member #}
+    <form method="post" class="d-flex align-items-center gap-2 mb-4 flex-wrap">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="add_member">
+      <input type="hidden" name="group_id" value="{{ group.pk }}">
+      <select name="new_user_id" class="form-select form-select-sm" style="max-width:280px" required>
+        <option value="">— Ajouter un membre —</option>
+        {% for u in all_active_users %}
+          {% if u not in group.members.all %}
+          <option value="{{ u.pk }}">{{ u.profile.full_name|default:u.email }} ({{ u.email }})</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-sm btn-outline-primary">
+        <i class="bi bi-person-plus me-1"></i>Ajouter
+      </button>
+    </form>
 
     {# Forms #}
     <h6 class="text-muted mb-2">Formulaires</h6>

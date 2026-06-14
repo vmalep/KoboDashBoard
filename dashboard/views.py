@@ -1105,20 +1105,34 @@ def my_group(request, user_id=None):
     if not _is_group_admin(request.user) and not _is_power_user(request.user):
         return redirect('/dashboard/')
 
-    # Group admin deactivate/delete via POST on this page
-    if request.method == 'POST' and user_id is not None:
+    User = get_user_model()
+
+    if request.method == 'POST':
         action = request.POST.get('action', '')
-        if _can_manage_user(request.user, user_id):
-            User = get_user_model()
+
+        if action == 'add_member':
+            group_id = request.POST.get('group_id', '').strip()
+            new_user_id = request.POST.get('new_user_id', '').strip()
+            group = DashboardGroup.objects.filter(pk=group_id, admins=request.user).first()
+            if group and new_user_id:
+                group.members.add(new_user_id)
+
+        elif user_id is not None and _can_manage_user(request.user, user_id):
             target = get_object_or_404(User, pk=user_id)
             if action == 'deactivate' and target != request.user:
                 target.is_active = False
                 target.save()
             elif action == 'delete' and target != request.user:
                 target.delete()
+
         return redirect('/dashboard/my-group/')
 
     groups = DashboardGroup.objects.filter(admins=request.user).prefetch_related(
         'members__profile', 'forms'
     )
-    return render(request, 'dashboard/my_group.html', {'groups': groups})
+    # Active users not already in any of the admin's groups (per group computed in template)
+    all_active_users = User.objects.filter(is_active=True, is_superuser=False).select_related('profile')
+    return render(request, 'dashboard/my_group.html', {
+        'groups': groups,
+        'all_active_users': all_active_users,
+    })
