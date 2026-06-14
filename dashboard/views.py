@@ -5,6 +5,9 @@ from pathlib import Path
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from django.core.paginator import Paginator
 from django.http import FileResponse, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -979,3 +982,18 @@ def user_delete(request, user_id):
         if user != request.user:
             user.delete()
     return redirect('/dashboard/users/')
+
+
+@_staff_required
+def generate_reset_link(request, user_id):
+    if request.method != 'POST':
+        return redirect('/dashboard/users/')
+    User = get_user_model()
+    user = get_object_or_404(User, pk=user_id)
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+    link = request.build_absolute_uri(f'/accounts/password-reset/confirm/{uid}/{token}/')
+    return render(request, 'dashboard/password_reset_link.html', {
+        'target_user': user,
+        'link': link,
+    })

@@ -82,8 +82,16 @@
             <td>{{ user.profile.get_country_display|default:"—" }}</td>
             <td class="text-muted small">{{ user.date_joined|date:"d/m/Y H:i" }}</td>
             <td class="text-end">
+              <form method="post" action="/dashboard/users/{{ user.pk }}/reset-link/"
+                    class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-secondary"
+                        title="Générer un lien de réinitialisation du mot de passe">
+                  <i class="bi bi-key"></i>
+                </button>
+              </form>
               <form method="post" action="/dashboard/users/{{ user.pk }}/deactivate/"
-                    class="d-inline"
+                    class="d-inline ms-1"
                     onsubmit="return confirm('Désactiver ce compte ?')">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-sm btn-outline-warning">

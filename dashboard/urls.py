@@ -10,6 +10,7 @@ urlpatterns = [
     path('users/<int:user_id>/activate/', views.user_activate, name='user_activate'),
     path('users/<int:user_id>/deactivate/', views.user_deactivate, name='user_deactivate'),
     path('users/<int:user_id>/delete/', views.user_delete, name='user_delete'),
+    path('users/<int:user_id>/reset-link/', views.generate_reset_link, name='generate_reset_link'),
     path('<str:uid>/', views.coverage, name='coverage'),
     path('<str:uid>/submissions/', views.submission_list, name='submission_list'),
     path('<str:uid>/submission/<int:sub_id>/', views.submission_detail, name='submission_detail'),
