@@ -36,9 +36,13 @@
           <div class="mb-3">
             <label class="form-label">Logo</label>
             {% if config.logo %}
-              <div class="mb-2">
+              <div class="mb-2 d-flex align-items-center gap-3">
                 <img src="{{ config.logo.url }}" alt="Logo actuel"
                      style="max-height:48px;max-width:200px;object-fit:contain">
+                <div class="form-check mb-0">
+                  <input class="form-check-input" type="checkbox" name="remove_logo" id="removeLogo">
+                  <label class="form-check-label text-danger small" for="removeLogo">Supprimer le logo</label>
+                </div>
               </div>
             {% else %}
               <div class="text-muted small mb-2">Aucun logo configuré.</div>

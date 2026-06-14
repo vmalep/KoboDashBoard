@@ -208,6 +208,9 @@ def settings_view(request):
             config.org_name = request.POST.get('org_name', '').strip()
             if 'logo' in request.FILES:
                 config.logo = request.FILES['logo']
+            elif request.POST.get('remove_logo'):
+                config.logo.delete(save=False)
+                config.logo = None
             config.save()
             success = 'Apparence enregistrée.'
 
