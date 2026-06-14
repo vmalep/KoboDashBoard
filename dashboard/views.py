@@ -205,8 +205,11 @@ def settings_view(request):
 
         elif action == 'save_branding':
             config.brand_color = request.POST.get('brand_color', '').strip()
+            config.org_name = request.POST.get('org_name', '').strip()
+            if 'logo' in request.FILES:
+                config.logo = request.FILES['logo']
             config.save()
-            success = 'Couleur enregistrée.'
+            success = 'Apparence enregistrée.'
 
         elif action == 'create_group':
             gname = request.POST.get('group_name', '').strip()

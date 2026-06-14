@@ -1,0 +1,283 @@
+# English translation for KoboToolBox Dashboard.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: en\n"
+
+msgid "Mode d'emploi"
+msgstr "Help"
+
+msgid "Déconnexion"
+msgstr "Logout"
+
+msgid "Built with"
+msgstr "Built with"
+
+msgid "MIT Licence"
+msgstr "MIT Licence"
+
+msgid "Comptes en attente de validation"
+msgstr "Accounts pending validation"
+
+msgid "Paramètres"
+msgstr "Settings"
+
+msgid "Mon groupe"
+msgstr "My group"
+
+msgid "Formulaires"
+msgstr "Forms"
+
+msgid "Vue générique"
+msgstr "Generic view"
+
+msgid "soumissions en cache"
+msgstr "cached submissions"
+
+msgid "Visionner le dashboard"
+msgstr "View dashboard"
+
+msgid "Rafraîchir"
+msgstr "Refresh"
+
+msgid "Actualiser"
+msgstr "Refresh"
+
+msgid "Export XLSX"
+msgstr "Export XLSX"
+
+msgid "Export CSV"
+msgstr "Export CSV"
+
+msgid "Pays"
+msgstr "Country"
+
+msgid "Tous les pays"
+msgstr "All countries"
+
+msgid "Année"
+msgstr "Year"
+
+msgid "Toutes"
+msgstr "All"
+
+msgid "Tous"
+msgstr "All"
+
+msgid "Trimestre"
+msgstr "Quarter"
+
+msgid "Résultat"
+msgstr "Result"
+
+msgid "Tous les résultats"
+msgstr "All results"
+
+msgid "Filtrer"
+msgstr "Filter"
+
+msgid "Réinitialiser"
+msgstr "Reset"
+
+msgid "Bénéficiaires rapportés"
+msgstr "Reported beneficiaries"
+
+msgid "Rapports"
+msgstr "Reports"
+
+msgid "Résultats actifs"
+msgstr "Active results"
+
+msgid "Données détaillées"
+msgstr "Detailed data"
+
+msgid "lignes"
+msgstr "rows"
+
+msgid "Période"
+msgstr "Period"
+
+msgid "Rapporteur"
+msgstr "Reporter"
+
+msgid "Indicateur"
+msgstr "Indicator"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Hommes"
+msgstr "Men"
+
+msgid "Femmes"
+msgstr "Women"
+
+msgid "Handicap"
+msgstr "Disability"
+
+msgid "PDI"
+msgstr "IDP"
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Filtres"
+msgstr "Filters"
+
+msgid "Responsable"
+msgstr "Responsible"
+
+msgid "Matrice de couverture"
+msgstr "Coverage matrix"
+
+msgid "Toutes les activités"
+msgstr "All activities"
+
+msgid "Aucune soumission pour ces critères."
+msgstr "No submissions for these criteria."
+
+msgid "Voir le détail"
+msgstr "View details"
+
+msgid "Gestion des utilisateurs"
+msgstr "User management"
+
+msgid "En attente de validation"
+msgstr "Pending validation"
+
+msgid "Aucun compte en attente."
+msgstr "No pending accounts."
+
+msgid "Nom"
+msgstr "Name"
+
+msgid "Demande le"
+msgstr "Requested on"
+
+msgid "Activer"
+msgstr "Activate"
+
+msgid "Utilisateurs actifs"
+msgstr "Active users"
+
+msgid "Aucun utilisateur actif (hors administrateurs)."
+msgstr "No active users (excluding administrators)."
+
+msgid "Créé le"
+msgstr "Created on"
+
+msgid "Désactiver"
+msgstr "Deactivate"
+
+msgid "Générer un lien de réinitialisation du mot de passe"
+msgstr "Generate password reset link"
+
+msgid "Supprimer ce compte ?"
+msgstr "Delete this account?"
+
+msgid "Désactiver ce compte ?"
+msgstr "Deactivate this account?"
+
+msgid "Supprimer définitivement ce compte ?"
+msgstr "Permanently delete this account?"
+
+msgid "Connexion"
+msgstr "Login"
+
+msgid "Email ou mot de passe incorrect."
+msgstr "Incorrect email or password."
+
+msgid "Adresse email"
+msgstr "Email address"
+
+msgid "Mot de passe"
+msgstr "Password"
+
+msgid "Se connecter"
+msgstr "Log in"
+
+msgid "Mot de passe oublié ?"
+msgstr "Forgot your password?"
+
+msgid "Pas encore de compte ?"
+msgstr "Don't have an account?"
+
+msgid "S'enregistrer"
+msgstr "Register"
+
+msgid "Demande d'accès"
+msgstr "Access request"
+
+msgid "Votre compte sera activé après validation par un administrateur."
+msgstr "Your account will be activated after validation by an administrator."
+
+msgid "Nom complet"
+msgstr "Full name"
+
+msgid "Confirmer le mot de passe"
+msgstr "Confirm password"
+
+msgid "Envoyer la demande"
+msgstr "Submit request"
+
+msgid "Déjà un compte ?"
+msgstr "Already have an account?"
+
+msgid "Modifier le groupe"
+msgstr "Edit group"
+
+msgid "Nom du groupe"
+msgstr "Group name"
+
+msgid "Formulaires accessibles"
+msgstr "Accessible forms"
+
+msgid "Aucun formulaire configuré."
+msgstr "No forms configured."
+
+msgid "Membres"
+msgstr "Members"
+
+msgid "Aucun utilisateur actif."
+msgstr "No active users."
+
+msgid "Administrateurs du groupe"
+msgstr "Group administrators"
+
+msgid "Les administrateurs peuvent charger des modules et gérer les membres de ce groupe."
+msgstr "Administrators can upload modules and manage the members of this group."
+
+msgid "Enregistrer"
+msgstr "Save"
+
+msgid "Annuler"
+msgstr "Cancel"
+
+msgid "Vous n'administrez aucun groupe pour le moment."
+msgstr "You are not administering any group at the moment."
+
+msgid "Aucun membre dans ce groupe."
+msgstr "No members in this group."
+
+msgid "Aucun formulaire dans ce groupe."
+msgstr "No forms in this group."
+
+msgid "Ajouter"
+msgstr "Add"
+
+msgid "Charger"
+msgstr "Upload"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Couleur principale"
+msgstr "Primary colour"
+
+msgid "Défaut"
+msgstr "Default"
+
+msgid "Serveur KoboToolBox"
+msgstr "KoboToolBox server"

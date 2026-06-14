@@ -1,0 +1,283 @@
+# Spanish translation for KoboToolBox Dashboard.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: es\n"
+
+msgid "Mode d'emploi"
+msgstr "Ayuda"
+
+msgid "Déconnexion"
+msgstr "Cerrar sesión"
+
+msgid "Built with"
+msgstr "Creado con"
+
+msgid "MIT Licence"
+msgstr "Licencia MIT"
+
+msgid "Comptes en attente de validation"
+msgstr "Cuentas pendientes de validación"
+
+msgid "Paramètres"
+msgstr "Configuración"
+
+msgid "Mon groupe"
+msgstr "Mi grupo"
+
+msgid "Formulaires"
+msgstr "Formularios"
+
+msgid "Vue générique"
+msgstr "Vista genérica"
+
+msgid "soumissions en cache"
+msgstr "envíos en caché"
+
+msgid "Visionner le dashboard"
+msgstr "Ver el dashboard"
+
+msgid "Rafraîchir"
+msgstr "Actualizar"
+
+msgid "Actualiser"
+msgstr "Actualizar"
+
+msgid "Export XLSX"
+msgstr "Exportar XLSX"
+
+msgid "Export CSV"
+msgstr "Exportar CSV"
+
+msgid "Pays"
+msgstr "País"
+
+msgid "Tous les pays"
+msgstr "Todos los países"
+
+msgid "Année"
+msgstr "Año"
+
+msgid "Toutes"
+msgstr "Todos"
+
+msgid "Tous"
+msgstr "Todos"
+
+msgid "Trimestre"
+msgstr "Trimestre"
+
+msgid "Résultat"
+msgstr "Resultado"
+
+msgid "Tous les résultats"
+msgstr "Todos los resultados"
+
+msgid "Filtrer"
+msgstr "Filtrar"
+
+msgid "Réinitialiser"
+msgstr "Restablecer"
+
+msgid "Bénéficiaires rapportés"
+msgstr "Beneficiarios reportados"
+
+msgid "Rapports"
+msgstr "Informes"
+
+msgid "Résultats actifs"
+msgstr "Resultados activos"
+
+msgid "Données détaillées"
+msgstr "Datos detallados"
+
+msgid "lignes"
+msgstr "filas"
+
+msgid "Période"
+msgstr "Período"
+
+msgid "Rapporteur"
+msgstr "Informador"
+
+msgid "Indicateur"
+msgstr "Indicador"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Hommes"
+msgstr "Hombres"
+
+msgid "Femmes"
+msgstr "Mujeres"
+
+msgid "Handicap"
+msgstr "Discapacidad"
+
+msgid "PDI"
+msgstr "PDI"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "Filtres"
+msgstr "Filtros"
+
+msgid "Responsable"
+msgstr "Responsable"
+
+msgid "Matrice de couverture"
+msgstr "Matriz de cobertura"
+
+msgid "Toutes les activités"
+msgstr "Todas las actividades"
+
+msgid "Aucune soumission pour ces critères."
+msgstr "No hay envíos para estos criterios."
+
+msgid "Voir le détail"
+msgstr "Ver detalles"
+
+msgid "Gestion des utilisateurs"
+msgstr "Gestión de usuarios"
+
+msgid "En attente de validation"
+msgstr "Pendiente de validación"
+
+msgid "Aucun compte en attente."
+msgstr "No hay cuentas pendientes."
+
+msgid "Nom"
+msgstr "Nombre"
+
+msgid "Demande le"
+msgstr "Solicitado el"
+
+msgid "Activer"
+msgstr "Activar"
+
+msgid "Utilisateurs actifs"
+msgstr "Usuarios activos"
+
+msgid "Aucun utilisateur actif (hors administrateurs)."
+msgstr "No hay usuarios activos (excepto administradores)."
+
+msgid "Créé le"
+msgstr "Creado el"
+
+msgid "Désactiver"
+msgstr "Desactivar"
+
+msgid "Générer un lien de réinitialisation du mot de passe"
+msgstr "Generar enlace de restablecimiento de contraseña"
+
+msgid "Supprimer ce compte ?"
+msgstr "¿Eliminar esta cuenta?"
+
+msgid "Désactiver ce compte ?"
+msgstr "¿Desactivar esta cuenta?"
+
+msgid "Supprimer définitivement ce compte ?"
+msgstr "¿Eliminar permanentemente esta cuenta?"
+
+msgid "Connexion"
+msgstr "Iniciar sesión"
+
+msgid "Email ou mot de passe incorrect."
+msgstr "Email o contraseña incorrectos."
+
+msgid "Adresse email"
+msgstr "Dirección de correo electrónico"
+
+msgid "Mot de passe"
+msgstr "Contraseña"
+
+msgid "Se connecter"
+msgstr "Iniciar sesión"
+
+msgid "Mot de passe oublié ?"
+msgstr "¿Olvidó su contraseña?"
+
+msgid "Pas encore de compte ?"
+msgstr "¿Aún no tiene cuenta?"
+
+msgid "S'enregistrer"
+msgstr "Registrarse"
+
+msgid "Demande d'accès"
+msgstr "Solicitud de acceso"
+
+msgid "Votre compte sera activé après validation par un administrateur."
+msgstr "Su cuenta será activada tras la validación por un administrador."
+
+msgid "Nom complet"
+msgstr "Nombre completo"
+
+msgid "Confirmer le mot de passe"
+msgstr "Confirmar contraseña"
+
+msgid "Envoyer la demande"
+msgstr "Enviar solicitud"
+
+msgid "Déjà un compte ?"
+msgstr "¿Ya tiene una cuenta?"
+
+msgid "Modifier le groupe"
+msgstr "Editar grupo"
+
+msgid "Nom du groupe"
+msgstr "Nombre del grupo"
+
+msgid "Formulaires accessibles"
+msgstr "Formularios accesibles"
+
+msgid "Aucun formulaire configuré."
+msgstr "No hay formularios configurados."
+
+msgid "Membres"
+msgstr "Miembros"
+
+msgid "Aucun utilisateur actif."
+msgstr "No hay usuarios activos."
+
+msgid "Administrateurs du groupe"
+msgstr "Administradores del grupo"
+
+msgid "Les administrateurs peuvent charger des modules et gérer les membres de ce groupe."
+msgstr "Los administradores pueden cargar módulos y gestionar los miembros de este grupo."
+
+msgid "Enregistrer"
+msgstr "Guardar"
+
+msgid "Annuler"
+msgstr "Cancelar"
+
+msgid "Vous n'administrez aucun groupe pour le moment."
+msgstr "No administra ningún grupo por el momento."
+
+msgid "Aucun membre dans ce groupe."
+msgstr "No hay miembros en este grupo."
+
+msgid "Aucun formulaire dans ce groupe."
+msgstr "No hay formularios en este grupo."
+
+msgid "Ajouter"
+msgstr "Agregar"
+
+msgid "Charger"
+msgstr "Subir"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Couleur principale"
+msgstr "Color principal"
+
+msgid "Défaut"
+msgstr "Predeterminado"
+
+msgid "Serveur KoboToolBox"
+msgstr "Servidor KoboToolBox"

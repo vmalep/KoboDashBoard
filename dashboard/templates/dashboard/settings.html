@@ -18,27 +18,52 @@
       </div>
     {% endif %}
 
-    {# ── Couleur principale ── #}
+    {# ── Identité ── #}
     <div class="card shadow-sm mb-4">
       <div class="card-header fw-semibold">
-        <i class="bi bi-palette me-1"></i>Couleur principale
+        <i class="bi bi-building me-1"></i>Identité
       </div>
       <div class="card-body">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
-          <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
-            <input type="color" name="brand_color" id="brandColor"
-                   value="{{ config.brand_color|default:'#dc3545' }}"
-                   class="form-control form-control-color" style="width:50px;height:38px">
-            <input type="text" id="brandColorText" class="form-control form-control-sm"
-                   value="{{ config.brand_color|default:'#dc3545' }}"
-                   placeholder="#dc3545" style="max-width:100px"
-                   pattern="^#[0-9a-fA-F]{6}$">
-            <button type="button" class="btn btn-sm btn-outline-secondary"
-                    onclick="setColor('#dc3545')" title="Réinitialiser la couleur par défaut">
-              Défaut
-            </button>
+          <div class="mb-3">
+            <label class="form-label">Nom de l'organisation</label>
+            <input type="text" name="org_name" class="form-control"
+                   value="{{ config.org_name }}"
+                   placeholder="ex. Croix-Rouge française">
+            <div class="form-text">Affiché dans la barre de navigation à la place de « KoboToolBox Dashboard ».</div>
           </div>
+          <div class="mb-3">
+            <label class="form-label">Logo</label>
+            {% if config.logo %}
+              <div class="mb-2">
+                <img src="{{ config.logo.url }}" alt="Logo actuel"
+                     style="max-height:48px;max-width:200px;object-fit:contain">
+              </div>
+            {% else %}
+              <div class="text-muted small mb-2">Aucun logo configuré.</div>
+            {% endif %}
+            <input type="file" name="logo" class="form-control" accept="image/*">
+            <div class="form-text">Formats recommandés : PNG ou SVG sur fond transparent. Hauteur idéale : 48 px.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Couleur principale</label>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <input type="color" name="brand_color" id="brandColor"
+                     value="{{ config.brand_color|default:'#dc3545' }}"
+                     class="form-control form-control-color" style="width:50px;height:38px">
+              <input type="text" id="brandColorText" class="form-control form-control-sm"
+                     value="{{ config.brand_color|default:'#dc3545' }}"
+                     placeholder="#dc3545" style="max-width:100px"
+                     pattern="^#[0-9a-fA-F]{6}$">
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                      onclick="setColor('#dc3545')" title="Réinitialiser la couleur par défaut">
+                Défaut
+              </button>
+            </div>
+          </div>
+
           <button type="submit" name="action" value="save_branding" class="btn btn-outline-primary">
             <i class="bi bi-save me-1"></i>Enregistrer
           </button>

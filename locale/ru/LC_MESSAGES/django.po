@@ -1,0 +1,283 @@
+# Russian translation for KoboToolBox Dashboard.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: ru\n"
+
+msgid "Mode d'emploi"
+msgstr "Помощь"
+
+msgid "Déconnexion"
+msgstr "Выход"
+
+msgid "Built with"
+msgstr "Создано с"
+
+msgid "MIT Licence"
+msgstr "Лицензия MIT"
+
+msgid "Comptes en attente de validation"
+msgstr "Аккаунты на проверке"
+
+msgid "Paramètres"
+msgstr "Настройки"
+
+msgid "Mon groupe"
+msgstr "Моя группа"
+
+msgid "Formulaires"
+msgstr "Формы"
+
+msgid "Vue générique"
+msgstr "Общий вид"
+
+msgid "soumissions en cache"
+msgstr "кешированных отправок"
+
+msgid "Visionner le dashboard"
+msgstr "Открыть дашборд"
+
+msgid "Rafraîchir"
+msgstr "Обновить"
+
+msgid "Actualiser"
+msgstr "Обновить"
+
+msgid "Export XLSX"
+msgstr "Экспорт XLSX"
+
+msgid "Export CSV"
+msgstr "Экспорт CSV"
+
+msgid "Pays"
+msgstr "Страна"
+
+msgid "Tous les pays"
+msgstr "Все страны"
+
+msgid "Année"
+msgstr "Год"
+
+msgid "Toutes"
+msgstr "Все"
+
+msgid "Tous"
+msgstr "Все"
+
+msgid "Trimestre"
+msgstr "Квартал"
+
+msgid "Résultat"
+msgstr "Результат"
+
+msgid "Tous les résultats"
+msgstr "Все результаты"
+
+msgid "Filtrer"
+msgstr "Фильтр"
+
+msgid "Réinitialiser"
+msgstr "Сбросить"
+
+msgid "Bénéficiaires rapportés"
+msgstr "Заявленные бенефициары"
+
+msgid "Rapports"
+msgstr "Отчёты"
+
+msgid "Résultats actifs"
+msgstr "Активные результаты"
+
+msgid "Données détaillées"
+msgstr "Подробные данные"
+
+msgid "lignes"
+msgstr "строк"
+
+msgid "Période"
+msgstr "Период"
+
+msgid "Rapporteur"
+msgstr "Репортёр"
+
+msgid "Indicateur"
+msgstr "Показатель"
+
+msgid "Total"
+msgstr "Итого"
+
+msgid "Hommes"
+msgstr "Мужчины"
+
+msgid "Femmes"
+msgstr "Женщины"
+
+msgid "Handicap"
+msgstr "Инвалидность"
+
+msgid "PDI"
+msgstr "ВПЛ"
+
+msgid "Code"
+msgstr "Код"
+
+msgid "Filtres"
+msgstr "Фильтры"
+
+msgid "Responsable"
+msgstr "Ответственный"
+
+msgid "Matrice de couverture"
+msgstr "Матрица охвата"
+
+msgid "Toutes les activités"
+msgstr "Все мероприятия"
+
+msgid "Aucune soumission pour ces critères."
+msgstr "Нет отправок по этим критериям."
+
+msgid "Voir le détail"
+msgstr "Подробнее"
+
+msgid "Gestion des utilisateurs"
+msgstr "Управление пользователями"
+
+msgid "En attente de validation"
+msgstr "На проверке"
+
+msgid "Aucun compte en attente."
+msgstr "Нет аккаунтов на проверке."
+
+msgid "Nom"
+msgstr "Имя"
+
+msgid "Demande le"
+msgstr "Запрошено"
+
+msgid "Activer"
+msgstr "Активировать"
+
+msgid "Utilisateurs actifs"
+msgstr "Активные пользователи"
+
+msgid "Aucun utilisateur actif (hors administrateurs)."
+msgstr "Нет активных пользователей (кроме администраторов)."
+
+msgid "Créé le"
+msgstr "Создан"
+
+msgid "Désactiver"
+msgstr "Деактивировать"
+
+msgid "Générer un lien de réinitialisation du mot de passe"
+msgstr "Создать ссылку сброса пароля"
+
+msgid "Supprimer ce compte ?"
+msgstr "Удалить этот аккаунт?"
+
+msgid "Désactiver ce compte ?"
+msgstr "Деактивировать этот аккаунт?"
+
+msgid "Supprimer définitivement ce compte ?"
+msgstr "Навсегда удалить этот аккаунт?"
+
+msgid "Connexion"
+msgstr "Вход"
+
+msgid "Email ou mot de passe incorrect."
+msgstr "Неверный email или пароль."
+
+msgid "Adresse email"
+msgstr "Адрес эл. почты"
+
+msgid "Mot de passe"
+msgstr "Пароль"
+
+msgid "Se connecter"
+msgstr "Войти"
+
+msgid "Mot de passe oublié ?"
+msgstr "Забыли пароль?"
+
+msgid "Pas encore de compte ?"
+msgstr "Нет аккаунта?"
+
+msgid "S'enregistrer"
+msgstr "Зарегистрироваться"
+
+msgid "Demande d'accès"
+msgstr "Запрос доступа"
+
+msgid "Votre compte sera activé après validation par un administrateur."
+msgstr "Ваш аккаунт будет активирован после проверки администратором."
+
+msgid "Nom complet"
+msgstr "Полное имя"
+
+msgid "Confirmer le mot de passe"
+msgstr "Подтвердите пароль"
+
+msgid "Envoyer la demande"
+msgstr "Отправить запрос"
+
+msgid "Déjà un compte ?"
+msgstr "Уже есть аккаунт?"
+
+msgid "Modifier le groupe"
+msgstr "Редактировать группу"
+
+msgid "Nom du groupe"
+msgstr "Название группы"
+
+msgid "Formulaires accessibles"
+msgstr "Доступные формы"
+
+msgid "Aucun formulaire configuré."
+msgstr "Формы не настроены."
+
+msgid "Membres"
+msgstr "Участники"
+
+msgid "Aucun utilisateur actif."
+msgstr "Нет активных пользователей."
+
+msgid "Administrateurs du groupe"
+msgstr "Администраторы группы"
+
+msgid "Les administrateurs peuvent charger des modules et gérer les membres de ce groupe."
+msgstr "Администраторы могут загружать модули и управлять участниками этой группы."
+
+msgid "Enregistrer"
+msgstr "Сохранить"
+
+msgid "Annuler"
+msgstr "Отмена"
+
+msgid "Vous n'administrez aucun groupe pour le moment."
+msgstr "Вы не администрируете ни одну группу в данный момент."
+
+msgid "Aucun membre dans ce groupe."
+msgstr "В этой группе нет участников."
+
+msgid "Aucun formulaire dans ce groupe."
+msgstr "В этой группе нет форм."
+
+msgid "Ajouter"
+msgstr "Добавить"
+
+msgid "Charger"
+msgstr "Загрузить"
+
+msgid "Dashboard"
+msgstr "Дашборд"
+
+msgid "Couleur principale"
+msgstr "Основной цвет"
+
+msgid "Défaut"
+msgstr "По умолчанию"
+
+msgid "Serveur KoboToolBox"
+msgstr "Сервер KoboToolBox"

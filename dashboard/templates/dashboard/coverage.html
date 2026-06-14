@@ -1,4 +1,5 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block title %}{{ form_name }} — Couverture{% endblock %}
 
@@ -22,7 +23,7 @@
   <div class="d-flex gap-2">
     <a href="/dashboard/{{ uid }}/refresh/?next=/dashboard/{{ uid }}/"
        class="btn btn-sm btn-outline-secondary">
-      <i class="bi bi-arrow-clockwise me-1"></i>Actualiser
+      <i class="bi bi-arrow-clockwise me-1"></i>{% trans "Actualiser" %}
     </a>
     <a href="/dashboard/{{ uid }}/export/csv/" class="btn btn-sm btn-outline-success">
       <i class="bi bi-filetype-csv me-1"></i>CSV
@@ -43,14 +44,14 @@
     <form method="get" id="filterForm">
       <div class="card shadow-sm mb-2">
         <div class="card-header py-2 fw-semibold small bg-danger text-white">
-          <i class="bi bi-funnel-fill me-1"></i>Filtres
+          <i class="bi bi-funnel-fill me-1"></i>{% trans "Filtres" %}
         </div>
         <div class="card-body p-2">
 
-          <label class="form-label small fw-semibold mb-1">Pays</label>
+          <label class="form-label small fw-semibold mb-1">{% trans "Pays" %}</label>
           <select name="country" class="form-select form-select-sm mb-3"
                   onchange="this.form.submit()">
-            <option value="">Tous les pays</option>
+            <option value="">{% trans "Tous les pays" %}</option>
             {% for c in countries %}
               <option value="{{ c.code }}"
                       {% if c.code == f_country %}selected{% endif %}>
@@ -59,10 +60,10 @@
             {% endfor %}
           </select>
 
-          <label class="form-label small fw-semibold mb-1">Résultat</label>
+          <label class="form-label small fw-semibold mb-1">{% trans "Résultat" %}</label>
           <select name="result" class="form-select form-select-sm mb-3"
                   onchange="this.form.submit()">
-            <option value="">Tous les résultats</option>
+            <option value="">{% trans "Tous les résultats" %}</option>
             {% for r in all_results %}
               <option value="{{ r.code }}"
                       {% if r.code == f_result %}selected{% endif %}>
@@ -71,10 +72,10 @@
             {% endfor %}
           </select>
 
-          <label class="form-label small fw-semibold mb-1">Responsable</label>
+          <label class="form-label small fw-semibold mb-1">{% trans "Responsable" %}</label>
           <select name="responsible" class="form-select form-select-sm mb-3"
                   onchange="this.form.submit()">
-            <option value="">Tous</option>
+            <option value="">{% trans "Tous" %}</option>
             {% for name in responsibles %}
               <option value="{{ name }}"
                       {% if name == f_responsible %}selected{% endif %}>
@@ -86,7 +87,7 @@
           {% if f_country or f_result or f_responsible %}
             <a href="/dashboard/{{ uid }}/"
                class="btn btn-sm btn-outline-secondary w-100">
-              <i class="bi bi-x-circle me-1"></i>Réinitialiser
+              <i class="bi bi-x-circle me-1"></i>{% trans "Réinitialiser" %}
             </a>
           {% endif %}
         </div>

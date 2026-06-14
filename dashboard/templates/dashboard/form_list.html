@@ -1,13 +1,14 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
-{% block title %}Formulaires — KoboToolBox Dashboard{% endblock %}
+{% block title %}{% trans "Formulaires" %} — KoboToolBox Dashboard{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h2 class="h4 mb-0"><i class="bi bi-collection me-2"></i>Formulaires</h2>
+  <h2 class="h4 mb-0"><i class="bi bi-collection me-2"></i>{% trans "Formulaires" %}</h2>
   {% if is_power_user %}
   <a href="/dashboard/settings/" class="btn btn-sm btn-outline-secondary">
-    <i class="bi bi-gear me-1"></i>Paramètres
+    <i class="bi bi-gear me-1"></i>{% trans "Paramètres" %}
   </a>
   {% endif %}
 </div>
@@ -24,18 +25,18 @@
           </p>
         {% else %}
           <p class="card-text text-muted small mb-1">
-            <i class="bi bi-table me-1"></i>Vue générique
+            <i class="bi bi-table me-1"></i>{% trans "Vue générique" %}
           </p>
         {% endif %}
         {% if card.sub_count is not None %}
         <p class="card-text text-muted small mt-1">
-          <i class="bi bi-inbox me-1"></i>{{ card.sub_count }} soumission{{ card.sub_count|pluralize }} en cache
+          <i class="bi bi-inbox me-1"></i>{{ card.sub_count }} {% trans "soumissions en cache" %}
         </p>
         {% endif %}
       </div>
       <div class="card-footer bg-transparent d-flex gap-2">
         <a href="/dashboard/{{ card.uid }}/" class="btn btn-danger flex-grow-1">
-          <i class="bi bi-bar-chart-line me-1"></i>Visionner le dashboard
+          <i class="bi bi-bar-chart-line me-1"></i>{% trans "Visionner le dashboard" %}
         </a>
       </div>
     </div>

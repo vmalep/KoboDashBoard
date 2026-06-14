@@ -1,0 +1,283 @@
+# Arabic translation for KoboToolBox Dashboard.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
+"Language: ar\n"
+
+msgid "Mode d'emploi"
+msgstr "المساعدة"
+
+msgid "Déconnexion"
+msgstr "تسجيل الخروج"
+
+msgid "Built with"
+msgstr "مبني بـ"
+
+msgid "MIT Licence"
+msgstr "ترخيص MIT"
+
+msgid "Comptes en attente de validation"
+msgstr "حسابات في انتظار التحقق"
+
+msgid "Paramètres"
+msgstr "الإعدادات"
+
+msgid "Mon groupe"
+msgstr "مجموعتي"
+
+msgid "Formulaires"
+msgstr "النماذج"
+
+msgid "Vue générique"
+msgstr "عرض عام"
+
+msgid "soumissions en cache"
+msgstr "تقديمات مؤقتة"
+
+msgid "Visionner le dashboard"
+msgstr "عرض لوحة البيانات"
+
+msgid "Rafraîchir"
+msgstr "تحديث"
+
+msgid "Actualiser"
+msgstr "تحديث"
+
+msgid "Export XLSX"
+msgstr "تصدير XLSX"
+
+msgid "Export CSV"
+msgstr "تصدير CSV"
+
+msgid "Pays"
+msgstr "البلد"
+
+msgid "Tous les pays"
+msgstr "جميع الدول"
+
+msgid "Année"
+msgstr "السنة"
+
+msgid "Toutes"
+msgstr "الكل"
+
+msgid "Tous"
+msgstr "الكل"
+
+msgid "Trimestre"
+msgstr "الربع"
+
+msgid "Résultat"
+msgstr "النتيجة"
+
+msgid "Tous les résultats"
+msgstr "جميع النتائج"
+
+msgid "Filtrer"
+msgstr "تصفية"
+
+msgid "Réinitialiser"
+msgstr "إعادة تعيين"
+
+msgid "Bénéficiaires rapportés"
+msgstr "المستفيدون المُبلَّغ عنهم"
+
+msgid "Rapports"
+msgstr "التقارير"
+
+msgid "Résultats actifs"
+msgstr "النتائج النشطة"
+
+msgid "Données détaillées"
+msgstr "البيانات التفصيلية"
+
+msgid "lignes"
+msgstr "صفوف"
+
+msgid "Période"
+msgstr "الفترة"
+
+msgid "Rapporteur"
+msgstr "المُبلِّغ"
+
+msgid "Indicateur"
+msgstr "المؤشر"
+
+msgid "Total"
+msgstr "الإجمالي"
+
+msgid "Hommes"
+msgstr "رجال"
+
+msgid "Femmes"
+msgstr "نساء"
+
+msgid "Handicap"
+msgstr "إعاقة"
+
+msgid "PDI"
+msgstr "نازحون داخلياً"
+
+msgid "Code"
+msgstr "الرمز"
+
+msgid "Filtres"
+msgstr "الفلاتر"
+
+msgid "Responsable"
+msgstr "المسؤول"
+
+msgid "Matrice de couverture"
+msgstr "مصفوفة التغطية"
+
+msgid "Toutes les activités"
+msgstr "جميع الأنشطة"
+
+msgid "Aucune soumission pour ces critères."
+msgstr "لا توجد تقديمات لهذه المعايير."
+
+msgid "Voir le détail"
+msgstr "عرض التفاصيل"
+
+msgid "Gestion des utilisateurs"
+msgstr "إدارة المستخدمين"
+
+msgid "En attente de validation"
+msgstr "في انتظار التحقق"
+
+msgid "Aucun compte en attente."
+msgstr "لا توجد حسابات معلقة."
+
+msgid "Nom"
+msgstr "الاسم"
+
+msgid "Demande le"
+msgstr "طُلب في"
+
+msgid "Activer"
+msgstr "تفعيل"
+
+msgid "Utilisateurs actifs"
+msgstr "المستخدمون النشطون"
+
+msgid "Aucun utilisateur actif (hors administrateurs)."
+msgstr "لا يوجد مستخدمون نشطون (باستثناء المديرين)."
+
+msgid "Créé le"
+msgstr "تاريخ الإنشاء"
+
+msgid "Désactiver"
+msgstr "تعطيل"
+
+msgid "Générer un lien de réinitialisation du mot de passe"
+msgstr "إنشاء رابط إعادة تعيين كلمة المرور"
+
+msgid "Supprimer ce compte ?"
+msgstr "حذف هذا الحساب؟"
+
+msgid "Désactiver ce compte ?"
+msgstr "تعطيل هذا الحساب؟"
+
+msgid "Supprimer définitivement ce compte ?"
+msgstr "حذف هذا الحساب نهائياً؟"
+
+msgid "Connexion"
+msgstr "تسجيل الدخول"
+
+msgid "Email ou mot de passe incorrect."
+msgstr "البريد الإلكتروني أو كلمة المرور غير صحيحة."
+
+msgid "Adresse email"
+msgstr "عنوان البريد الإلكتروني"
+
+msgid "Mot de passe"
+msgstr "كلمة المرور"
+
+msgid "Se connecter"
+msgstr "تسجيل الدخول"
+
+msgid "Mot de passe oublié ?"
+msgstr "هل نسيت كلمة المرور؟"
+
+msgid "Pas encore de compte ?"
+msgstr "ليس لديك حساب؟"
+
+msgid "S'enregistrer"
+msgstr "تسجيل"
+
+msgid "Demande d'accès"
+msgstr "طلب الوصول"
+
+msgid "Votre compte sera activé après validation par un administrateur."
+msgstr "سيتم تفعيل حسابك بعد التحقق من قبل مسؤول."
+
+msgid "Nom complet"
+msgstr "الاسم الكامل"
+
+msgid "Confirmer le mot de passe"
+msgstr "تأكيد كلمة المرور"
+
+msgid "Envoyer la demande"
+msgstr "إرسال الطلب"
+
+msgid "Déjà un compte ?"
+msgstr "هل لديك حساب؟"
+
+msgid "Modifier le groupe"
+msgstr "تعديل المجموعة"
+
+msgid "Nom du groupe"
+msgstr "اسم المجموعة"
+
+msgid "Formulaires accessibles"
+msgstr "النماذج المتاحة"
+
+msgid "Aucun formulaire configuré."
+msgstr "لا توجد نماذج مُعدَّة."
+
+msgid "Membres"
+msgstr "الأعضاء"
+
+msgid "Aucun utilisateur actif."
+msgstr "لا يوجد مستخدمون نشطون."
+
+msgid "Administrateurs du groupe"
+msgstr "مديرو المجموعة"
+
+msgid "Les administrateurs peuvent charger des modules et gérer les membres de ce groupe."
+msgstr "يمكن للمديرين تحميل الوحدات وإدارة أعضاء هذه المجموعة."
+
+msgid "Enregistrer"
+msgstr "حفظ"
+
+msgid "Annuler"
+msgstr "إلغاء"
+
+msgid "Vous n'administrez aucun groupe pour le moment."
+msgstr "أنت لا تدير أي مجموعة في الوقت الحالي."
+
+msgid "Aucun membre dans ce groupe."
+msgstr "لا يوجد أعضاء في هذه المجموعة."
+
+msgid "Aucun formulaire dans ce groupe."
+msgstr "لا توجد نماذج في هذه المجموعة."
+
+msgid "Ajouter"
+msgstr "إضافة"
+
+msgid "Charger"
+msgstr "تحميل"
+
+msgid "Dashboard"
+msgstr "لوحة البيانات"
+
+msgid "Couleur principale"
+msgstr "اللون الرئيسي"
+
+msgid "Défaut"
+msgstr "افتراضي"
+
+msgid "Serveur KoboToolBox"
+msgstr "خادم KoboToolBox"
