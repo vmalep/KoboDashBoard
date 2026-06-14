@@ -18,62 +18,41 @@
       </div>
     {% endif %}
 
-    {# ── Apparence ── #}
+    {# ── Couleur principale ── #}
     <div class="card shadow-sm mb-4">
       <div class="card-header fw-semibold">
-        <i class="bi bi-palette me-1"></i>Apparence
+        <i class="bi bi-palette me-1"></i>Couleur principale
       </div>
       <div class="card-body">
-        <form method="post" enctype="multipart/form-data">
+        <form method="post">
           {% csrf_token %}
-          <div class="mb-3">
-            <label class="form-label">Nom de l'organisation</label>
-            <input type="text" name="org_name" class="form-control"
-                   value="{{ config.org_name }}" placeholder="KoboToolBox Dashboard">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Logo</label>
-            {% if config.logo %}
-              <div class="mb-2 d-flex align-items-center gap-3">
-                <img src="{{ config.logo.url }}" alt="logo actuel" style="height:40px">
-                <label class="form-check-label small text-muted">
-                  <input type="checkbox" name="clear_logo" class="form-check-input me-1">
-                  Supprimer le logo
-                </label>
-              </div>
-            {% endif %}
-            <input type="file" name="logo" class="form-control" accept="image/*">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Couleur principale</label>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-              <input type="color" name="brand_color" id="brandColor"
-                     value="{{ config.brand_color|default:'#dc3545' }}"
-                     class="form-control form-control-color" style="width:50px;height:38px">
-              <button type="button" class="btn btn-sm btn-outline-secondary"
-                      onclick="setColor('#c00000')" title="IFRC Rouge">
-                <span style="display:inline-block;width:14px;height:14px;background:#c00000;border-radius:2px;vertical-align:middle"></span> IFRC
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary"
-                      onclick="setColor('#00833D')" title="Oxfam Vert">
-                <span style="display:inline-block;width:14px;height:14px;background:#00833D;border-radius:2px;vertical-align:middle"></span> Oxfam
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary"
-                      onclick="setColor('#009EDB')" title="ONU Bleu">
-                <span style="display:inline-block;width:14px;height:14px;background:#009EDB;border-radius:2px;vertical-align:middle"></span> ONU
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary"
-                      onclick="setColor('#dc3545')" title="Bootstrap Rouge (défaut)">
-                <span style="display:inline-block;width:14px;height:14px;background:#dc3545;border-radius:2px;vertical-align:middle"></span> Défaut
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary"
-                      onclick="setColor('')" title="Aucune couleur personnalisée">
-                <i class="bi bi-x-circle"></i> Réinitialiser
-              </button>
-            </div>
+          <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
+            <input type="color" name="brand_color" id="brandColor"
+                   value="{{ config.brand_color|default:'#dc3545' }}"
+                   class="form-control form-control-color" style="width:50px;height:38px">
+            <input type="text" id="brandColorText" class="form-control form-control-sm"
+                   value="{{ config.brand_color|default:'#dc3545' }}"
+                   placeholder="#dc3545" style="max-width:100px"
+                   pattern="^#[0-9a-fA-F]{6}$">
+            <button type="button" class="btn btn-sm btn-outline-secondary"
+                    onclick="setColor('#c00000')">
+              <span style="display:inline-block;width:14px;height:14px;background:#c00000;border-radius:2px;vertical-align:middle"></span> IFRC
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary"
+                    onclick="setColor('#00833D')">
+              <span style="display:inline-block;width:14px;height:14px;background:#00833D;border-radius:2px;vertical-align:middle"></span> Oxfam
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary"
+                    onclick="setColor('#009EDB')">
+              <span style="display:inline-block;width:14px;height:14px;background:#009EDB;border-radius:2px;vertical-align:middle"></span> ONU
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary"
+                    onclick="setColor('#dc3545')">
+              <span style="display:inline-block;width:14px;height:14px;background:#dc3545;border-radius:2px;vertical-align:middle"></span> Défaut
+            </button>
           </div>
           <button type="submit" name="action" value="save_branding" class="btn btn-outline-primary">
-            <i class="bi bi-save me-1"></i>Enregistrer l'apparence
+            <i class="bi bi-save me-1"></i>Enregistrer
           </button>
         </form>
       </div>
@@ -310,14 +289,12 @@ function updateFormName(sel) {
   const opt = sel.options[sel.selectedIndex];
   document.getElementById('formName').value = opt.dataset.name || '';
 }
-function setColor(hex) {
-  const el = document.getElementById('brandColor');
-  el.value = hex || '#dc3545';
-  el.dataset.clear = hex ? '' : '1';
-}
-document.getElementById('brandColor').closest('form').addEventListener('submit', function() {
-  const el = document.getElementById('brandColor');
-  if (el.dataset.clear === '1') el.value = '';
+const picker = document.getElementById('brandColor');
+const hex    = document.getElementById('brandColorText');
+function setColor(v) { picker.value = v; hex.value = v; }
+picker.addEventListener('input', () => { hex.value = picker.value; });
+hex.addEventListener('input', () => {
+  if (/^#[0-9a-fA-F]{6}$/.test(hex.value)) picker.value = hex.value;
 });
 </script>
 {% endblock %}

@@ -204,14 +204,9 @@ def settings_view(request):
             success = 'Durée du cache mise à jour.'
 
         elif action == 'save_branding':
-            config.org_name = request.POST.get('org_name', '').strip()
             config.brand_color = request.POST.get('brand_color', '').strip()
-            if request.FILES.get('logo'):
-                config.logo = request.FILES['logo']
-            elif request.POST.get('clear_logo'):
-                config.logo = None
             config.save()
-            success = 'Apparence mise à jour.'
+            success = 'Couleur enregistrée.'
 
         elif action == 'create_group':
             gname = request.POST.get('group_name', '').strip()
