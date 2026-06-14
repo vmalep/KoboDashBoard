@@ -4,144 +4,135 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Django dashboard that pulls form submission data from a KoboToolBox server (default: https://kobo.ifrc.org) via the v2 REST API and displays it to authenticated users. KoboToolBox stores surveys as "assets"; each asset has a schema (question groups) and a data endpoint (submissions).
-
-Currently deployed for the AMOPAH III humanitarian programme (IFRC/Red Cross), serving two form types:
-- **AMOPAH III** — indicator monitoring with beneficiary disaggregation (age/sex, disability, displacement status)
-- **Do Not Harm** — activity coverage matrix with risk identification
+Django dashboard (v1.0, GPL v3) that pulls form submission data from a KoboToolBox server via the v2 REST API and displays it to authenticated users. Generic: any KoboToolBox server, any number of forms, each with its own dashboard module. Currently deployed for the AMOPAH III humanitarian programme (IFRC/Red Cross) at kobodash.vmalep.eu.
 
 ## Commands
 
 ```bash
-# Activate the virtual environment first (required for all commands)
-source .venv/bin/activate
+source .venv/bin/activate          # required for all commands
 
-# Apply migrations
 python3 manage.py migrate
-
-# Create the first admin user
-python3 manage.py createsuperuser
-
-# Run development server
 python3 manage.py runserver
-
-# Collect static files (production only)
-python3 manage.py collectstatic --no-input
+python3 manage.py collectstatic --no-input   # production only
+python3 manage.py compilemessages            # after editing .po files
+python3 manage.py init_admin                 # first-run or locked-out recovery
 ```
 
 ## Architecture
 
 ```
-kobodashboard/          Django project config
-  settings.py           Reads .env via python-decouple; whitenoise for static files
-kobo/                   KoboToolBox integration
-  models.py             KoboConfig (singleton) + ConfiguredForm (multi-form registry)
-  api_client.py         requests-based wrapper for /api/v2/assets/ and /api/v2/assets/{uid}/data/
-  cache_helpers.py      Django file-based cache layer keyed by asset UID
-  program_structure.py  Parses XLSForm choices into results/activities/countries structure (DNH)
-accounts/               Custom user system
-  backends.py           EmailBackend — authenticate by email instead of username
-  forms.py              RegistrationForm — self-registration with staff approval workflow
-  models.py             UserProfile (full_name, country) linked OneToOne to User
-dashboard/              UI views and Bootstrap 5 templates
-  views.py              All dashboard views (see View reference below)
+kobodashboard/
+  __init__.py           __version__ = '1.0'
+  settings.py           .env via python-decouple; i18n; whitenoise; POWER_USER_EMAILS
+  urls.py               includes i18n/ for language switcher
+
+kobo/
+  models.py             KoboConfig (singleton: server, token, org_name, logo, brand_color)
+                        ConfiguredForm (one row per active form)
+                        DashboardGroup (groups: members M2M, admins M2M, forms M2M)
+  api_client.py         requests wrapper for /api/v2/assets/ and /data/
+  cache_helpers.py      File-based cache keyed by form UID
+
+accounts/
+  backends.py           EmailBackend — login by email not username
+  context_processors.py user_roles: is_power_user, is_group_admin, site_config,
+                        current_lang, current_lang_name, all_languages, app_version
+  management/commands/init_admin.py   SSH recovery — prints one-time login URL
+
+dashboard/
+  views.py              All views (see View reference)
   urls.py               URL routing
-form_modules/           Plugin system for form-specific logic
-  __init__.py           Auto-discovery registry; @register('uid') decorator
+  static/dashboard/favicon.svg
+  templates/dashboard/base.html     Bootstrap 5, RTL, i18n, responsive navbar
+
+form_modules/
+  __init__.py           Registry + auto-discovery of *.py files
   base.py               FormModule base class
-  amopah3.py            AMOPAH III indicator module (registered to its Kobo UID)
-  dnh.py                Do Not Harm module (registered to its Kobo UID)
+  amopah3.py            AMOPAH III indicator monitoring
+  dnh.py                Do Not Harm coverage matrix
+
+locale/                 Translation files (en, es, ar, ru) — fr is default
+  <lang>/LC_MESSAGES/django.po / django.mo
 ```
 
 ## Key design decisions
 
-**KoboConfig singleton**: `KoboConfig.get()` always returns the one config row (pk=1). Stores the server URL and API token. Deletion is a no-op — it cannot be removed.
+**Roles**: Three tiers defined in `settings.py` and `accounts/context_processors.py`:
+- *Power user*: email in `POWER_USER_EMAILS` — full access to everything
+- *Group admin*: admin of ≥1 `DashboardGroup` — manages their group's members and module uploads
+- *User*: active account, member of ≥1 group — sees only their groups' forms
 
-**ConfiguredForm**: Multiple forms can be registered in the DB (`kobo/models.py`). Each has its own `cache_ttl_seconds`, `order`, and KoboToolBox `uid`. Staff manage these from `/dashboard/settings/`.
+**KoboConfig singleton**: `KoboConfig.get()` always returns pk=1. Stores server URL, API token, `org_name`, `logo` (FileField), `brand_color` (hex). Deletion is a no-op. The context processor wraps it in try/except so a missing DB column silently returns None — but direct `KoboConfig.get()` in views will raise a 500 if migrations are missing.
 
-**Form module plugin system**: `form_modules/__init__.py` auto-discovers all `.py` files in the directory (except `__init__` and `base`) and imports them. Each file registers itself via `@register('kobo-asset-uid')`. `get_module(uid)` returns the registered instance or `None`. Two module types exist:
-- Modules with `parse_submissions()` → routed to `amopah_dashboard` view (indicator monitoring)
-- Modules without `parse_submissions()` → routed to `coverage` view (activity/risk matrix)
+**Branding**: `brand_color` overrides Bootstrap danger classes via a `<style>` block in `base.html`. Logo and org name displayed in navbar center (desktop only — hidden on mobile). "Your logo here" dashed placeholder shown when no logo set. Org name appears next to logo if both are set.
 
-**Module upload**: Staff can upload a new `.py` module file via the settings UI (`/dashboard/settings/module-upload/<uid>/`). The file is written directly to `form_modules/`, which hot-reloads it in dev (gunicorn requires a restart in production). Only valid Python identifiers are accepted as filenames.
+**i18n**: `LocaleMiddleware` + `{% trans %}` tags + `.po`/`.mo` files. Language switcher in navbar posts to `{% url 'set_language' %}`. Arabic triggers `dir="rtl"` and Bootstrap RTL CSS.
 
-**Group navigation** (generic fallback view): KoboToolBox XLSForm surveys use `begin_group`/`end_group` rows in `content.survey`. `api_client.parse_groups()` walks this array and returns an ordered dict of `{group_key: {label, questions[]}}`. The dashboard renders one Bootstrap tab per group with full-page navigation.
+**Form module plugin system**: `form_modules/__init__.py` auto-discovers all `.py` files. `@register('kobo-uid')` decorator links a class to a form UID. Two patterns:
+- Has `parse_submissions()` → `amopah_dashboard` view (indicator charts + disaggregation)
+- No `parse_submissions()` → `coverage` view (activity × country matrix)
+- No module at all → `form_detail` (generic group/tab view)
 
-**Caching**: `cache_helpers.get_cached(key, fetch_fn, ttl)` checks Django's file-based cache (`.cache/` dir) first. Cache keys:
-- `kobo_schema_{uid}` — form schema
-- `kobo_submissions_{uid}` — all submissions
-- `kobo_structure_{uid}` — parsed program structure (from module)
-- `kobo_asset_list` — asset list from KoboToolBox API
+**Caching**: `cache_helpers.get_cached(key, fetch_fn, ttl)` uses Django file-based cache (`.cache/`). Keys: `kobo_schema_{uid}`, `kobo_submissions_{uid}`, `kobo_structure_{uid}`, `kobo_asset_list`. Invalidated by Refresh button. TTL per form (`ConfiguredForm.cache_ttl_seconds`, default 300 s).
 
-Cache is invalidated per-form by the Refresh button (`/dashboard/{uid}/refresh/`). TTL is per-form (`ConfiguredForm.cache_ttl_seconds`, default 300 s).
+**Static files**: WhiteNoise `CompressedManifestStaticFilesStorage`. App static files in `dashboard/static/dashboard/`. Always run `collectstatic` after adding new static files in production.
 
-**User registration**: New users self-register (`/accounts/register/`) and are created with `is_active=False`. Staff approve/deactivate/delete from `/dashboard/users/`. Login is by email (not username) via `accounts.backends.EmailBackend`. Password reset is email-based.
-
-**Export**: Both CSV (`StreamingHttpResponse`) and XLSX (`openpyxl`) exports exist. AMOPAH-style exports flatten one row per indicator-per-submission with full disaggregation columns. DNH-style exports flatten one row per risk-per-submission.
-
-**Program structure** (DNH): `kobo/program_structure.py` parses XLSForm `choices` to extract the logical program hierarchy: results → activities → countries + applicable pairs. This is cached as `kobo_structure_{uid}`.
-
-**Static files**: Served by WhiteNoise in both dev and production (`CompressedManifestStaticFilesStorage`).
+**Export**: CSV (`StreamingHttpResponse`) and XLSX (`openpyxl`). AMOPAH: one row per indicator per submission with disaggregation columns. DNH: one row per risk per submission.
 
 ## View reference
 
-| URL pattern | View | Purpose |
+| URL | View | Purpose |
 |---|---|---|
-| `/dashboard/` | `form_list` | Landing page; shows configured forms with cached sub count |
-| `/dashboard/settings/` | `settings_view` | Staff: manage server config + add/remove forms |
-| `/dashboard/settings/module-download/<uid>/` | `module_download` | Staff: download current module .py |
-| `/dashboard/settings/module-upload/<uid>/` | `module_upload` | Staff: upload replacement module .py |
-| `/dashboard/users/` | `user_list` | Staff: approve/deactivate/delete users |
-| `/dashboard/<uid>/` | `coverage` | Primary form view — routes to amopah_dashboard or coverage matrix |
-| `/dashboard/<uid>/submissions/` | `submission_list` | Filtered submission list (activity/country/responsible) |
-| `/dashboard/<uid>/submission/<sub_id>/` | `submission_detail` | Single submission detail |
-| `/dashboard/<uid>/refresh/` | `refresh_form` | Invalidate all caches for this form |
+| `/dashboard/` | `form_list` | Landing; shows accessible forms |
+| `/dashboard/manual/` | `manual` | Help page (mode d'emploi) |
+| `/dashboard/settings/` | `settings_view` | Power user: server config, forms, groups, branding |
+| `/dashboard/settings/module-download/<uid>/` | `module_download` | Download module .py |
+| `/dashboard/settings/module-upload/<uid>/` | `module_upload` | Upload module .py |
+| `/dashboard/users/` | `user_list` | Power user: approve/deactivate/delete users |
+| `/dashboard/groups/<id>/` | `group_edit` | Power user: edit group members/forms/admins |
+| `/dashboard/my-group/` | `my_group` | Group admin: manage their group |
+| `/dashboard/<uid>/` | `coverage` | Form entry point — routes by module type |
+| `/dashboard/<uid>/submissions/` | `submission_list` | Filtered submission list |
+| `/dashboard/<uid>/submission/<id>/` | `submission_detail` | Single submission |
+| `/dashboard/<uid>/refresh/` | `refresh_form` | Invalidate caches |
 | `/dashboard/<uid>/export/csv/` | `export_csv` | CSV export |
 | `/dashboard/<uid>/export/xlsx/` | `export_xlsx` | XLSX export |
 
-`coverage` is the entry point for all form UIDs. If the module has `parse_submissions`, it delegates to `amopah_dashboard`. If there's no module at all, it falls back to `form_detail` (generic group-tab view).
-
 ## Adding a new form module
 
-1. Create `form_modules/<slug>.py`
-2. Subclass `FormModule` from `form_modules.base`
-3. Decorate the class with `@register('<kobo-asset-uid>')`
-4. Set `form_label`, `FIELD_PATHS`, `EXPORT_HEADERS`
-5. Implement `parse_structure(schema)` → structure dict
-6. Implement `parse_submission_detail(submission, structure)` → `{'activity': {...}, 'risks': [...]}`
-7. For indicator-style forms: also implement `parse_submissions(submissions)` → list of parsed dicts
-8. Add the form in the Settings UI (the module auto-loads; gunicorn needs restart in production)
+1. Create `form_modules/<slug>.py`, subclass `FormModule`, decorate with `@register('<uid>')`
+2. Set `form_label`, `FIELD_PATHS`, `EXPORT_HEADERS`
+3. Implement `parse_structure(schema)` and `parse_submission_detail(submission, structure)`
+4. For indicator-style: also implement `parse_submissions(submissions)`
+5. Add the form in Settings UI (gunicorn restart required in production)
 
-## Environment
+## Environment (`.env`)
 
-`.env` file (copy from `.env.example`):
 ```
 SECRET_KEY=...
 DEBUG=False
 ALLOWED_HOSTS=kobodash.vmalep.eu,localhost
-CSRF_TRUSTED_ORIGINS=https://kobodash.vmalep.eu
+CSRF_TRUSTED_ORIGINS=https://kobodash.vmalep.eu   # required in production, not in git
 
-# Optional email (for password reset)
 EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-EMAIL_HOST=smtp.example.com
-EMAIL_PORT=587
-EMAIL_HOST_USER=user@example.com
-EMAIL_HOST_PASSWORD=...
-EMAIL_USE_TLS=True
-DEFAULT_FROM_EMAIL=noreply@kobodash.vmalep.eu
+EMAIL_HOST=...  EMAIL_PORT=587  EMAIL_HOST_USER=...  EMAIL_HOST_PASSWORD=...
+EMAIL_USE_TLS=True  DEFAULT_FROM_EMAIL=noreply@kobodash.vmalep.eu
 ```
 
-## Deployment (on the Ubuntu home server, alongside Nextcloud snap)
+## Deployment
 
-> Development on laptop: just `python3 manage.py runserver` and open http://localhost:8000/
+**Always use the deploy script** — running steps manually risks forgetting `migrate` (causes silent 500s):
 
-For production, copy the project to the Ubuntu server that hosts Nextcloud (nextcloud.vmalep.eu). The Nextcloud snap owns port 80/443 via its internal nginx, so Django runs on a separate port behind a system nginx reverse proxy:
+```bash
+bash /srv/kobodashboard/deploy/update.sh
+# runs: git pull → migrate → collectstatic → systemctl restart kobodashboard
+```
 
-1. Copy project to `/srv/kobodashboard/`
-2. Create log directory: `sudo mkdir -p /var/log/kobodashboard && sudo chown www-data: /var/log/kobodashboard`
-3. Install systemd service: `sudo cp deploy/kobodashboard.service /etc/systemd/system/ && sudo systemctl enable --now kobodashboard`
-4. Install nginx config: `sudo cp deploy/nginx-kobodash.conf /etc/nginx/sites-available/kobodash && sudo ln -s /etc/nginx/sites-available/kobodash /etc/nginx/sites-enabled/`
-5. Obtain TLS cert: `sudo certbot --nginx -d kobodash.vmalep.eu`
-6. `sudo systemctl reload nginx`
+First-time setup: server is Ubuntu alongside Nextcloud snap (owns 80/443). Django runs on port 8001 behind system nginx reverse proxy. See `deploy/` for service and nginx configs.
 
-`CSRF_TRUSTED_ORIGINS=https://kobodash.vmalep.eu` must be set in `.env` in production (not committed to git — add it manually after each pull).
+Admin recovery (SSH to server):
+```bash
+cd /srv/kobodashboard && source .venv/bin/activate && python3 manage.py init_admin
+```
+
+**Debugging 500s in production**: gunicorn error log may not show Django tracebacks for DB errors. Check `python3 manage.py showmigrations` first — unapplied migrations are the most common cause.
