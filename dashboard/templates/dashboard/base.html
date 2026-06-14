@@ -31,80 +31,97 @@
 <body class="d-flex flex-column min-vh-100">
   <nav class="navbar navbar-expand-lg navbar-dark bg-danger sticky-top">
     <div class="container-fluid position-relative">
-      {# Left: home icon — always the chart button #}
-      <a class="navbar-brand" href="/dashboard/">
+
+      {# Left: home icon — always visible #}
+      <a class="navbar-brand me-2" href="/dashboard/">
         <span class="btn btn-sm btn-outline-light py-1 px-2">
           <i class="bi bi-bar-chart-fill"></i>
         </span>
       </a>
 
-      {# Centre: org logo or app name — absolutely centred #}
-      <div class="position-absolute start-50 translate-middle-x d-flex align-items-center">
-        {% if site_config and site_config.logo %}
+      {# Centre logo: inline on mobile, absolutely centred on desktop #}
+      {% if site_config and site_config.logo %}
+        <img src="{{ site_config.logo.url }}" alt="{{ site_config.org_name }}"
+             class="d-lg-none" style="max-height:30px;width:auto">
+        <div class="position-absolute start-50 translate-middle-x d-none d-lg-flex align-items-center">
           <img src="{{ site_config.logo.url }}" alt="{{ site_config.org_name }}"
                style="max-height:36px;width:auto">
-        {% else %}
-          <span class="fw-bold fs-5 text-white">{{ site_config.org_name|default:"KoboToolBox Dashboard" }}</span>
-        {% endif %}
-      </div>
-
-      <div class="ms-auto d-flex align-items-center gap-2">
-        <span class="text-white-50 small">{{ request.user.username }}</span>
-        {% if is_power_user %}
-          {% with pending=pending_users_count %}
-          <a href="/dashboard/users/"
-             class="btn btn-sm btn-outline-light position-relative"
-             title="{% trans 'Comptes en attente de validation' %}">
-            <i class="bi bi-person-fill-check"></i>
-            {% if pending %}
-              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark"
-                    style="font-size:.65rem">
-                {{ pending }}
-              </span>
-            {% endif %}
-          </a>
-          {% endwith %}
-          <a href="/dashboard/settings/" class="btn btn-sm btn-outline-light" title="{% trans 'Paramètres' %}">
-            <i class="bi bi-gear"></i>
-          </a>
-        {% endif %}
-        {% if is_group_admin %}
-          <a href="/dashboard/my-group/" class="btn btn-sm btn-outline-light" title="{% trans 'Mon groupe' %}">
-            <i class="bi bi-people-fill"></i>
-          </a>
-        {% endif %}
-        <a href="/dashboard/aide/" class="btn btn-sm btn-outline-light" title="{% trans "Mode d'emploi" %}">
-          <i class="bi bi-question-circle"></i>
-        </a>
-
-        {# Language switcher #}
-        <div class="dropdown">
-          <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
-                  data-bs-toggle="dropdown" aria-expanded="false">
-            {{ current_lang_name|default:"FR" }}
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            {% for code, name in all_languages %}
-            <li>
-              <form method="post" action="{% url 'set_language' %}" class="m-0">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                <input type="hidden" name="language" value="{{ code }}">
-                <button type="submit"
-                        class="dropdown-item {% if code == current_lang %}active{% endif %}">
-                  {{ name }}
-                </button>
-              </form>
-            </li>
-            {% endfor %}
-          </ul>
         </div>
+      {% else %}
+        <span class="fw-bold text-white d-lg-none">{{ site_config.org_name|default:"KoboToolBox Dashboard" }}</span>
+        <div class="position-absolute start-50 translate-middle-x d-none d-lg-flex align-items-center">
+          <span class="fw-bold fs-5 text-white">{{ site_config.org_name|default:"KoboToolBox Dashboard" }}</span>
+        </div>
+      {% endif %}
 
-        <form method="post" action="/accounts/logout/" class="m-0">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-sm btn-outline-light">{% trans "Déconnexion" %}</button>
-        </form>
+      {# Hamburger toggler — mobile only #}
+      <button class="navbar-toggler border-light ms-auto" type="button"
+              data-bs-toggle="collapse" data-bs-target="#navbarMain"
+              aria-controls="navbarMain" aria-expanded="false">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      {# Collapsible items #}
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <div class="ms-auto d-flex align-items-center gap-2 flex-wrap py-2 py-lg-0">
+          <span class="text-white-50 small">{{ request.user.username }}</span>
+          {% if is_power_user %}
+            {% with pending=pending_users_count %}
+            <a href="/dashboard/users/"
+               class="btn btn-sm btn-outline-light position-relative"
+               title="{% trans 'Comptes en attente de validation' %}">
+              <i class="bi bi-person-fill-check"></i>
+              {% if pending %}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark"
+                      style="font-size:.65rem">
+                  {{ pending }}
+                </span>
+              {% endif %}
+            </a>
+            {% endwith %}
+            <a href="/dashboard/settings/" class="btn btn-sm btn-outline-light" title="{% trans 'Paramètres' %}">
+              <i class="bi bi-gear"></i>
+            </a>
+          {% endif %}
+          {% if is_group_admin %}
+            <a href="/dashboard/my-group/" class="btn btn-sm btn-outline-light" title="{% trans 'Mon groupe' %}">
+              <i class="bi bi-people-fill"></i>
+            </a>
+          {% endif %}
+          <a href="/dashboard/aide/" class="btn btn-sm btn-outline-light" title="{% trans "Mode d'emploi" %}">
+            <i class="bi bi-question-circle"></i>
+          </a>
+
+          {# Language switcher #}
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+              {{ current_lang_name|default:"FR" }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              {% for code, name in all_languages %}
+              <li>
+                <form method="post" action="{% url 'set_language' %}" class="m-0">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                  <input type="hidden" name="language" value="{{ code }}">
+                  <button type="submit"
+                          class="dropdown-item {% if code == current_lang %}active{% endif %}">
+                    {{ name }}
+                  </button>
+                </form>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <form method="post" action="/accounts/logout/" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-light">{% trans "Déconnexion" %}</button>
+          </form>
+        </div>
       </div>
+
     </div>
   </nav>
 
