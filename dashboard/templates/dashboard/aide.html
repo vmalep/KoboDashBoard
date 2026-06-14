@@ -1,0 +1,301 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Mode d'emploi — KoboToolBox Dashboard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-12 col-lg-9">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="h4 mb-0"><i class="bi bi-question-circle me-2"></i>Mode d'emploi</h2>
+</div>
+
+{# Table of contents #}
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h6 class="text-muted mb-2">Sommaire</h6>
+    <ol class="mb-0 ps-3">
+      <li><a href="#presentation" class="text-decoration-none">Présentation de la plateforme</a></li>
+      <li><a href="#acces" class="text-decoration-none">Accès et connexion</a></li>
+      <li><a href="#dashboards" class="text-decoration-none">Consulter les dashboards</a></li>
+      <li><a href="#filtres" class="text-decoration-none">Utiliser les filtres</a></li>
+      <li><a href="#exports" class="text-decoration-none">Exporter les données</a></li>
+      <li><a href="#groupe-admin" class="text-decoration-none">Administrateurs de groupe</a></li>
+      <li><a href="#admin" class="text-decoration-none">Administrateur principal</a></li>
+    </ol>
+  </div>
+</div>
+
+
+{# 1. Présentation #}
+<h4 id="presentation" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-info-circle me-2 text-danger"></i>1. Présentation de la plateforme
+</h4>
+<p>
+  <strong>KoboToolBox Dashboard</strong> est une application web qui se connecte à un serveur
+  <a href="https://www.kobotoolbox.org/" target="_blank" rel="noopener">KoboToolBox</a> et affiche
+  les données de soumission de formulaires sous forme de tableaux de bord interactifs.
+</p>
+<p>
+  La plateforme est organisée en <strong>groupes</strong> : chaque groupe dispose d'un ensemble de
+  formulaires accessibles et d'une liste de membres. Un utilisateur ne voit que les formulaires
+  appartenant à ses groupes.
+</p>
+<div class="table-responsive mb-3">
+  <table class="table table-sm table-bordered">
+    <thead class="table-light">
+      <tr><th>Rôle</th><th>Accès</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge bg-secondary">Utilisateur</span></td>
+        <td>Consulte les dashboards de ses groupes, utilise les filtres et exports.</td>
+      </tr>
+      <tr>
+        <td><span class="badge bg-primary">Admin de groupe</span></td>
+        <td>Tout ce qu'un utilisateur peut faire + gérer les membres de son groupe + charger des modules de dashboard.</td>
+      </tr>
+      <tr>
+        <td><span class="badge bg-danger">Administrateur principal</span></td>
+        <td>Accès complet : configuration du serveur, gestion de tous les formulaires, groupes et utilisateurs.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+{# 2. Accès et connexion #}
+<h4 id="acces" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-box-arrow-in-right me-2 text-danger"></i>2. Accès et connexion
+</h4>
+
+<h6>Demander l'accès</h6>
+<p>
+  Si vous n'avez pas encore de compte, cliquez sur <strong>« Créer un compte »</strong> sur la page
+  de connexion. Renseignez votre nom complet et votre adresse email, puis choisissez un mot de passe.
+  Votre demande sera transmise à un administrateur pour validation. Vous recevrez un message de
+  confirmation une fois votre compte activé.
+</p>
+
+<h6>Se connecter</h6>
+<p>
+  Saisissez votre adresse email et votre mot de passe sur la page de connexion
+  (<code>/accounts/login/</code>). La session reste ouverte jusqu'à ce que vous cliquiez sur
+  <strong>« Déconnexion »</strong> en haut à droite.
+</p>
+
+<h6>Mot de passe oublié</h6>
+<p>
+  Contactez votre administrateur de groupe ou l'administrateur principal. Celui-ci peut générer
+  un lien de réinitialisation de mot de passe et vous le transmettre directement.
+</p>
+
+
+{# 3. Dashboards #}
+<h4 id="dashboards" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-bar-chart-line me-2 text-danger"></i>3. Consulter les dashboards
+</h4>
+<p>
+  La page d'accueil (<strong>« Formulaires »</strong>) liste tous les dashboards auxquels vous
+  avez accès. Cliquez sur <strong>« Visionner le dashboard »</strong> pour ouvrir un formulaire.
+</p>
+<p>
+  Deux types de vues existent selon le formulaire :
+</p>
+<ul>
+  <li>
+    <strong>Dashboard indicateurs</strong> — affiche des cartes de synthèse (bénéficiaires totaux,
+    rapports soumis), des graphiques par pays, par période et par résultat, une carte de
+    désagrégation (âge/sexe, handicap, statut) et un tableau de données détaillé.
+  </li>
+  <li>
+    <strong>Matrice de couverture</strong> — affiche un tableau croisé activités × pays indiquant
+    le nombre de soumissions pour chaque combinaison. Les cellules cliquables donnent accès à la
+    liste des soumissions correspondantes.
+  </li>
+</ul>
+<p>
+  Le bouton <i class="bi bi-arrow-clockwise"></i> <strong>Rafraîchir</strong> (sur la page du
+  dashboard) force le rechargement des données depuis le serveur KoboToolBox, en ignorant le cache.
+</p>
+
+
+{# 4. Filtres #}
+<h4 id="filtres" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-funnel me-2 text-danger"></i>4. Utiliser les filtres
+</h4>
+<p>
+  Les dashboards proposent une barre de filtres en haut de page. Les filtres disponibles varient
+  selon le type de formulaire :
+</p>
+<ul>
+  <li><strong>Pays</strong> — restreint l'affichage à un pays ou une zone géographique.</li>
+  <li><strong>Année / Trimestre</strong> — filtre par période de rapport.</li>
+  <li><strong>Résultat</strong> — affiche uniquement les indicateurs d'un résultat donné.</li>
+  <li><strong>Responsable</strong> — filtre par personne ou entité responsable de l'activité (matrice de couverture).</li>
+</ul>
+<p>
+  Les filtres sont cumulables. Pour les réinitialiser, cliquez sur <strong>« Réinitialiser »</strong>
+  ou supprimez les paramètres de l'URL.
+</p>
+
+
+{# 5. Exports #}
+<h4 id="exports" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-download me-2 text-danger"></i>5. Exporter les données
+</h4>
+<p>
+  Deux formats d'export sont disponibles depuis la page du dashboard :
+</p>
+<ul>
+  <li>
+    <strong>CSV</strong> — fichier texte séparé par des virgules, compatible avec la plupart des
+    tableurs. Encodage UTF-8 avec BOM pour une compatibilité optimale avec Excel.
+  </li>
+  <li>
+    <strong>XLSX</strong> — fichier Excel natif avec en-têtes formatées et colonnes ajustées
+    automatiquement.
+  </li>
+</ul>
+<p class="text-muted small">
+  <i class="bi bi-info-circle me-1"></i>
+  L'export porte sur l'ensemble des données du formulaire, pas uniquement sur les lignes filtrées
+  à l'écran.
+</p>
+
+
+{# 6. Admin de groupe #}
+<h4 id="groupe-admin" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-people-fill me-2 text-danger"></i>6. Administrateurs de groupe
+</h4>
+<p>
+  Si vous êtes administrateur d'un groupe, l'icône <i class="bi bi-people-fill"></i> apparaît dans
+  la barre de navigation. Elle donne accès à la page <strong>« Mon groupe »</strong>.
+</p>
+
+<h6>Gérer les membres</h6>
+<ul>
+  <li>
+    <strong>Ajouter un membre</strong> — sélectionnez un utilisateur actif dans la liste déroulante
+    et cliquez sur <strong>« Ajouter »</strong>. Seuls les utilisateurs déjà créés et activés par
+    l'administrateur principal apparaissent dans la liste.
+  </li>
+  <li>
+    <strong>Désactiver un compte</strong> — l'utilisateur ne peut plus se connecter mais son compte
+    est conservé. Cliquez sur <i class="bi bi-pause-circle"></i>.
+  </li>
+  <li>
+    <strong>Supprimer un compte</strong> — suppression définitive. Cliquez sur <i class="bi bi-trash"></i>
+    et confirmez.
+  </li>
+  <li>
+    <strong>Réinitialiser le mot de passe</strong> — cliquez sur <i class="bi bi-key"></i> pour
+    générer un lien de réinitialisation à usage unique (valable 3 jours). Copiez ce lien et
+    transmettez-le à l'utilisateur par email ou messagerie.
+  </li>
+</ul>
+
+<h6>Gérer les modules de dashboard</h6>
+<p>
+  Chaque formulaire peut avoir un fichier de module Python (<code>.py</code>) qui définit comment
+  les soumissions sont analysées et affichées. En tant qu'admin de groupe, vous pouvez :
+</p>
+<ul>
+  <li>
+    <strong>Télécharger le module actuel</strong> — cliquez sur
+    <i class="bi bi-download"></i> <strong>Module</strong> pour récupérer le fichier <code>.py</code>
+    en cours d'utilisation.
+  </li>
+  <li>
+    <strong>Charger un nouveau module</strong> — sélectionnez un fichier <code>.py</code> et cliquez
+    sur <i class="bi bi-upload"></i> <strong>Charger</strong>. Le nouveau module prend effet
+    immédiatement (sans redémarrage du serveur en mode développement ; un redémarrage gunicorn est
+    nécessaire en production).
+  </li>
+</ul>
+<div class="alert alert-warning small">
+  <i class="bi bi-exclamation-triangle me-1"></i>
+  Le fichier module doit être un script Python valide avec un identifiant Python valide comme nom
+  de fichier (lettres, chiffres, underscores — sans espaces ni tirets).
+</div>
+
+
+{# 7. Administrateur principal #}
+<h4 id="admin" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-gear me-2 text-danger"></i>7. Administrateur principal
+</h4>
+<p>
+  L'administrateur principal accède à la page <strong>Paramètres</strong>
+  (<i class="bi bi-gear"></i> dans la barre de navigation).
+</p>
+
+<h6>Connexion au serveur KoboToolBox</h6>
+<p>
+  Renseignez l'URL du serveur (ex. <code>https://kobo.ifrc.org</code>) et le token API.
+  Le token est disponible sur votre profil KoboToolBox à l'adresse
+  <code>&lt;url-serveur&gt;/token/?format=json</code>.
+  Cliquez sur <strong>« Tester & charger les formulaires »</strong> pour vérifier la connexion
+  et obtenir la liste des formulaires disponibles.
+</p>
+
+<h6>Ajouter un formulaire</h6>
+<p>
+  Après avoir chargé la liste des formulaires, sélectionnez-en un dans le menu déroulant et cliquez
+  sur <strong>« Ajouter ce formulaire »</strong>. Vous pouvez ajuster la durée du cache (en secondes)
+  pour contrôler la fréquence de synchronisation avec KoboToolBox.
+</p>
+
+<h6>Gérer les groupes</h6>
+<p>
+  Créez des groupes nommés pour organiser l'accès aux formulaires. Pour chaque groupe, vous pouvez :
+</p>
+<ul>
+  <li>Affecter des formulaires (les membres du groupe verront uniquement ces formulaires).</li>
+  <li>Affecter des membres (utilisateurs actifs).</li>
+  <li>Désigner des administrateurs de groupe parmi les membres.</li>
+</ul>
+<p>
+  Les formulaires non affectés à aucun groupe sont visibles uniquement par l'administrateur principal.
+</p>
+
+<h6>Gérer les utilisateurs</h6>
+<p>
+  La page <strong>« Gestion des utilisateurs »</strong> (<i class="bi bi-person-fill-check"></i>)
+  liste les comptes en attente de validation et les comptes actifs. Vous pouvez :
+</p>
+<ul>
+  <li><strong>Activer</strong> un nouveau compte après vérification de l'identité.</li>
+  <li><strong>Désactiver</strong> temporairement un compte sans le supprimer.</li>
+  <li><strong>Supprimer</strong> définitivement un compte.</li>
+  <li>
+    <strong>Générer un lien de réinitialisation de mot de passe</strong>
+    (<i class="bi bi-key"></i>) — à transmettre à l'utilisateur par le canal de votre choix.
+    Le lien est valable 3 jours et à usage unique.
+  </li>
+</ul>
+
+<h6>Couleur principale</h6>
+<p>
+  Depuis les Paramètres, vous pouvez personnaliser la couleur de l'interface avec le sélecteur de
+  couleur ou en saisissant un code hexadécimal (ex. <code>#00833D</code>). Des raccourcis sont
+  proposés pour les couleurs IFRC, Oxfam et ONU. La modification est instantanée pour tous les
+  utilisateurs dès la prochaine page chargée.
+</p>
+
+<h6>Récupération d'accès</h6>
+<p>
+  En cas de perte de mot de passe, connectez-vous au serveur via SSH et exécutez :
+</p>
+<pre class="bg-light rounded p-2">python3 manage.py init_admin</pre>
+<p>
+  Un lien de connexion à usage unique (valable 3 jours) s'affiche dans le terminal.
+</p>
+
+<div class="mt-5 mb-2 text-center text-muted small">
+  <a href="/dashboard/" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-arrow-left me-1"></i>Retour au tableau de bord
+  </a>
+</div>
+
+</div>
+</div>
+{% endblock %}
