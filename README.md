@@ -1,6 +1,6 @@
 # KoboToolBox Dashboard
 
-A Django web application that connects to a [KoboToolBox](https://www.kobotoolbox.org/) server, pulls form submission data via the v2 REST API, and displays it to authenticated users through customisable dashboards.
+**v1.0** — A Django web application that connects to a [KoboToolBox](https://www.kobotoolbox.org/) server, pulls form submission data via the v2 REST API, and displays it to authenticated users through customisable dashboards.
 
 The app is generic: it can connect to any KoboToolBox server and display any number of forms. Each form can have its own **dashboard module** — a single Python file that defines how submissions are parsed, visualised, and exported. Forms without a module fall back to a generic group/tab table view.
 
@@ -10,9 +10,13 @@ The app is generic: it can connect to any KoboToolBox server and display any num
 
 - Connect to any KoboToolBox server (IFRC, Humanitarian, or self-hosted)
 - Manage multiple forms simultaneously, each with its own module and cache TTL
-- Per-form dashboard modules: upload/download via the web UI, no server restart needed for new forms
-- Authentication with email + password, registration, and password reset (French UI)
-- Staff user management: activate/deactivate/delete users from the web UI
+- Per-form dashboard modules: upload/download via the web UI, no server restart needed
+- **User groups**: partition forms by group — users only see the forms assigned to their group(s)
+- **Group admins**: delegate member management and module uploads to a group-level admin
+- **Multilingual UI**: French (default), English, Spanish, Arabic (RTL), Russian — switchable per session
+- **Org branding**: set your organisation name, logo, and primary colour from the Settings page
+- Email-based authentication, self-registration with admin approval, password reset
+- Admin recovery via SSH management command (`init_admin`) — no email server needed
 - File-based cache with configurable TTL per form
 - CSV and XLSX export
 
@@ -21,39 +25,60 @@ The app is generic: it can connect to any KoboToolBox server and display any num
 ## Architecture
 
 ```
-kobodashboard/        Django project config
-                      settings.py reads .env via python-decouple
+kobodashboard/          Django project config
+  __init__.py           App version (__version__)
+  settings.py           Reads .env via python-decouple; i18n; whitenoise
 
-kobo/                 KoboToolBox integration
-  models.py           KoboConfig (server URL + API token)
-                      ConfiguredForm (one row per active form)
-  api_client.py       requests wrapper for /api/v2/assets/ and /data/
-  cache_helpers.py    file-based cache layer keyed by form UID
+kobo/                   KoboToolBox integration
+  models.py             KoboConfig (singleton: server URL, API token, branding)
+                        ConfiguredForm (one row per active form)
+                        DashboardGroup (groups with members, admins, forms)
+  api_client.py         requests wrapper for /api/v2/assets/ and /data/
+  cache_helpers.py      File-based cache layer keyed by form UID
 
-accounts/             Email-based login, registration, password reset
+accounts/               Email-based login, registration, password reset
+  backends.py           EmailBackend — authenticate by email not username
+  context_processors.py is_power_user, is_group_admin, site_config,
+                        language info — injected into all templates
+  management/commands/
+    init_admin.py       First-access / locked-out recovery command
 
-dashboard/            UI views and Bootstrap 5 templates
-  views.py            form_list, settings_view, coverage, amopah_dashboard,
-                      submission_list, submission_detail, export_csv,
-                      export_xlsx, module_download, module_upload
+dashboard/              UI views and Bootstrap 5 templates
+  views.py              form_list, settings_view, coverage, amopah_dashboard,
+                        submission_list, submission_detail, export_csv/xlsx,
+                        module_download/upload, group_edit, my_group, aide
 
-form_modules/         Dashboard module plugin system
-  __init__.py         Registry + auto-discovery of *.py files
-  base.py             FormModule base class
-  dnh.py              Do Not Harm checklist module (AMOPAH project)
-  amopah3.py          AMOPAH III indicator monitoring module
+form_modules/           Dashboard module plugin system
+  __init__.py           Registry + auto-discovery of *.py files
+  base.py               FormModule base class
+  dnh.py                Do Not Harm checklist module
+  amopah3.py            AMOPAH III indicator monitoring module
 
-kobo/program_structure.py   Parses XLSForm choices into results/activities/
-                            countries hierarchy (used by DNH-style modules)
+locale/                 Translation files (en, es, ar, ru)
+  <lang>/LC_MESSAGES/django.po / django.mo
 ```
+
+---
+
+## Access control
+
+Three roles:
+
+| Role | How identified | Access |
+|---|---|---|
+| **Power user** (admin) | Email in `POWER_USER_EMAILS` (settings.py) | Everything |
+| **Group admin** | Listed as admin of a `DashboardGroup` | Their group's forms + member management |
+| **User** | Active account, member of ≥1 group | Their group's forms only |
+
+Forms not assigned to any group are only visible to the power user.
 
 ---
 
 ## Module system
 
-Each form type has a **module** — a Python file in `form_modules/` decorated with `@register('form-uid')`. Two module patterns exist:
+Each form type has a **module** — a Python file in `form_modules/` decorated with `@register('form-uid')`. Two patterns exist:
 
-**Coverage-matrix modules** (e.g. Do Not Harm): implement `parse_structure` and `parse_submission_detail`. The dashboard shows an activity×country coverage matrix with a submission drill-down.
+**Coverage-matrix modules** (e.g. Do Not Harm): implement `parse_structure` and `parse_submission_detail`. The dashboard shows an activity × country matrix with submission drill-down.
 
 ```python
 from form_modules import register
@@ -62,22 +87,20 @@ from form_modules.base import FormModule
 @register('your-form-uid-here')
 class MyFormModule(FormModule):
     form_label = 'My Dashboard'
-    FIELD_PATHS = { ... }        # logical name → KoboToolBox field path
-    EXPORT_HEADERS = [ ... ]     # CSV/XLSX column headers
+    FIELD_PATHS = { ... }
+    EXPORT_HEADERS = [ ... ]
 
-    def parse_structure(self, schema): ...          # → results/countries/applicable dict
-    def parse_submission_detail(self, sub, structure): ...  # → {'activity': {...}, 'risks': [...]}
+    def parse_structure(self, schema): ...
+    def parse_submission_detail(self, sub, structure): ...
 ```
 
-**Indicator-monitoring modules** (e.g. AMOPAH III): also implement `parse_submissions`. The dashboard shows summary charts (by country, result, period), disaggregation breakdowns (age/sex, disability, population status), and a flat data table.
+**Indicator-monitoring modules** (e.g. AMOPAH III): also implement `parse_submissions`. The dashboard shows summary charts, disaggregation breakdowns (age/sex, disability, population status), and a data table.
 
 ```python
-    def parse_submissions(self, submissions): ...   # → list of parsed submission dicts
+    def parse_submissions(self, submissions): ...
 ```
 
-Modules are **auto-discovered** at startup — drop a file in `form_modules/` and it registers itself. No other changes needed.
-
-Modules can be **uploaded and downloaded** from the Settings page without touching the server filesystem directly.
+Modules are **auto-discovered** at startup and can be **uploaded/downloaded** from the Settings page.
 
 ---
 
@@ -102,7 +125,7 @@ pip install -r requirements.txt
 
 ```bash
 cp .env.example .env
-# Edit .env and set SECRET_KEY, DEBUG=True, ALLOWED_HOSTS=localhost
+# Edit .env: set SECRET_KEY, DEBUG=True, ALLOWED_HOSTS=localhost
 ```
 
 ### Run
@@ -110,11 +133,16 @@ cp .env.example .env
 ```bash
 source .venv/bin/activate
 python3 manage.py migrate
-python3 manage.py createsuperuser
 python3 manage.py runserver
 ```
 
-Open http://localhost:8000/ and log in with your superuser email and password.
+Open http://localhost:8000/ — on first run, create the admin account via:
+
+```bash
+python3 manage.py init_admin
+```
+
+This prints a one-time login link valid for 3 days. Open it, set a password, then log in.
 
 Go to **Paramètres** to enter your KoboToolBox server URL and API token, then add forms.
 
@@ -129,7 +157,7 @@ Go to **Paramètres** to enter your KoboToolBox server URL and API token, then a
 | `ALLOWED_HOSTS` | — | Comma-separated hostnames |
 | `CSRF_TRUSTED_ORIGINS` | — | Required in production behind a proxy |
 | `EMAIL_BACKEND` | `console` | Django email backend |
-| `EMAIL_HOST` | — | SMTP host (production) |
+| `EMAIL_HOST` | — | SMTP host (optional — password reset works without email via `init_admin`) |
 | `EMAIL_PORT` | `587` | SMTP port |
 | `EMAIL_HOST_USER` | — | SMTP username |
 | `EMAIL_HOST_PASSWORD` | — | SMTP password |
@@ -140,7 +168,7 @@ Go to **Paramètres** to enter your KoboToolBox server URL and API token, then a
 
 ## Production deployment
 
-The reference deployment runs on an Ubuntu server alongside a Nextcloud snap. The Nextcloud snap owns ports 80/443, so Django runs on a separate port behind a system nginx reverse proxy.
+The reference deployment runs on an Ubuntu server alongside a Nextcloud snap. The Nextcloud snap owns ports 80/443, so Django runs behind a system nginx reverse proxy.
 
 ### First-time setup
 
@@ -160,7 +188,6 @@ cp .env.example .env
 
 # 4. Initialise database and static files
 python3 manage.py migrate
-python3 manage.py createsuperuser
 python3 manage.py collectstatic --no-input
 
 # 5. Create log directory
@@ -176,30 +203,38 @@ sudo cp deploy/nginx-kobodash.conf /etc/nginx/sites-available/kobodash
 sudo ln -s /etc/nginx/sites-available/kobodash /etc/nginx/sites-enabled/
 sudo certbot --nginx -d kobodash.vmalep.eu
 sudo systemctl reload nginx
+
+# 8. Create the first admin account
+python3 manage.py init_admin
+# Open the printed URL, set a password, log in.
 ```
 
 ### Update
 
 ```bash
+bash /srv/kobodashboard/deploy/update.sh
+```
+
+### Admin recovery (locked out)
+
+```bash
 cd /srv/kobodashboard
-git pull
 source .venv/bin/activate
-pip install -r requirements.txt   # if dependencies changed
-python3 manage.py migrate
-sudo systemctl restart kobodashboard
+python3 manage.py init_admin
+# Open the printed one-time link in a browser.
 ```
 
 ---
 
 ## Modules included
 
-| Module file | Form | Description |
+| Module | Form type | Description |
 |---|---|---|
-| `form_modules/dnh.py` | CheckList Do Not Harm | Coverage matrix showing which Do Not Harm activities are covered per country, with risk analysis drill-down |
-| `form_modules/amopah3.py` | FORMULAIRE_DASHBOARD_AMOPAH III | Indicator monitoring dashboard for the AMOPAH III program (5 countries, 4 results, 48 indicators). Charts by country/result/period, disaggregation breakdowns (age/sex, disability, population status), data table, CSV/XLSX export |
+| `form_modules/dnh.py` | Coverage matrix | Do Not Harm checklist — activity × country matrix with risk drill-down |
+| `form_modules/amopah3.py` | Indicator monitoring | AMOPAH III program — charts by country/result/period, disaggregation, data table, CSV/XLSX export |
 
 ---
 
-## License
+## Licence
 
-MIT
+[GNU General Public Licence v3.0](LICENSE) — you may use, modify, and redistribute this software freely, but any derivative work must also be released under the GPL v3. You may not relicence it as proprietary software.
