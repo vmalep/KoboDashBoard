@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from kobodashboard import __version__ as APP_VERSION
 
 _LANG_NAMES = [
     ('fr', 'Français'),
@@ -28,11 +29,11 @@ def user_roles(request):
         'site_config': _site_config(),
     }
     if not request.user.is_authenticated:
-        return {'is_power_user': False, 'is_group_admin': False, **lang_ctx}
+        return {'is_power_user': False, 'is_group_admin': False, 'app_version': APP_VERSION, **lang_ctx}
     from kobo.models import DashboardGroup
     is_power = request.user.email in settings.POWER_USER_EMAILS
     is_gadmin = not is_power and DashboardGroup.objects.filter(admins=request.user).exists()
-    return {'is_power_user': is_power, 'is_group_admin': is_gadmin, **lang_ctx}
+    return {'is_power_user': is_power, 'is_group_admin': is_gadmin, 'app_version': APP_VERSION, **lang_ctx}
 
 
 def _site_config():
