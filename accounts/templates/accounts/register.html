@@ -81,7 +81,7 @@
         </p>
 
         {# Language selector #}
-        <form action="/i18n/set_language/" method="post" class="text-center">
+        <form action="{% url 'set_language' %}" method="post" class="text-center">
           {% csrf_token %}
           <input type="hidden" name="next" value="{{ request.path }}">
           <select name="language" class="form-select form-select-sm w-auto d-inline-block"
