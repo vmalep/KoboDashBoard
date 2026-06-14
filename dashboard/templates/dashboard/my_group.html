@@ -1,0 +1,114 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Mon groupe — KoboToolBox Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="h4 mb-4"><i class="bi bi-people-fill me-2"></i>Mon groupe</h2>
+
+{% if not groups %}
+  <p class="text-muted">Vous n'administrez aucun groupe pour le moment.</p>
+{% endif %}
+
+{% for group in groups %}
+<div class="card shadow-sm mb-5">
+  <div class="card-header fw-semibold">
+    <i class="bi bi-diagram-3 me-1"></i>{{ group.name }}
+  </div>
+  <div class="card-body">
+
+    {# Members #}
+    <h6 class="text-muted mb-2">Membres</h6>
+    {% if group.members.all %}
+    <div class="table-responsive mb-4">
+      <table class="table table-sm table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Pays</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for member in group.members.all %}
+          <tr>
+            <td>{{ member.profile.full_name|default:"—" }}</td>
+            <td>{{ member.email }}</td>
+            <td>{{ member.profile.get_country_display|default:"—" }}</td>
+            <td class="text-end">
+              <form method="post" action="/dashboard/users/{{ member.pk }}/reset-link/"
+                    class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-secondary"
+                        title="Générer un lien de réinitialisation du mot de passe">
+                  <i class="bi bi-key"></i>
+                </button>
+              </form>
+              <form method="post" action="/dashboard/my-group/{{ member.pk }}/"
+                    class="d-inline ms-1"
+                    onsubmit="return confirm('Désactiver ce compte ?')">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="deactivate">
+                <button type="submit" class="btn btn-sm btn-outline-warning">
+                  <i class="bi bi-pause-circle"></i>
+                </button>
+              </form>
+              <form method="post" action="/dashboard/my-group/{{ member.pk }}/"
+                    class="d-inline ms-1"
+                    onsubmit="return confirm('Supprimer définitivement ce compte ?')">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="text-muted small mb-4">Aucun membre dans ce groupe.</p>
+    {% endif %}
+
+    {# Forms #}
+    <h6 class="text-muted mb-2">Formulaires</h6>
+    {% if group.forms.all %}
+    <div class="list-group list-group-flush">
+      {% for f in group.forms.all %}
+      <div class="list-group-item px-0 py-2">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+          <div>
+            <div class="fw-semibold">{{ f.name }}</div>
+            <code class="text-muted small">{{ f.uid }}</code>
+          </div>
+          <div class="d-flex gap-2 flex-wrap align-items-center">
+            <a href="/dashboard/settings/module-download/{{ f.uid }}/"
+               class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-download me-1"></i>Module
+            </a>
+            <form method="post" action="/dashboard/settings/module-upload/{{ f.uid }}/"
+                  enctype="multipart/form-data" class="d-flex align-items-center gap-1">
+              {% csrf_token %}
+              <input type="file" name="module_file" accept=".py"
+                     class="form-control form-control-sm" style="max-width:200px" required>
+              <button type="submit" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-upload me-1"></i>Charger
+              </button>
+            </form>
+            <a href="/dashboard/{{ f.uid }}/" class="btn btn-sm btn-danger">
+              <i class="bi bi-bar-chart-line me-1"></i>Dashboard
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+      <p class="text-muted small">Aucun formulaire dans ce groupe.</p>
+    {% endif %}
+
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

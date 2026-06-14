@@ -3,9 +3,11 @@ import io
 import re
 from pathlib import Path
 
+from django.conf import settings as django_settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
+from django.db.models import Q
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.core.paginator import Paginator
@@ -16,17 +18,48 @@ import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment
 
 from kobo import api_client, cache_helpers
-from kobo.models import KoboConfig, ConfiguredForm
+from kobo.models import KoboConfig, ConfiguredForm, DashboardGroup
 from form_modules import get_module
 
 PAGE_SIZE = 25
 MODULES_DIR = Path(__file__).resolve().parent.parent / 'form_modules'
 
-POWER_USER_EMAILS = {'vmalep@pm.me'}
-
-
 def _is_power_user(user):
-    return user.is_authenticated and user.email in POWER_USER_EMAILS
+    return user.is_authenticated and user.email in django_settings.POWER_USER_EMAILS
+
+
+def _is_group_admin(user):
+    return user.is_authenticated and DashboardGroup.objects.filter(admins=user).exists()
+
+
+def _user_accessible_forms(user):
+    if _is_power_user(user):
+        return ConfiguredForm.objects.all()
+    return ConfiguredForm.objects.filter(
+        Q(groups__members=user) | Q(groups__admins=user)
+    ).distinct()
+
+
+def _user_can_access_form(user, uid):
+    if _is_power_user(user):
+        return True
+    return ConfiguredForm.objects.filter(uid=uid).filter(
+        Q(groups__members=user) | Q(groups__admins=user)
+    ).exists()
+
+
+def _user_admin_forms(user):
+    """Forms this user is group admin for (module upload/download)."""
+    return ConfiguredForm.objects.filter(groups__admins=user).distinct()
+
+
+def _can_manage_user(acting_user, target_pk):
+    """True if acting_user may deactivate/delete/reset the target user."""
+    if _is_power_user(acting_user):
+        return True
+    return DashboardGroup.objects.filter(
+        admins=acting_user, members__pk=target_pk
+    ).exists()
 
 
 def _config():
@@ -73,7 +106,7 @@ def _load(uid):
 
 @login_required
 def form_list(request):
-    forms = ConfiguredForm.objects.all()
+    forms = _user_accessible_forms(request.user)
     if not forms.exists():
         if _is_power_user(request.user):
             return redirect('/dashboard/settings/')
@@ -170,6 +203,27 @@ def settings_view(request):
             )
             success = 'Durée du cache mise à jour.'
 
+        elif action == 'save_branding':
+            config.org_name = request.POST.get('org_name', '').strip()
+            config.brand_color = request.POST.get('brand_color', '').strip()
+            if request.FILES.get('logo'):
+                config.logo = request.FILES['logo']
+            elif request.POST.get('clear_logo'):
+                config.logo = None
+            config.save()
+            success = 'Apparence mise à jour.'
+
+        elif action == 'create_group':
+            gname = request.POST.get('group_name', '').strip()
+            if gname:
+                _, created = DashboardGroup.objects.get_or_create(name=gname)
+                success = f'Groupe « {gname} » créé.' if created else 'Ce nom de groupe existe déjà.'
+
+        elif action == 'delete_group':
+            gid = request.POST.get('group_id', '').strip()
+            DashboardGroup.objects.filter(pk=gid).delete()
+            success = 'Groupe supprimé.'
+
     configured_forms = []
     for f in ConfiguredForm.objects.all():
         module = get_module(f.uid)
@@ -181,6 +235,8 @@ def settings_view(request):
             'has_module_file': module is not None,
         })
 
+    groups = DashboardGroup.objects.prefetch_related('forms', 'members', 'admins').all()
+
     return render(request, 'dashboard/settings.html', {
         'config': config,
         'configured_forms': configured_forms,
@@ -188,6 +244,7 @@ def settings_view(request):
         'show_add_form': show_add_form,
         'error': error,
         'success': success,
+        'groups': groups,
     })
 
 
@@ -195,7 +252,7 @@ def settings_view(request):
 
 @login_required
 def module_download(request, uid):
-    if not _is_power_user(request.user):
+    if not _is_power_user(request.user) and uid not in _user_admin_forms(request.user).values_list('uid', flat=True):
         return redirect('/dashboard/')
     module = get_module(uid)
     if module is None:
@@ -206,8 +263,9 @@ def module_download(request, uid):
 
 @login_required
 def module_upload(request, uid):
-    if not _is_power_user(request.user) or request.method != 'POST':
-        return redirect('/dashboard/settings/')
+    can_upload = _is_power_user(request.user) or uid in _user_admin_forms(request.user).values_list('uid', flat=True)
+    if not can_upload or request.method != 'POST':
+        return redirect('/dashboard/')
 
     uploaded = request.FILES.get('module_file')
     if not uploaded:
@@ -256,6 +314,8 @@ def _build_table_rows(filtered, f_result):
 @login_required
 def amopah_dashboard(request, uid):
     """Dashboard for AMOPAH III indicator monitoring form."""
+    if not _user_can_access_form(request.user, uid):
+        return redirect('/dashboard/')
     error = None
     chart_data = {}
     periods = []
@@ -446,6 +506,8 @@ def amopah_dashboard(request, uid):
 
 @login_required
 def form_detail(request, uid):
+    if not _user_can_access_form(request.user, uid):
+        return redirect('/dashboard/')
     error = None
     tabs = []
     columns = []
@@ -502,6 +564,8 @@ def form_detail(request, uid):
 
 @login_required
 def coverage(request, uid):
+    if not _user_can_access_form(request.user, uid):
+        return redirect('/dashboard/')
     error = None
     structure = {}
     coverage_data = {}
@@ -630,6 +694,8 @@ def coverage(request, uid):
 
 @login_required
 def submission_list(request, uid):
+    if not _user_can_access_form(request.user, uid):
+        return redirect('/dashboard/')
     error = None
     parsed_submissions = []
     structure = {}
@@ -686,6 +752,8 @@ def submission_list(request, uid):
 
 @login_required
 def submission_detail(request, uid, sub_id):
+    if not _user_can_access_form(request.user, uid):
+        return redirect('/dashboard/')
     error = None
     parsed = None
 
@@ -716,6 +784,8 @@ def submission_detail(request, uid, sub_id):
 
 @login_required
 def refresh_form(request, uid):
+    if not _user_can_access_form(request.user, uid):
+        return redirect('/dashboard/')
     cache_helpers.invalidate(cache_helpers.schema_key(uid))
     cache_helpers.invalidate(cache_helpers.submissions_key(uid))
     cache_helpers.invalidate(f'kobo_structure_{uid}')
@@ -763,6 +833,8 @@ def _amopah_csv_rows(writer, submissions, module):
 
 @login_required
 def export_csv(request, uid):
+    if not _user_can_access_form(request.user, uid):
+        return redirect('/dashboard/')
     try:
         schema, submissions, structure, module = _load(uid)
     except api_client.KoboAPIError as exc:
@@ -860,6 +932,8 @@ def _amopah_xlsx(submissions, module):
 
 @login_required
 def export_xlsx(request, uid):
+    if not _user_can_access_form(request.user, uid):
+        return redirect('/dashboard/')
     try:
         schema, submissions, structure, module = _load(uid)
     except api_client.KoboAPIError as exc:
@@ -984,16 +1058,72 @@ def user_delete(request, user_id):
     return redirect('/dashboard/users/')
 
 
-@_staff_required
+@login_required
 def generate_reset_link(request, user_id):
     if request.method != 'POST':
-        return redirect('/dashboard/users/')
+        return redirect('/dashboard/')
+    if not _can_manage_user(request.user, user_id):
+        return redirect('/dashboard/')
     User = get_user_model()
     user = get_object_or_404(User, pk=user_id)
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
     link = request.build_absolute_uri(f'/accounts/password-reset/confirm/{uid}/{token}/')
+    back = '/dashboard/my-group/' if _is_group_admin(request.user) and not _is_power_user(request.user) else '/dashboard/users/'
     return render(request, 'dashboard/password_reset_link.html', {
         'target_user': user,
         'link': link,
+        'back_url': back,
     })
+
+
+# ── Group management (power user only) ────────────────────────────────────────
+
+@login_required
+def group_edit(request, group_id):
+    if not _is_power_user(request.user):
+        return redirect('/dashboard/')
+    group = get_object_or_404(DashboardGroup, pk=group_id)
+    User = get_user_model()
+    all_forms = ConfiguredForm.objects.all()
+    all_users = User.objects.filter(is_active=True, is_superuser=False).select_related('profile')
+
+    if request.method == 'POST':
+        group.name = request.POST.get('group_name', group.name).strip() or group.name
+        group.save()
+        group.forms.set(all_forms.filter(pk__in=request.POST.getlist('form_ids')))
+        group.members.set(all_users.filter(pk__in=request.POST.getlist('member_ids')))
+        group.admins.set(all_users.filter(pk__in=request.POST.getlist('admin_ids')))
+        return redirect('/dashboard/settings/')
+
+    return render(request, 'dashboard/group_edit.html', {
+        'group': group,
+        'all_forms': all_forms,
+        'all_users': all_users,
+    })
+
+
+# ── Group admin view ──────────────────────────────────────────────────────────
+
+@login_required
+def my_group(request, user_id=None):
+    if not _is_group_admin(request.user) and not _is_power_user(request.user):
+        return redirect('/dashboard/')
+
+    # Group admin deactivate/delete via POST on this page
+    if request.method == 'POST' and user_id is not None:
+        action = request.POST.get('action', '')
+        if _can_manage_user(request.user, user_id):
+            User = get_user_model()
+            target = get_object_or_404(User, pk=user_id)
+            if action == 'deactivate' and target != request.user:
+                target.is_active = False
+                target.save()
+            elif action == 'delete' and target != request.user:
+                target.delete()
+        return redirect('/dashboard/my-group/')
+
+    groups = DashboardGroup.objects.filter(admins=request.user).prefetch_related(
+        'members__profile', 'forms'
+    )
+    return render(request, 'dashboard/my_group.html', {'groups': groups})

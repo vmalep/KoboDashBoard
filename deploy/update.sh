@@ -1,4 +1,6 @@
 #!/bin/bash
+# Usage: bash deploy/update.sh
+# First-run / locked-out recovery: python3 manage.py init_admin
 set -e
 
 cd /srv/kobodashboard

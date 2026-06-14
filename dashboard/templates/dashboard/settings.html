@@ -18,6 +18,67 @@
       </div>
     {% endif %}
 
+    {# ── Apparence ── #}
+    <div class="card shadow-sm mb-4">
+      <div class="card-header fw-semibold">
+        <i class="bi bi-palette me-1"></i>Apparence
+      </div>
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Nom de l'organisation</label>
+            <input type="text" name="org_name" class="form-control"
+                   value="{{ config.org_name }}" placeholder="KoboToolBox Dashboard">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Logo</label>
+            {% if config.logo %}
+              <div class="mb-2 d-flex align-items-center gap-3">
+                <img src="{{ config.logo.url }}" alt="logo actuel" style="height:40px">
+                <label class="form-check-label small text-muted">
+                  <input type="checkbox" name="clear_logo" class="form-check-input me-1">
+                  Supprimer le logo
+                </label>
+              </div>
+            {% endif %}
+            <input type="file" name="logo" class="form-control" accept="image/*">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Couleur principale</label>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <input type="color" name="brand_color" id="brandColor"
+                     value="{{ config.brand_color|default:'#dc3545' }}"
+                     class="form-control form-control-color" style="width:50px;height:38px">
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                      onclick="setColor('#c00000')" title="IFRC Rouge">
+                <span style="display:inline-block;width:14px;height:14px;background:#c00000;border-radius:2px;vertical-align:middle"></span> IFRC
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                      onclick="setColor('#00833D')" title="Oxfam Vert">
+                <span style="display:inline-block;width:14px;height:14px;background:#00833D;border-radius:2px;vertical-align:middle"></span> Oxfam
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                      onclick="setColor('#009EDB')" title="ONU Bleu">
+                <span style="display:inline-block;width:14px;height:14px;background:#009EDB;border-radius:2px;vertical-align:middle"></span> ONU
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                      onclick="setColor('#dc3545')" title="Bootstrap Rouge (défaut)">
+                <span style="display:inline-block;width:14px;height:14px;background:#dc3545;border-radius:2px;vertical-align:middle"></span> Défaut
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                      onclick="setColor('')" title="Aucune couleur personnalisée">
+                <i class="bi bi-x-circle"></i> Réinitialiser
+              </button>
+            </div>
+          </div>
+          <button type="submit" name="action" value="save_branding" class="btn btn-outline-primary">
+            <i class="bi bi-save me-1"></i>Enregistrer l'apparence
+          </button>
+        </form>
+      </div>
+    </div>
+
     {# ── Server connection ── #}
     <div class="card shadow-sm mb-4">
       <div class="card-header fw-semibold">
@@ -179,6 +240,68 @@
     </p>
     {% endif %}
 
+    {# ── Groups ── #}
+    <div class="card shadow-sm mb-4">
+      <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-diagram-3 me-1"></i>Groupes d'utilisateurs</span>
+        <span class="badge bg-secondary">{{ groups|length }}</span>
+      </div>
+      <div class="card-body">
+        {% if groups %}
+        <div class="list-group list-group-flush mb-3">
+          {% for g in groups %}
+          <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <div>
+              <strong>{{ g.name }}</strong>
+              <span class="text-muted small ms-2">
+                {{ g.members.count }} membre{{ g.members.count|pluralize }}
+                · {{ g.forms.count }} formulaire{{ g.forms.count|pluralize }}
+                · {{ g.admins.count }} admin{{ g.admins.count|pluralize }}
+              </span>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="/dashboard/groups/{{ g.pk }}/" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_group">
+                <input type="hidden" name="group_id" value="{{ g.pk }}">
+                <button type="submit" class="btn btn-sm btn-outline-danger"
+                        onclick="return confirm('Supprimer le groupe « {{ g.name }} » ?')">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+          <p class="text-muted small mb-3">Aucun groupe configuré.</p>
+        {% endif %}
+        <form method="post" class="d-flex gap-2">
+          {% csrf_token %}
+          <input type="text" name="group_name" class="form-control form-control-sm"
+                 placeholder="Nom du nouveau groupe" style="max-width:260px" required>
+          <button type="submit" name="action" value="create_group" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-plus-lg me-1"></i>Créer
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {# ── Recovery info ── #}
+    <div class="card shadow-sm mb-4 border-warning">
+      <div class="card-header fw-semibold text-warning-emphasis bg-warning-subtle">
+        <i class="bi bi-shield-lock me-1"></i>Récupération d'accès
+      </div>
+      <div class="card-body small">
+        <p class="mb-1">En cas de perte de mot de passe, connectez-vous au serveur via SSH et exécutez :</p>
+        <pre class="bg-light rounded p-2 mb-1">python3 manage.py init_admin</pre>
+        <p class="mb-0 text-muted">Un lien de connexion à usage unique (valable 3 jours) sera affiché dans le terminal.</p>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -187,5 +310,14 @@ function updateFormName(sel) {
   const opt = sel.options[sel.selectedIndex];
   document.getElementById('formName').value = opt.dataset.name || '';
 }
+function setColor(hex) {
+  const el = document.getElementById('brandColor');
+  el.value = hex || '#dc3545';
+  el.dataset.clear = hex ? '' : '1';
+}
+document.getElementById('brandColor').closest('form').addEventListener('submit', function() {
+  const el = document.getElementById('brandColor');
+  if (el.dataset.clear === '1') el.value = '';
+});
 </script>
 {% endblock %}

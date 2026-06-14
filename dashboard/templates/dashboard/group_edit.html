@@ -1,0 +1,92 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Modifier le groupe — KoboToolBox Dashboard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-8">
+
+    <h2 class="h4 mb-4"><i class="bi bi-diagram-3 me-2"></i>Modifier le groupe</h2>
+
+    <form method="post">
+      {% csrf_token %}
+
+      {# Name #}
+      <div class="card shadow-sm mb-4">
+        <div class="card-header fw-semibold">Nom du groupe</div>
+        <div class="card-body">
+          <input type="text" name="group_name" class="form-control"
+                 value="{{ group.name }}" required>
+        </div>
+      </div>
+
+      {# Forms #}
+      <div class="card shadow-sm mb-4">
+        <div class="card-header fw-semibold"><i class="bi bi-collection me-1"></i>Formulaires accessibles</div>
+        <div class="card-body">
+          {% for f in all_forms %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="form_ids"
+                   value="{{ f.pk }}" id="form_{{ f.pk }}"
+                   {% if f in group.forms.all %}checked{% endif %}>
+            <label class="form-check-label" for="form_{{ f.pk }}">
+              {{ f.name }} <code class="text-muted small">{{ f.uid }}</code>
+            </label>
+          </div>
+          {% empty %}
+            <p class="text-muted mb-0 small">Aucun formulaire configuré.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      {# Members #}
+      <div class="card shadow-sm mb-4">
+        <div class="card-header fw-semibold"><i class="bi bi-people me-1"></i>Membres</div>
+        <div class="card-body">
+          {% for u in all_users %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="member_ids"
+                   value="{{ u.pk }}" id="member_{{ u.pk }}"
+                   {% if u in group.members.all %}checked{% endif %}>
+            <label class="form-check-label" for="member_{{ u.pk }}">
+              {{ u.profile.full_name|default:u.email }}
+              <span class="text-muted small">{{ u.email }}</span>
+            </label>
+          </div>
+          {% empty %}
+            <p class="text-muted mb-0 small">Aucun utilisateur actif.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      {# Admins #}
+      <div class="card shadow-sm mb-4">
+        <div class="card-header fw-semibold"><i class="bi bi-person-gear me-1"></i>Administrateurs du groupe</div>
+        <div class="card-body">
+          <p class="text-muted small mb-2">Les administrateurs peuvent charger des modules et gérer les membres de ce groupe.</p>
+          {% for u in all_users %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="admin_ids"
+                   value="{{ u.pk }}" id="admin_{{ u.pk }}"
+                   {% if u in group.admins.all %}checked{% endif %}>
+            <label class="form-check-label" for="admin_{{ u.pk }}">
+              {{ u.profile.full_name|default:u.email }}
+              <span class="text-muted small">{{ u.email }}</span>
+            </label>
+          </div>
+          {% empty %}
+            <p class="text-muted mb-0 small">Aucun utilisateur actif.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-danger">
+          <i class="bi bi-save me-1"></i>Enregistrer
+        </button>
+        <a href="/dashboard/settings/" class="btn btn-outline-secondary">Annuler</a>
+      </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

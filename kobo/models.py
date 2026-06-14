@@ -1,9 +1,13 @@
+from django.conf import settings
 from django.db import models
 
 
 class KoboConfig(models.Model):
     server_url = models.URLField(default='https://kobo.ifrc.org')
     api_token = models.CharField(max_length=255, blank=True)
+    org_name = models.CharField(max_length=200, blank=True, default='')
+    logo = models.FileField(upload_to='branding/', blank=True, null=True)
+    brand_color = models.CharField(max_length=7, blank=True, default='')
 
     class Meta:
         verbose_name = 'KoboToolBox Configuration'
@@ -23,6 +27,22 @@ class KoboConfig(models.Model):
     def get(cls):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+
+class DashboardGroup(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    members = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name='dashboard_groups', blank=True)
+    admins = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name='administered_groups', blank=True)
+    forms = models.ManyToManyField(
+        'ConfiguredForm', related_name='groups', blank=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
 
 
 class ConfiguredForm(models.Model):
