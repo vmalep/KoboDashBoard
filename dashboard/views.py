@@ -781,8 +781,8 @@ def submission_detail(request, uid, sub_id):
 # ── Help ───────────────────────────────────────────────────────────────────────
 
 @login_required
-def aide(request):
-    return render(request, 'dashboard/aide.html', {})
+def manual(request):
+    return render(request, 'dashboard/manual.html', {})
 
 
 # ── Refresh ────────────────────────────────────────────────────────────────────

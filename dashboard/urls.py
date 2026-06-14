@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.form_list, name='form_list'),
-    path('aide/', views.aide, name='aide'),
+    path('manual/', views.manual, name='manual'),
     path('settings/', views.settings_view, name='settings'),
     path('settings/module-download/<str:uid>/', views.module_download, name='module_download'),
     path('settings/module-upload/<str:uid>/', views.module_upload, name='module_upload'),
