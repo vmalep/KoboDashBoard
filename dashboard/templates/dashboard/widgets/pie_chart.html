@@ -1,0 +1,20 @@
+<div class="card h-100 shadow-sm">
+  <div class="card-body">
+    {% if widget.title %}<h6 class="card-title text-muted small mb-3">{{ widget.title }}</h6>{% endif %}
+    {% if widget.data.labels %}
+    <canvas id="{{ widget.canvas_id }}" style="max-height:280px"></canvas>
+    <script>
+    (function(){
+      const d = JSON.parse('{{ widget.data_json|escapejs }}');
+      new Chart(document.getElementById('{{ widget.canvas_id }}'), {
+        type: 'pie',
+        data: {labels: d.labels, datasets: [{data: d.values, backgroundColor: d.colors}]},
+        options: {responsive:true, plugins:{legend:{position:'bottom'}}}
+      });
+    })();
+    </script>
+    {% else %}
+    <p class="text-muted small mb-0">Aucune donnée.</p>
+    {% endif %}
+  </div>
+</div>

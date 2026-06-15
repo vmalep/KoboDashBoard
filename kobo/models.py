@@ -56,3 +56,13 @@ class ConfiguredForm(models.Model):
 
     def __str__(self):
         return self.name or self.uid
+
+
+class DashboardConfig(models.Model):
+    form = models.OneToOneField(
+        ConfiguredForm, on_delete=models.CASCADE, related_name='dashboard_config')
+    schema_version = models.PositiveIntegerField(default=1)
+    config = models.JSONField(default=dict)
+
+    def __str__(self):
+        return f'Dashboard config — {self.form}'

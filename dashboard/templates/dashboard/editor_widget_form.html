@@ -1,0 +1,129 @@
+<div class="card border-primary mt-3">
+  <div class="card-header text-primary fw-semibold small">
+    {% if action == "edit_widget" %}Modifier le widget{% else %}Ajouter un widget{% endif %}
+  </div>
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="{{ action }}">
+      <input type="hidden" name="row_idx" value="{{ row_idx }}">
+      {% if action == "edit_widget" %}
+      <input type="hidden" name="widget_idx" value="{{ widget_idx }}">
+      {% endif %}
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label class="form-label small fw-semibold">Type</label>
+          <select name="type" id="widgetType_{{ row_idx }}_{{ widget_idx }}" class="form-select form-select-sm"
+                  onchange="updateWidgetFields(this)">
+            <option value="summary_stat"  {% if widget.type == "summary_stat"  %}selected{% endif %}>Chiffre résumé</option>
+            <option value="bar_chart"     {% if widget.type == "bar_chart"     %}selected{% endif %}>Graphique en barres</option>
+            <option value="pie_chart"     {% if widget.type == "pie_chart"     %}selected{% endif %}>Graphique en secteurs</option>
+            <option value="data_table"    {% if widget.type == "data_table"    %}selected{% endif %}>Tableau de données</option>
+          </select>
+        </div>
+        <div class="col-md-8">
+          <label class="form-label small fw-semibold">Titre</label>
+          <input type="text" name="title" class="form-control form-control-sm"
+                 value="{{ widget.title|default:'' }}" placeholder="Ex. Total bénéficiaires">
+        </div>
+      </div>
+
+      {# summary_stat fields #}
+      <div class="wf-group" id="wf_summary_stat_{{ row_idx }}_{{ widget_idx }}">
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">Champ (optionnel)</label>
+            <select name="field" class="form-select form-select-sm">
+              <option value="">— Compter toutes les soumissions —</option>
+              {% for path, label, ftype in field_choices %}
+              {% if ftype == "integer" or ftype == "decimal" %}
+              <option value="{{ path }}" {% if widget.field == path %}selected{% endif %}>{{ label }} ({{ path }})</option>
+              {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">Agrégation</label>
+            <select name="aggregation" class="form-select form-select-sm">
+              <option value="count" {% if widget.aggregation != "sum" and widget.aggregation != "avg" %}selected{% endif %}>Nombre de soumissions</option>
+              <option value="sum"   {% if widget.aggregation == "sum" %}selected{% endif %}>Somme</option>
+              <option value="avg"   {% if widget.aggregation == "avg" %}selected{% endif %}>Moyenne</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {# bar_chart / pie_chart fields #}
+      <div class="wf-group" id="wf_bar_chart_{{ row_idx }}_{{ widget_idx }}">
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Champ de regroupement</label>
+          <select name="field" class="form-select form-select-sm">
+            <option value="">— Choisir un champ —</option>
+            {% for path, label, ftype in field_choices %}
+            <option value="{{ path }}" {% if widget.field == path %}selected{% endif %}>{{ label }} ({{ path }})</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      {# pie_chart shares same field as bar_chart — handled via CSS visibility #}
+      <div class="wf-group" id="wf_pie_chart_{{ row_idx }}_{{ widget_idx }}">
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Champ de regroupement</label>
+          <select name="field" class="form-select form-select-sm">
+            <option value="">— Choisir un champ —</option>
+            {% for path, label, ftype in field_choices %}
+            <option value="{{ path }}" {% if widget.field == path %}selected{% endif %}>{{ label }} ({{ path }})</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      {# data_table fields #}
+      <div class="wf-group" id="wf_data_table_{{ row_idx }}_{{ widget_idx }}">
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Colonnes à afficher</label>
+          <div style="max-height:200px;overflow-y:auto;border:1px solid #dee2e6;border-radius:.375rem;padding:.5rem">
+            {% for path, label, ftype in field_choices %}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="fields" value="{{ path }}"
+                     id="fc_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}"
+                     {% if widget.fields and path in widget.fields %}checked{% endif %}>
+              <label class="form-check-label small" for="fc_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}">
+                {{ label }} <span class="text-muted">{{ path }}</span>
+              </label>
+            </div>
+            {% endfor %}
+            {% if not field_choices %}
+            <span class="text-muted small">Aucun champ disponible (schéma non chargé).</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-sm btn-primary">
+          <i class="bi bi-check-lg me-1"></i>{% if action == "edit_widget" %}Enregistrer{% else %}Ajouter{% endif %}
+        </button>
+        <a href="/dashboard/{{ uid }}/editor/" class="btn btn-sm btn-outline-secondary">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  function updateWidgetFields(sel) {
+    const type = sel ? sel.value : document.getElementById('widgetType_{{ row_idx }}_{{ widget_idx }}').value;
+    const suffix = '_{{ row_idx }}_{{ widget_idx }}';
+    ['summary_stat','bar_chart','pie_chart','data_table'].forEach(function(t){
+      const el = document.getElementById('wf_' + t + suffix);
+      if (el) el.style.display = (t === type) ? '' : 'none';
+    });
+  }
+  updateWidgetFields(null);
+  const sel = document.getElementById('widgetType_{{ row_idx }}_{{ widget_idx }}');
+  if (sel) sel.addEventListener('change', function(){ updateWidgetFields(this); });
+})();
+</script>

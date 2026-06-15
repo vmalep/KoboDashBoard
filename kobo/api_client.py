@@ -169,6 +169,59 @@ def parse_submission_detail(submission, risk_labels, activity_specific_labels=No
     return {'activity': activity, 'risks': risks}
 
 
+def get_field_choices(schema):
+    """Return [(path, label, type), ...] for all user-answerable fields.
+    Fields inside repeat groups are excluded (arrays not supported in v1 editor)."""
+    survey = schema.get('content', {}).get('survey', [])
+    fields = []
+    group_stack = []
+    in_repeat = 0
+
+    for row in survey:
+        row_type = row.get('type', '')
+        name = row.get('name') or row.get('$autoname', '')
+
+        if row_type == 'begin_repeat':
+            in_repeat += 1
+        elif row_type == 'end_repeat':
+            in_repeat = max(0, in_repeat - 1)
+        elif row_type == 'begin_group':
+            if name:
+                group_stack.append(name)
+        elif row_type == 'end_group':
+            if group_stack:
+                group_stack.pop()
+        elif row_type not in ('note',) and name and in_repeat == 0:
+            path = '/'.join(group_stack + [name]) if group_stack else name
+            label = _extract_label(row) or name
+            fields.append((path, label, row_type))
+
+    return fields
+
+
+def get_choice_labels(schema, field_path):
+    """Return {value: label} for a select_one/select_multiple field by its full path.
+    Returns empty dict if the field is not a choice field or not found."""
+    survey = schema.get('content', {}).get('survey', [])
+    choices = schema.get('content', {}).get('choices', [])
+
+    field_name = field_path.rsplit('/', 1)[-1]
+    list_name = None
+    for row in survey:
+        if (row.get('name') or row.get('$autoname', '')) == field_name:
+            list_name = row.get('list_name') or row.get('select_from_list_name')
+            break
+
+    if not list_name:
+        return {}
+
+    return {
+        c['name']: _extract_label(c) or c['name']
+        for c in choices
+        if c.get('list_name') == list_name and c.get('name')
+    }
+
+
 def _extract_label(row):
     label = row.get('label', '')
     if isinstance(label, list):

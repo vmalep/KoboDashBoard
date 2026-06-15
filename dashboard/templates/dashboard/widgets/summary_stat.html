@@ -1,0 +1,8 @@
+<div class="card h-100 shadow-sm">
+  <div class="card-body d-flex flex-column align-items-center justify-content-center text-center py-4">
+    {% if widget.title %}
+    <div class="text-muted small mb-2">{{ widget.title }}</div>
+    {% endif %}
+    <div class="display-4 fw-bold text-danger">{{ widget.data.value }}</div>
+  </div>
+</div>

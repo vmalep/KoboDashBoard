@@ -1,0 +1,178 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Éditeur — {{ form.name }} — KoboDashBoard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-10">
+
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <h2 class="h4 mb-0"><i class="bi bi-pencil-square me-2"></i>Éditeur de dashboard</h2>
+        <small class="text-muted">{{ form.name }}</small>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="/dashboard/{{ uid }}/" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-eye me-1"></i>Aperçu
+        </a>
+        <form method="post" class="m-0">
+          {% csrf_token %}
+          <button type="submit" name="action" value="delete_config" class="btn btn-sm btn-outline-danger"
+                  onclick="return confirm('Supprimer ce tableau de bord et revenir à la vue par défaut ?')">
+            <i class="bi bi-trash me-1"></i>Supprimer le dashboard
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {% if not has_schema %}
+    <div class="alert alert-warning">
+      <i class="bi bi-exclamation-triangle me-1"></i>
+      Impossible de charger le schéma du formulaire — le sélecteur de champs sera vide.
+      Vérifiez la connexion KoboToolBox dans les paramètres.
+    </div>
+    {% endif %}
+
+    {# ── Rows ── #}
+    {% for row in rows %}
+    <div class="card shadow-sm mb-4">
+      <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <span class="fw-semibold">Ligne {{ forloop.counter }}</span>
+        <div class="d-flex gap-1 align-items-center flex-wrap">
+
+          {# Column selector #}
+          <form method="post" class="d-flex gap-1 align-items-center me-2">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="set_columns">
+            <input type="hidden" name="row_idx" value="{{ row.row_idx }}">
+            <span class="small text-muted me-1">Colonnes :</span>
+            {% for n in "123" %}
+            <button type="submit" name="columns" value="{{ n }}"
+                    class="btn btn-sm {% if row.columns == n|add:0 %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+              {{ n }}
+            </button>
+            {% endfor %}
+          </form>
+
+          {# Move up #}
+          {% if not forloop.first %}
+          <form method="post" class="m-0">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="move_row_up">
+            <input type="hidden" name="row_idx" value="{{ row.row_idx }}">
+            <button type="submit" class="btn btn-sm btn-outline-secondary" title="Monter">
+              <i class="bi bi-arrow-up"></i>
+            </button>
+          </form>
+          {% endif %}
+
+          {# Move down #}
+          {% if not forloop.last %}
+          <form method="post" class="m-0">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="move_row_down">
+            <input type="hidden" name="row_idx" value="{{ row.row_idx }}">
+            <button type="submit" class="btn btn-sm btn-outline-secondary" title="Descendre">
+              <i class="bi bi-arrow-down"></i>
+            </button>
+          </form>
+          {% endif %}
+
+          {# Delete row #}
+          <form method="post" class="m-0">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete_row">
+            <input type="hidden" name="row_idx" value="{{ row.row_idx }}">
+            <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer la ligne"
+                    onclick="return confirm('Supprimer cette ligne et ses widgets ?')">
+              <i class="bi bi-trash"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card-body">
+        {# Widget grid preview #}
+        {% if row.widgets %}
+        <div class="row g-2 mb-3">
+          {% for widget in row.widgets %}
+          {% if row.columns == 1 %}<div class="col-12">
+          {% elif row.columns == 2 %}<div class="col-md-6">
+          {% else %}<div class="col-md-4">
+          {% endif %}
+            <div class="card h-100 border-secondary-subtle bg-light">
+              <div class="card-body py-2 px-3">
+                <div class="d-flex justify-content-between align-items-start gap-2">
+                  <div style="min-width:0">
+                    <div class="small fw-semibold text-truncate">{{ widget.title|default:"(sans titre)" }}</div>
+                    <div class="text-muted" style="font-size:.75rem">
+                      {% if widget.type == "summary_stat" %}<i class="bi bi-123 me-1"></i>Chiffre résumé
+                      {% elif widget.type == "bar_chart" %}<i class="bi bi-bar-chart me-1"></i>Barres
+                      {% elif widget.type == "pie_chart" %}<i class="bi bi-pie-chart me-1"></i>Secteurs
+                      {% elif widget.type == "data_table" %}<i class="bi bi-table me-1"></i>Tableau
+                      {% else %}{{ widget.type }}{% endif %}
+                      {% if widget.field %} · <code style="font-size:.7rem">{{ widget.field }}</code>{% endif %}
+                    </div>
+                  </div>
+                  <div class="d-flex gap-1 flex-shrink-0">
+                    <a href="?edit={{ widget.edit_key }}"
+                       class="btn btn-sm btn-outline-secondary py-0 px-1" title="Modifier">
+                      <i class="bi bi-pencil" style="font-size:.75rem"></i>
+                    </a>
+                    <form method="post" class="m-0">
+                      {% csrf_token %}
+                      <input type="hidden" name="action" value="delete_widget">
+                      <input type="hidden" name="row_idx" value="{{ row.row_idx }}">
+                      <input type="hidden" name="widget_idx" value="{{ widget.widget_idx }}">
+                      <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-1"
+                              title="Supprimer" onclick="return confirm('Supprimer ce widget ?')">
+                        <i class="bi bi-trash" style="font-size:.75rem"></i>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# Inline edit form #}
+          {% if request.GET.edit == widget.edit_key %}
+          <div class="col-12">
+            {% include "dashboard/editor_widget_form.html" with action="edit_widget" row_idx=row.row_idx widget_idx=widget.widget_idx widget=widget field_choices=field_choices uid=uid %}
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% else %}
+          <p class="text-muted small mb-3">Aucun widget dans cette ligne.</p>
+        {% endif %}
+
+        {# Add widget button / inline form #}
+        {% with add_key=row.row_idx|stringformat:"s" %}
+        {% if request.GET.add_to_row == add_key %}
+          {% include "dashboard/editor_widget_form.html" with action="add_widget" row_idx=row.row_idx widget_idx=None widget=None field_choices=field_choices uid=uid %}
+        {% else %}
+          <a href="?add_to_row={{ row.row_idx }}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-plus-lg me-1"></i>Ajouter un widget
+          </a>
+        {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-4 text-muted border rounded mb-4">
+      <i class="bi bi-layout-wtf" style="font-size:2rem"></i>
+      <p class="mt-2 mb-0">Aucune ligne. Commencez par en ajouter une.</p>
+    </div>
+    {% endfor %}
+
+    {# Add row button #}
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" name="action" value="add_row" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>Ajouter une ligne
+      </button>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

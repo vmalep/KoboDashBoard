@@ -16,6 +16,7 @@ urlpatterns = [
     path('my-group/', views.my_group, name='my_group'),
     path('my-group/<int:user_id>/', views.my_group, name='my_group_action'),
     path('<str:uid>/', views.coverage, name='coverage'),
+    path('<str:uid>/editor/', views.dashboard_editor, name='dashboard_editor'),
     path('<str:uid>/submissions/', views.submission_list, name='submission_list'),
     path('<str:uid>/submission/<int:sub_id>/', views.submission_detail, name='submission_detail'),
     path('<str:uid>/refresh/', views.refresh_form, name='refresh_form'),

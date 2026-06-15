@@ -1,5 +1,6 @@
 import csv
 import io
+import json
 import re
 from pathlib import Path
 
@@ -18,7 +19,7 @@ import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment
 
 from kobo import api_client, cache_helpers
-from kobo.models import KoboConfig, ConfiguredForm, DashboardGroup
+from kobo.models import KoboConfig, ConfiguredForm, DashboardGroup, DashboardConfig
 from form_modules import get_module
 
 PAGE_SIZE = 25
@@ -116,11 +117,17 @@ def form_list(request):
     for f in forms:
         module = get_module(f.uid)
         cached_subs = cache_helpers.get_if_cached(cache_helpers.submissions_key(f.uid))
+        try:
+            _ = f.dashboard_config
+            has_dash_config = True
+        except DashboardConfig.DoesNotExist:
+            has_dash_config = False
         form_cards.append({
             'uid': f.uid,
             'name': f.name,
             'module_label': module.form_label if module else None,
             'sub_count': len(cached_subs) if cached_subs is not None else None,
+            'has_dash_config': has_dash_config,
         })
 
     return render(request, 'dashboard/form_list.html', {
@@ -481,7 +488,6 @@ def amopah_dashboard(request, uid):
         error = str(exc)
 
     from form_modules.amopah3 import COUNTRY_LABELS, RESULT_LABELS
-    import json as _json
 
     return render(request, 'dashboard/amopah_dashboard.html', {
         'uid': uid,
@@ -500,7 +506,7 @@ def amopah_dashboard(request, uid):
         'f_result': f_result,
         'country_labels': COUNTRY_LABELS,
         'result_labels': RESULT_LABELS,
-        'chart_data_json': _json.dumps(chart_data),
+        'chart_data_json': json.dumps(chart_data),
         'table_rows': _build_table_rows(filtered, f_result),
     })
 
@@ -561,12 +567,134 @@ def form_detail(request, uid):
     })
 
 
+# ── Generic JSON dashboard renderer ───────────────────────────────────────────
+
+_WIDGET_COLORS = [
+    '#dc3545', '#0d6efd', '#198754', '#fd7e14',
+    '#6f42c1', '#20c997', '#ffc107', '#0dcaf0',
+]
+
+_COL_CLASS = {1: 'col-12', 2: 'col-md-6', 3: 'col-md-4'}
+
+
+def _render_widget(widget, submissions, schema):
+    wtype = widget.get('type', '')
+    title = widget.get('title', '')
+
+    if wtype == 'summary_stat':
+        field = widget.get('field') or None
+        agg = widget.get('aggregation', 'count')
+        if agg == 'count' or not field:
+            value = len(submissions)
+        else:
+            nums = []
+            for s in submissions:
+                try:
+                    nums.append(float(s.get(field, '')))
+                except (TypeError, ValueError):
+                    pass
+            if agg == 'sum':
+                value = int(sum(nums))
+            else:
+                value = round(sum(nums) / len(nums), 1) if nums else 0
+        data = {'value': value}
+
+    elif wtype in ('bar_chart', 'pie_chart'):
+        field = widget.get('field', '')
+        choice_labels = api_client.get_choice_labels(schema, field) if field else {}
+        counts = {}
+        for sub in submissions:
+            val = sub.get(field, '')
+            if val:
+                counts[val] = counts.get(val, 0) + 1
+        sorted_items = sorted(counts.items(), key=lambda x: -x[1])
+        labels = [choice_labels.get(v, v) for v, _ in sorted_items]
+        values = [c for _, c in sorted_items]
+        colors = [_WIDGET_COLORS[i % len(_WIDGET_COLORS)] for i in range(len(labels))]
+        data = {'labels': labels, 'values': values, 'colors': colors}
+
+    elif wtype == 'data_table':
+        fields = widget.get('fields', [])
+        question_labels = api_client.get_question_labels(schema)
+        headers = [question_labels.get(f, f) for f in fields]
+        rows_data = [[str(sub.get(f, '')) for f in fields] for sub in submissions[:200]]
+        data = {'headers': headers, 'rows': rows_data}
+
+    else:
+        data = {}
+
+    return {
+        'type': wtype,
+        'title': title,
+        'data': data,
+        'data_json': json.dumps(data, ensure_ascii=False),
+    }
+
+
+def _render_generic_dashboard(request, uid, form, dash_config):
+    error = None
+    rows_rendered = []
+    total_submissions = 0
+    config_json = dash_config.config or {}
+
+    try:
+        kobo_config = _config()
+        ttl = form.cache_ttl_seconds
+        schema = cache_helpers.get_cached(
+            cache_helpers.schema_key(uid),
+            lambda: api_client.get_schema(uid, kobo_config),
+            ttl=ttl,
+        )
+        submissions = cache_helpers.get_cached(
+            cache_helpers.submissions_key(uid),
+            lambda: api_client.get_submissions(uid, kobo_config),
+            ttl=ttl,
+        )
+        total_submissions = len(submissions)
+        for i, row in enumerate(config_json.get('rows', [])):
+            widgets_rendered = []
+            for j, widget in enumerate(row.get('widgets', [])):
+                rendered = _render_widget(widget, submissions, schema)
+                rendered['canvas_id'] = f'chart_{i}_{j}'
+                widgets_rendered.append(rendered)
+            columns = row.get('columns', 1)
+            rows_rendered.append({
+                'columns': columns,
+                'col_class': _COL_CLASS.get(columns, 'col-12'),
+                'widgets': widgets_rendered,
+            })
+    except api_client.KoboAPIError as exc:
+        error = str(exc)
+
+    can_edit = _is_power_user(request.user) or \
+        uid in _user_admin_forms(request.user).values_list('uid', flat=True)
+
+    return render(request, 'dashboard/generic_dashboard.html', {
+        'uid': uid,
+        'form_name': form.name,
+        'rows': rows_rendered,
+        'total_submissions': total_submissions,
+        'error': error,
+        'can_edit': can_edit,
+    })
+
+
 # ── Coverage matrix ────────────────────────────────────────────────────────────
 
 @login_required
 def coverage(request, uid):
     if not _user_can_access_form(request.user, uid):
         return redirect('/dashboard/')
+
+    # JSON dashboard config takes precedence over Python module
+    form = _get_form(uid)
+    if form is not None:
+        try:
+            dash_config = form.dashboard_config
+            return _render_generic_dashboard(request, uid, form, dash_config)
+        except DashboardConfig.DoesNotExist:
+            pass
+
     error = None
     structure = {}
     coverage_data = {}
@@ -689,6 +817,131 @@ def coverage(request, uid):
         'f_responsible': f_responsible,
         'error': error,
     })
+
+
+# ── Dashboard editor ───────────────────────────────────────────────────────────
+
+def _build_widget_from_post(post):
+    wtype = post.get('type', 'summary_stat')
+    widget = {'type': wtype, 'title': post.get('title', '').strip()}
+    if wtype in ('bar_chart', 'pie_chart'):
+        widget['field'] = post.get('field', '').strip()
+    elif wtype == 'summary_stat':
+        widget['field'] = post.get('field', '').strip() or None
+        widget['aggregation'] = post.get('aggregation', 'count')
+    elif wtype == 'data_table':
+        widget['fields'] = [f.strip() for f in post.getlist('fields') if f.strip()]
+    return widget
+
+
+@login_required
+def dashboard_editor(request, uid):
+    can_edit = _is_power_user(request.user) or \
+        uid in _user_admin_forms(request.user).values_list('uid', flat=True)
+    if not can_edit:
+        return redirect('/dashboard/')
+
+    form = get_object_or_404(ConfiguredForm, uid=uid)
+    dash_config, _ = DashboardConfig.objects.get_or_create(
+        form=form,
+        defaults={'schema_version': 1, 'config': {'schema_version': 1, 'rows': []}},
+    )
+    config_json = dash_config.config or {'schema_version': 1, 'rows': []}
+    if 'rows' not in config_json:
+        config_json['rows'] = []
+
+    if request.method == 'POST':
+        action = request.POST.get('action', '')
+        rows = config_json.get('rows', [])
+
+        if action == 'add_row':
+            rows.append({'columns': 1, 'widgets': []})
+
+        elif action == 'delete_row':
+            idx = _safe_int(request.POST.get('row_idx'))
+            if idx is not None and 0 <= idx < len(rows):
+                rows.pop(idx)
+
+        elif action == 'move_row_up':
+            idx = _safe_int(request.POST.get('row_idx'))
+            if idx is not None and idx > 0:
+                rows[idx - 1], rows[idx] = rows[idx], rows[idx - 1]
+
+        elif action == 'move_row_down':
+            idx = _safe_int(request.POST.get('row_idx'))
+            if idx is not None and idx < len(rows) - 1:
+                rows[idx + 1], rows[idx] = rows[idx], rows[idx + 1]
+
+        elif action == 'set_columns':
+            idx = _safe_int(request.POST.get('row_idx'))
+            cols = _safe_int(request.POST.get('columns'))
+            if idx is not None and cols in (1, 2, 3) and 0 <= idx < len(rows):
+                rows[idx]['columns'] = cols
+
+        elif action == 'add_widget':
+            idx = _safe_int(request.POST.get('row_idx'))
+            if idx is not None and 0 <= idx < len(rows):
+                rows[idx]['widgets'].append(_build_widget_from_post(request.POST))
+
+        elif action == 'edit_widget':
+            ridx = _safe_int(request.POST.get('row_idx'))
+            widx = _safe_int(request.POST.get('widget_idx'))
+            if ridx is not None and widx is not None and \
+                    0 <= ridx < len(rows) and 0 <= widx < len(rows[ridx]['widgets']):
+                rows[ridx]['widgets'][widx] = _build_widget_from_post(request.POST)
+
+        elif action == 'delete_widget':
+            ridx = _safe_int(request.POST.get('row_idx'))
+            widx = _safe_int(request.POST.get('widget_idx'))
+            if ridx is not None and widx is not None and \
+                    0 <= ridx < len(rows) and 0 <= widx < len(rows[ridx]['widgets']):
+                rows[ridx]['widgets'].pop(widx)
+
+        elif action == 'delete_config':
+            dash_config.delete()
+            return redirect(f'/dashboard/{uid}/')
+
+        config_json['rows'] = rows
+        dash_config.config = config_json
+        dash_config.save()
+        return redirect(f'/dashboard/{uid}/editor/')
+
+    # Annotate rows/widgets with indices for template use
+    rows_ctx = []
+    for i, row in enumerate(config_json.get('rows', [])):
+        widgets_ctx = []
+        for j, widget in enumerate(row.get('widgets', [])):
+            widgets_ctx.append({**widget, 'widget_idx': j, 'edit_key': f'{i}-{j}'})
+        rows_ctx.append({**row, 'row_idx': i, 'widgets': widgets_ctx})
+
+    field_choices = []
+    has_schema = False
+    try:
+        kobo_config = _config()
+        schema = cache_helpers.get_cached(
+            cache_helpers.schema_key(uid),
+            lambda: api_client.get_schema(uid, kobo_config),
+            ttl=form.cache_ttl_seconds,
+        )
+        field_choices = api_client.get_field_choices(schema)
+        has_schema = True
+    except api_client.KoboAPIError:
+        pass
+
+    return render(request, 'dashboard/editor.html', {
+        'uid': uid,
+        'form': form,
+        'rows': rows_ctx,
+        'field_choices': field_choices,
+        'has_schema': has_schema,
+    })
+
+
+def _safe_int(val):
+    try:
+        return int(val)
+    except (TypeError, ValueError):
+        return None
 
 
 # ── Submission list ─────────────────────────────────────────────────────────────
