@@ -1,4 +1,4 @@
-# KoboToolBox Dashboard
+# KoboDashBoard
 
 **v1.0** — A Django web application that connects to a [KoboToolBox](https://www.kobotoolbox.org/) server, pulls form submission data via the v2 REST API, and displays it to authenticated users through customisable dashboards.
 
