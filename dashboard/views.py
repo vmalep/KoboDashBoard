@@ -117,17 +117,12 @@ def form_list(request):
     for f in forms:
         module = get_module(f.uid)
         cached_subs = cache_helpers.get_if_cached(cache_helpers.submissions_key(f.uid))
-        try:
-            _ = f.dashboard_config
-            has_dash_config = True
-        except DashboardConfig.DoesNotExist:
-            has_dash_config = False
         form_cards.append({
             'uid': f.uid,
             'name': f.name,
             'module_label': module.form_label if module else None,
             'sub_count': len(cached_subs) if cached_subs is not None else None,
-            'has_dash_config': has_dash_config,
+            'dash_configs': list(f.dashboard_configs.values('id', 'name')),
         })
 
     return render(request, 'dashboard/form_list.html', {
@@ -702,6 +697,8 @@ def _render_generic_dashboard(request, uid, form, dash_config):
     return render(request, 'dashboard/generic_dashboard.html', {
         'uid': uid,
         'form_name': form.name,
+        'dashboard_name': dash_config.name,
+        'dashboard_pk': dash_config.pk,
         'rows': rows_rendered,
         'filter_bars': filter_bars,
         'total_submissions': total_submissions,
@@ -718,15 +715,6 @@ def _render_generic_dashboard(request, uid, form, dash_config):
 def coverage(request, uid):
     if not _user_can_access_form(request.user, uid):
         return redirect('/dashboard/')
-
-    # JSON dashboard config takes precedence over Python module
-    form = _get_form(uid)
-    if form is not None:
-        try:
-            dash_config = form.dashboard_config
-            return _render_generic_dashboard(request, uid, form, dash_config)
-        except DashboardConfig.DoesNotExist:
-            pass
 
     error = None
     structure = {}
@@ -852,6 +840,17 @@ def coverage(request, uid):
     })
 
 
+# ── JSON dashboard viewer ──────────────────────────────────────────────────────
+
+@login_required
+def view_dashboard(request, uid, pk):
+    if not _user_can_access_form(request.user, uid):
+        return redirect('/dashboard/')
+    form = get_object_or_404(ConfiguredForm, uid=uid)
+    dash_config = get_object_or_404(DashboardConfig, pk=pk, form=form)
+    return _render_generic_dashboard(request, uid, form, dash_config)
+
+
 # ── Dashboard editor ───────────────────────────────────────────────────────────
 
 def _build_widget_from_post(post):
@@ -868,17 +867,43 @@ def _build_widget_from_post(post):
 
 
 @login_required
-def dashboard_editor(request, uid):
+def dashboard_editor_list(request, uid):
+    """List all JSON dashboards for a form and create new ones."""
     can_edit = _is_power_user(request.user) or \
         uid in _user_admin_forms(request.user).values_list('uid', flat=True)
     if not can_edit:
         return redirect('/dashboard/')
 
     form = get_object_or_404(ConfiguredForm, uid=uid)
-    dash_config, _ = DashboardConfig.objects.get_or_create(
-        form=form,
-        defaults={'schema_version': 1, 'config': {'schema_version': 1, 'rows': []}},
-    )
+
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        if name:
+            dc = DashboardConfig.objects.create(
+                form=form,
+                name=name,
+                schema_version=1,
+                config={'schema_version': 1, 'rows': []},
+            )
+            return redirect(f'/dashboard/{uid}/editor/{dc.pk}/')
+
+    configs = DashboardConfig.objects.filter(form=form)
+    return render(request, 'dashboard/editor_list.html', {
+        'uid': uid,
+        'form': form,
+        'configs': configs,
+    })
+
+
+@login_required
+def dashboard_editor(request, uid, pk):
+    can_edit = _is_power_user(request.user) or \
+        uid in _user_admin_forms(request.user).values_list('uid', flat=True)
+    if not can_edit:
+        return redirect('/dashboard/')
+
+    form = get_object_or_404(ConfiguredForm, uid=uid)
+    dash_config = get_object_or_404(DashboardConfig, pk=pk, form=form)
     config_json = dash_config.config or {'schema_version': 1, 'rows': []}
     if 'rows' not in config_json:
         config_json['rows'] = []
@@ -930,9 +955,16 @@ def dashboard_editor(request, uid):
                     0 <= ridx < len(rows) and 0 <= widx < len(rows[ridx]['widgets']):
                 rows[ridx]['widgets'].pop(widx)
 
+        elif action == 'rename':
+            new_name = request.POST.get('name', '').strip()
+            if new_name:
+                dash_config.name = new_name
+                dash_config.save()
+            return redirect(f'/dashboard/{uid}/editor/{pk}/')
+
         elif action == 'delete_config':
             dash_config.delete()
-            return redirect(f'/dashboard/{uid}/')
+            return redirect(f'/dashboard/{uid}/editor/')
 
         elif action == 'add_filter':
             field = request.POST.get('filter_field', '').strip()
@@ -966,7 +998,7 @@ def dashboard_editor(request, uid):
         config_json['rows'] = rows
         dash_config.config = config_json
         dash_config.save()
-        return redirect(f'/dashboard/{uid}/editor/')
+        return redirect(f'/dashboard/{uid}/editor/{pk}/')
 
     # Annotate rows/widgets with indices for template use
     rows_ctx = []
@@ -998,6 +1030,7 @@ def dashboard_editor(request, uid):
     return render(request, 'dashboard/editor.html', {
         'uid': uid,
         'form': form,
+        'dash_config': dash_config,
         'rows': rows_ctx,
         'filters': filters_ctx,
         'field_choices': field_choices,

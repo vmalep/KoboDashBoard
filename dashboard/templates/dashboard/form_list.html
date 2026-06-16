@@ -34,10 +34,15 @@
         </p>
         {% endif %}
       </div>
-      <div class="card-footer bg-transparent d-flex gap-2">
-        <a href="/dashboard/{{ card.uid }}/" class="btn btn-danger flex-grow-1">
+      <div class="card-footer bg-transparent d-flex flex-column gap-1">
+        <a href="/dashboard/{{ card.uid }}/" class="btn btn-danger w-100">
           <i class="bi bi-bar-chart-line me-1"></i>{% trans "Visionner le dashboard" %}
         </a>
+        {% for dc in card.dash_configs %}
+        <a href="/dashboard/{{ card.uid }}/view/{{ dc.id }}/" class="btn btn-sm btn-outline-danger w-100">
+          <i class="bi bi-layout-wtf me-1"></i>{{ dc.name }}
+        </a>
+        {% endfor %}
       </div>
     </div>
   </div>
