@@ -622,15 +622,17 @@ def _render_widget(widget, submissions, schema):
     elif wtype == 'pie_chart':
         field = widget.get('field', '')
         choice_labels = api_client.get_choice_labels(schema, field) if field else {}
+        custom_labels = widget.get('custom_labels', {})
+        palette = widget.get('colors') or _WIDGET_COLORS
         counts = {}
         for sub in submissions:
             val = sub.get(field, '')
             if val:
                 counts[val] = counts.get(val, 0) + 1
         sorted_items = sorted(counts.items(), key=lambda x: -x[1])
-        labels = [choice_labels.get(v, v) for v, _ in sorted_items]
+        labels = [custom_labels.get(v, choice_labels.get(v, v)) for v, _ in sorted_items]
         values = [c for _, c in sorted_items]
-        colors = [_WIDGET_COLORS[i % len(_WIDGET_COLORS)] for i in range(len(labels))]
+        colors = [palette[i % len(palette)] for i in range(len(labels))]
         data = {'labels': labels, 'values': values, 'colors': colors}
 
     elif wtype == 'data_table':
@@ -646,6 +648,8 @@ def _render_widget(widget, submissions, schema):
         series_fields = widget.get('series') or ([widget['field2']] if widget.get('field2') else [])
         chart_style = widget.get('chart_style', 'bar')
         stacked = bool(widget.get('stacked', False))
+        palette = widget.get('colors') or _WIDGET_COLORS
+        custom_labels = widget.get('custom_labels', {})
         cl1 = api_client.get_choice_labels(schema, field1) if field1 else {}
         qlabels = api_client.get_question_labels(schema) if schema else {}
         multi_sf = len(series_fields) > 1
@@ -677,10 +681,10 @@ def _render_widget(widget, submissions, schema):
                         if v1 in seen_l and v2 in seen_s:
                             counts[v2][v1] += 1
                     for sk in series_order:
-                        lbl = cl2.get(sk, sk)
+                        lbl = custom_labels.get(sk, cl2.get(sk, sk))
                         if multi_sf:
                             lbl = f"{qlabels.get(sf, sf)} — {lbl}"
-                        color = _WIDGET_COLORS[color_idx % len(_WIDGET_COLORS)]
+                        color = palette[color_idx % len(palette)]
                         color_idx += 1
                         datasets.append({
                             'label': lbl,
@@ -693,11 +697,11 @@ def _render_widget(widget, submissions, schema):
                 for sub in submissions:
                     v = str(sub.get(field1, '') or '')
                     if v: counts_s[v] = counts_s.get(v, 0) + 1
-                color = _WIDGET_COLORS[0]
+                color = palette[0]
                 datasets = [{'label': qlabels.get(field1, field1),
                              'data': [counts_s.get(l, 0) for l in labels_order],
                              'backgroundColor': color, 'borderColor': color, 'fill': False}]
-            x_labels = [cl1.get(l, l) for l in labels_order]
+            x_labels = [custom_labels.get(l, cl1.get(l, l)) for l in labels_order]
         else:
             # No X field: flat absolute comparison — one dataset per series field,
             # X axis = all (field, value) pairs concatenated
@@ -712,9 +716,9 @@ def _render_widget(widget, submissions, schema):
                     v = str(sub.get(sf, '') or '')
                     if v: counts_s[v] = counts_s.get(v, 0) + 1
                 start = len(x_labels)
-                x_labels.extend(cl2.get(v, v) for v in series_order)
+                x_labels.extend(custom_labels.get(v, cl2.get(v, v)) for v in series_order)
                 data_arr = [None] * start + [counts_s.get(v, 0) for v in series_order]
-                color = _WIDGET_COLORS[color_idx % len(_WIDGET_COLORS)]
+                color = palette[color_idx % len(palette)]
                 color_idx += 1
                 datasets.append({'label': qlabels.get(sf, sf), 'data': data_arr,
                                  'backgroundColor': color, 'borderColor': color, 'fill': False})
@@ -967,6 +971,21 @@ def view_dashboard(request, uid, pk):
 def _build_widget_from_post(post):
     wtype = post.get('type', 'summary_stat')
     widget = {'type': wtype, 'title': post.get('title', '').strip()}
+    if wtype in ('pie_chart', 'grouped_chart'):
+        # Custom label overrides: "raw_value = Display label" lines
+        raw_labels = post.get('custom_labels_raw', '')
+        custom_labels = {}
+        for line in raw_labels.splitlines():
+            if '=' in line:
+                k, _, v = line.partition('=')
+                k, v = k.strip(), v.strip()
+                if k:
+                    custom_labels[k] = v
+        if custom_labels:
+            widget['custom_labels'] = custom_labels
+        colors = [c for c in post.getlist('colors') if c]
+        if colors:
+            widget['colors'] = colors
     if wtype == 'pie_chart':
         widget['field'] = post.get('field', '').strip()
     elif wtype == 'summary_stat':
@@ -1126,6 +1145,14 @@ def dashboard_editor(request, uid, pk):
             w = dict(widget)
             if w.get('type') == 'grouped_chart' and 'series' not in w:
                 w['series'] = [w['field2']] if w.get('field2') else []
+            saved_colors = w.get('colors', [])
+            w['color_list'] = [
+                saved_colors[i] if i < len(saved_colors) else _WIDGET_COLORS[i % len(_WIDGET_COLORS)]
+                for i in range(8)
+            ]
+            w['custom_labels_raw'] = '\n'.join(
+                f'{k} = {v}' for k, v in (w.get('custom_labels') or {}).items()
+            )
             widgets_ctx.append({**w, 'widget_idx': j, 'edit_key': f'{i}-{j}'})
         cols = max(row.get('columns', 1), min(len(widgets_ctx), 3))
         rows_ctx.append({**row, 'row_idx': i, 'columns': cols, 'widgets': widgets_ctx})
