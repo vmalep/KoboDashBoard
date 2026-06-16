@@ -640,6 +640,45 @@ def _render_widget(widget, submissions, schema):
         rows_data = [[str(sub.get(f, '')) for f in fields] for sub in submissions[:200]]
         data = {'headers': headers, 'rows': rows_data}
 
+    elif wtype == 'grouped_chart':
+        field1 = widget.get('field', '')
+        field2 = widget.get('field2', '')
+        chart_style = widget.get('chart_style', 'bar')
+        cl1 = api_client.get_choice_labels(schema, field1) if field1 else {}
+        cl2 = api_client.get_choice_labels(schema, field2) if field2 else {}
+        # Collect ordered unique values preserving first-seen order
+        labels_order, series_order = [], []
+        seen_l, seen_s = set(), set()
+        for sub in submissions:
+            v1 = str(sub.get(field1, '') or '')
+            v2 = str(sub.get(field2, '') or '')
+            if v1 and v1 not in seen_l:
+                seen_l.add(v1); labels_order.append(v1)
+            if v2 and v2 not in seen_s:
+                seen_s.add(v2); series_order.append(v2)
+        # Cross-count
+        counts = {s: {l: 0 for l in labels_order} for s in series_order}
+        for sub in submissions:
+            v1 = str(sub.get(field1, '') or '')
+            v2 = str(sub.get(field2, '') or '')
+            if v1 in seen_l and v2 in seen_s:
+                counts[v2][v1] += 1
+        datasets = [
+            {
+                'label': cl2.get(sk, sk),
+                'data': [counts[sk][lbl] for lbl in labels_order],
+                'backgroundColor': _WIDGET_COLORS[i % len(_WIDGET_COLORS)],
+                'borderColor': _WIDGET_COLORS[i % len(_WIDGET_COLORS)],
+                'fill': False,
+            }
+            for i, sk in enumerate(series_order)
+        ]
+        data = {
+            'chart_style': chart_style,
+            'labels': [cl1.get(l, l) for l in labels_order],
+            'datasets': datasets,
+        }
+
     else:
         data = {}
 
@@ -888,6 +927,10 @@ def _build_widget_from_post(post):
         widget['aggregation'] = post.get('aggregation', 'count')
     elif wtype == 'data_table':
         widget['fields'] = [f.strip() for f in post.getlist('fields') if f.strip()]
+    elif wtype == 'grouped_chart':
+        widget['field'] = post.get('field', '').strip()
+        widget['field2'] = post.get('field2', '').strip()
+        widget['chart_style'] = post.get('chart_style', 'bar')
     return widget
 
 

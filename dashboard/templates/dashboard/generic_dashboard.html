@@ -93,6 +93,8 @@
       {% include "dashboard/widgets/pie_chart.html" %}
     {% elif widget.type == "data_table" %}
       {% include "dashboard/widgets/data_table.html" %}
+    {% elif widget.type == "grouped_chart" %}
+      {% include "dashboard/widgets/grouped_chart.html" %}
     {% endif %}
   </div>
   {% endfor %}
