@@ -683,7 +683,7 @@ def _render_generic_dashboard(request, uid, form, dash_config):
                 rendered = _render_widget(widget, filtered, schema)
                 rendered['canvas_id'] = f'chart_{i}_{j}'
                 widgets_rendered.append(rendered)
-            columns = row.get('columns', 1)
+            columns = max(row.get('columns', 1), min(len(widgets_rendered), 3))
             rows_rendered.append({
                 'columns': columns,
                 'col_class': _COL_CLASS.get(columns, 'col-12'),
@@ -1009,7 +1009,8 @@ def dashboard_editor(request, uid, pk):
         widgets_ctx = []
         for j, widget in enumerate(row.get('widgets', [])):
             widgets_ctx.append({**widget, 'widget_idx': j, 'edit_key': f'{i}-{j}'})
-        rows_ctx.append({**row, 'row_idx': i, 'widgets': widgets_ctx})
+        cols = max(row.get('columns', 1), min(len(widgets_ctx), 3))
+        rows_ctx.append({**row, 'row_idx': i, 'columns': cols, 'widgets': widgets_ctx})
 
     field_choices = []
     has_schema = False
