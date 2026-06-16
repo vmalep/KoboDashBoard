@@ -693,12 +693,18 @@ def _render_widget(widget, submissions, schema):
                         if v1 in seen_l and v2 in seen_s:
                             counts[v2][v1] += 1
                     path_svc = series_value_colors.get(sf, {})
-                    for sk in series_order:
+                    series_base_color = sc['color']
+                    for val_idx, sk in enumerate(series_order):
                         lbl = cl2.get(sk, sk)
                         if multi_sf:
                             field_lbl = sc['label'] or qlabels.get(sf, sf)
                             lbl = f"{field_lbl} — {lbl}"
-                        color = path_svc.get(sk) or _WIDGET_COLORS[color_idx % len(_WIDGET_COLORS)]
+                        if path_svc.get(sk):
+                            color = path_svc[sk]
+                        elif val_idx == 0:
+                            color = series_base_color
+                        else:
+                            color = _WIDGET_COLORS[color_idx % len(_WIDGET_COLORS)]
                         color_idx += 1
                         datasets.append({
                             'label': lbl,
