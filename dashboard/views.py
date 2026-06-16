@@ -634,7 +634,9 @@ def _render_widget(widget, submissions, schema):
 def _render_generic_dashboard(request, uid, form, dash_config):
     error = None
     rows_rendered = []
+    filter_bars = []
     total_submissions = 0
+    filtered_count = 0
     config_json = dash_config.config or {}
 
     try:
@@ -651,10 +653,38 @@ def _render_generic_dashboard(request, uid, form, dash_config):
             ttl=ttl,
         )
         total_submissions = len(submissions)
+
+        # Build filter bars and apply active filters
+        filters_config = config_json.get('filters', [])
+        active_filters = {}
+        for f in filters_config:
+            field = f.get('field', '')
+            val = request.GET.get(field, '')
+            if val:
+                active_filters[field] = val
+
+        filtered = [
+            s for s in submissions
+            if all(s.get(field) == val for field, val in active_filters.items())
+        ]
+        filtered_count = len(filtered)
+
+        for f in filters_config:
+            field = f.get('field', '')
+            label = f.get('label') or field
+            choice_labels = api_client.get_choice_labels(schema, field) if field else {}
+            distinct_vals = sorted({s.get(field, '') for s in submissions if s.get(field, '')})
+            filter_bars.append({
+                'field': field,
+                'label': label,
+                'active': active_filters.get(field, ''),
+                'options': [{'value': v, 'label': choice_labels.get(v, v)} for v in distinct_vals],
+            })
+
         for i, row in enumerate(config_json.get('rows', [])):
             widgets_rendered = []
             for j, widget in enumerate(row.get('widgets', [])):
-                rendered = _render_widget(widget, submissions, schema)
+                rendered = _render_widget(widget, filtered, schema)
                 rendered['canvas_id'] = f'chart_{i}_{j}'
                 widgets_rendered.append(rendered)
             columns = row.get('columns', 1)
@@ -673,7 +703,10 @@ def _render_generic_dashboard(request, uid, form, dash_config):
         'uid': uid,
         'form_name': form.name,
         'rows': rows_rendered,
+        'filter_bars': filter_bars,
         'total_submissions': total_submissions,
+        'filtered_count': filtered_count,
+        'has_filters': bool(filter_bars),
         'error': error,
         'can_edit': can_edit,
     })
@@ -901,6 +934,35 @@ def dashboard_editor(request, uid):
             dash_config.delete()
             return redirect(f'/dashboard/{uid}/')
 
+        elif action == 'add_filter':
+            field = request.POST.get('filter_field', '').strip()
+            label = request.POST.get('filter_label', '').strip()
+            if field:
+                filters = config_json.setdefault('filters', [])
+                if not any(f.get('field') == field for f in filters):
+                    filters.append({'field': field, 'label': label or field})
+
+        elif action == 'delete_filter':
+            fidx = _safe_int(request.POST.get('filter_idx'))
+            filters = config_json.get('filters', [])
+            if fidx is not None and 0 <= fidx < len(filters):
+                filters.pop(fidx)
+            config_json['filters'] = filters
+
+        elif action == 'move_filter_up':
+            fidx = _safe_int(request.POST.get('filter_idx'))
+            filters = config_json.get('filters', [])
+            if fidx is not None and fidx > 0:
+                filters[fidx - 1], filters[fidx] = filters[fidx], filters[fidx - 1]
+            config_json['filters'] = filters
+
+        elif action == 'move_filter_down':
+            fidx = _safe_int(request.POST.get('filter_idx'))
+            filters = config_json.get('filters', [])
+            if fidx is not None and fidx < len(filters) - 1:
+                filters[fidx + 1], filters[fidx] = filters[fidx], filters[fidx + 1]
+            config_json['filters'] = filters
+
         config_json['rows'] = rows
         dash_config.config = config_json
         dash_config.save()
@@ -928,10 +990,16 @@ def dashboard_editor(request, uid):
     except api_client.KoboAPIError:
         pass
 
+    filters_ctx = [
+        {**f, 'filter_idx': i}
+        for i, f in enumerate(config_json.get('filters', []))
+    ]
+
     return render(request, 'dashboard/editor.html', {
         'uid': uid,
         'form': form,
         'rows': rows_ctx,
+        'filters': filters_ctx,
         'field_choices': field_choices,
         'has_schema': has_schema,
     })

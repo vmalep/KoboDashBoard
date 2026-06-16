@@ -32,6 +32,92 @@
     </div>
     {% endif %}
 
+    {# ── Filtres ── #}
+    <div class="card shadow-sm mb-4">
+      <div class="card-header fw-semibold">
+        <i class="bi bi-funnel me-1"></i>Filtres du dashboard
+        <span class="text-muted fw-normal small ms-2">Champs affichés comme filtres en haut du dashboard</span>
+      </div>
+      <div class="card-body">
+        {% if filters %}
+        <div class="list-group list-group-flush mb-3">
+          {% for f in filters %}
+          <div class="list-group-item d-flex align-items-center justify-content-between px-0 py-2">
+            <div>
+              <span class="fw-semibold small">{{ f.label }}</span>
+              <code class="text-muted ms-2" style="font-size:.75rem">{{ f.field }}</code>
+            </div>
+            <div class="d-flex gap-1">
+              {% if not forloop.first %}
+              <form method="post" class="m-0">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="move_filter_up">
+                <input type="hidden" name="filter_idx" value="{{ f.filter_idx }}">
+                <button type="submit" class="btn btn-sm btn-outline-secondary py-0 px-1" title="Monter">
+                  <i class="bi bi-arrow-up" style="font-size:.75rem"></i>
+                </button>
+              </form>
+              {% endif %}
+              {% if not forloop.last %}
+              <form method="post" class="m-0">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="move_filter_down">
+                <input type="hidden" name="filter_idx" value="{{ f.filter_idx }}">
+                <button type="submit" class="btn btn-sm btn-outline-secondary py-0 px-1" title="Descendre">
+                  <i class="bi bi-arrow-down" style="font-size:.75rem"></i>
+                </button>
+              </form>
+              {% endif %}
+              <form method="post" class="m-0">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_filter">
+                <input type="hidden" name="filter_idx" value="{{ f.filter_idx }}">
+                <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-1" title="Supprimer"
+                        onclick="return confirm('Supprimer ce filtre ?')">
+                  <i class="bi bi-trash" style="font-size:.75rem"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted small mb-3">Aucun filtre configuré.</p>
+        {% endif %}
+
+        {# Add filter form #}
+        {% if request.GET.add_filter %}
+        <form method="post" class="card border-primary p-3">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add_filter">
+          <div class="row g-2 align-items-end">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Champ</label>
+              <select name="filter_field" class="form-select form-select-sm" required>
+                <option value="">— Choisir un champ —</option>
+                {% for path, label, ftype in field_choices %}
+                <option value="{{ path }}">{{ label }} ({{ path }})</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Étiquette (optionnelle)</label>
+              <input type="text" name="filter_label" class="form-control form-control-sm"
+                     placeholder="ex. Pays">
+            </div>
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-sm btn-primary w-100">Ajouter</button>
+            </div>
+          </div>
+        </form>
+        {% else %}
+        <a href="?add_filter=1" class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-plus-lg me-1"></i>Ajouter un filtre
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
     {# ── Rows ── #}
     {% for row in rows %}
     <div class="card shadow-sm mb-4">

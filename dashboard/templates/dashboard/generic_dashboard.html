@@ -29,6 +29,44 @@
 <div class="alert alert-danger"><i class="bi bi-x-circle-fill me-1"></i>{{ error }}</div>
 {% endif %}
 
+{% if has_filters %}
+<div class="card shadow-sm mb-4">
+  <div class="card-body py-2">
+    <form method="get" action="" class="d-flex flex-wrap align-items-end gap-3">
+      {% for fb in filter_bars %}
+      <div>
+        <label class="form-label small fw-semibold mb-1">{{ fb.label }}</label>
+        <select name="{{ fb.field }}" class="form-select form-select-sm" style="min-width:140px"
+                onchange="this.form.submit()">
+          <option value="">— Tous —</option>
+          {% for opt in fb.options %}
+          <option value="{{ opt.value }}" {% if fb.active == opt.value %}selected{% endif %}>
+            {{ opt.label }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endfor %}
+      <div class="d-flex gap-2 align-items-end">
+        <button type="submit" class="btn btn-sm btn-danger">
+          <i class="bi bi-funnel-fill me-1"></i>Filtrer
+        </button>
+        {% if request.GET %}
+        <a href="/dashboard/{{ uid }}/" class="btn btn-sm btn-outline-secondary">
+          <i class="bi bi-x-lg me-1"></i>Réinitialiser
+        </a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+  {% if request.GET %}
+  <div class="card-footer py-1 text-muted small">
+    {{ filtered_count }} soumission{{ filtered_count|pluralize }} sur {{ total_submissions }}
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+
 {% if not rows %}
 <div class="text-center py-5 text-muted">
   <i class="bi bi-layout-wtf" style="font-size:3rem"></i>
