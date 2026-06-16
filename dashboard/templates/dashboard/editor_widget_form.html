@@ -102,18 +102,44 @@
         </div>
         <div class="mb-3">
           <label class="form-label small fw-semibold">
-            Séries <span class="text-muted fw-normal">(un ou plusieurs champs — chaque valeur devient une série)</span>
+            Séries <span class="text-muted fw-normal">(sélectionner un ou plusieurs champs)</span>
           </label>
-          <div style="max-height:200px;overflow-y:auto;border:1px solid #dee2e6;border-radius:.375rem;padding:.5rem">
+          <div style="max-height:240px;overflow-y:auto;border:1px solid #dee2e6;border-radius:.375rem;padding:.5rem">
+            {% load dashboard_extras %}
             {% for path, label, ftype in field_choices %}
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="series" value="{{ path }}"
+            {% with meta=widget.series_meta|dict_get:path %}
+            {# Hidden inputs always present so POST indices stay aligned #}
+            <input type="hidden" name="series_path" value="{{ path }}">
+            <input type="hidden" name="series_color"
+                   id="sc_color_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}"
+                   value="{{ meta.color|default:'' }}">
+            <input type="hidden" name="series_label"
+                   id="sc_label_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}"
+                   value="{{ meta.label|default:'' }}">
+            <div class="d-flex align-items-center gap-2 py-1 border-bottom border-light">
+              <input class="form-check-input flex-shrink-0 mt-0" type="checkbox"
+                     name="series_sel" value="{{ path }}"
                      id="sc_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}"
-                     {% if widget.series and path in widget.series %}checked{% endif %}>
-              <label class="form-check-label small" for="sc_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}">
-                {{ label }} <span class="text-muted">{{ path }}</span>
+                     {% if path in widget.series_paths %}checked{% endif %}>
+              <label class="form-check-label small flex-grow-1 mb-0"
+                     for="sc_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}">
+                {{ label }} <span class="text-muted small">{{ path }}</span>
               </label>
+              <input type="color"
+                     value="{{ meta.color|default:'#888888' }}"
+                     class="form-control form-control-color p-0 border-0 flex-shrink-0"
+                     style="width:28px;height:28px;cursor:pointer"
+                     title="Couleur"
+                     oninput="document.getElementById('sc_color_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}').value=this.value">
+              <input type="text"
+                     value="{{ meta.label|default:'' }}"
+                     class="form-control form-control-sm flex-shrink-0"
+                     style="width:140px"
+                     placeholder="{{ label }}"
+                     title="Libellé affiché dans la légende"
+                     oninput="document.getElementById('sc_label_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}').value=this.value">
             </div>
+            {% endwith %}
             {% endfor %}
             {% if not field_choices %}
             <span class="text-muted small">Aucun champ disponible (schéma non chargé).</span>
@@ -144,32 +170,6 @@
         </div>
       </div>
 
-      {# Colors + label overrides — shown for pie_chart and grouped_chart #}
-      <div class="wf-group" id="wf_colors_{{ row_idx }}_{{ widget_idx }}">
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <label class="form-label small fw-semibold">
-              Couleurs <span class="text-muted fw-normal">(dans l'ordre des séries)</span>
-            </label>
-            <div class="d-flex flex-wrap gap-1">
-              {% for color in widget.color_list %}
-              <input type="color" name="colors" value="{{ color }}"
-                     class="form-control form-control-color p-0 border-0"
-                     style="width:32px;height:32px;cursor:pointer"
-                     title="Série {{ forloop.counter }}">
-              {% endfor %}
-            </div>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label small fw-semibold">
-              Renommer les libellés <span class="text-muted fw-normal">(valeur_brute = Libellé affiché)</span>
-            </label>
-            <textarea name="custom_labels_raw" class="form-control form-control-sm font-monospace"
-                      rows="3" placeholder="M = Hommes&#10;F = Femmes&#10;refugee = Réfugiés">{{ widget.custom_labels_raw }}</textarea>
-          </div>
-        </div>
-      </div>
-
       <div class="d-flex gap-2">
         <button type="submit" class="btn btn-sm btn-primary">
           <i class="bi bi-check-lg me-1"></i>{% if action == "edit_widget" %}Enregistrer{% else %}Ajouter{% endif %}
@@ -189,8 +189,6 @@
       const el = document.getElementById('wf_' + t + suffix);
       if (el) el.style.display = (t === type) ? '' : 'none';
     });
-    const colorsEl = document.getElementById('wf_colors' + suffix);
-    if (colorsEl) colorsEl.style.display = (type === 'pie_chart' || type === 'grouped_chart') ? '' : 'none';
   }
   updateWidgetFields(null);
   const sel = document.getElementById('widgetType_{{ row_idx }}_{{ widget_idx }}');
