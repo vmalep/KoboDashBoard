@@ -1,3 +1,4 @@
+import copy
 import csv
 import io
 import json
@@ -904,7 +905,7 @@ def dashboard_editor(request, uid, pk):
 
     form = get_object_or_404(ConfiguredForm, uid=uid)
     dash_config = get_object_or_404(DashboardConfig, pk=pk, form=form)
-    config_json = dash_config.config or {'schema_version': 1, 'rows': []}
+    config_json = copy.deepcopy(dash_config.config or {'schema_version': 1, 'rows': []})
     if 'rows' not in config_json:
         config_json['rows'] = []
 
@@ -940,6 +941,8 @@ def dashboard_editor(request, uid, pk):
             idx = _safe_int(request.POST.get('row_idx'))
             if idx is not None and 0 <= idx < len(rows):
                 rows[idx]['widgets'].append(_build_widget_from_post(request.POST))
+                # Auto-adjust columns to match widget count (up to 3)
+                rows[idx]['columns'] = min(len(rows[idx]['widgets']), 3)
 
         elif action == 'edit_widget':
             ridx = _safe_int(request.POST.get('row_idx'))
