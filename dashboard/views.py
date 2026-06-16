@@ -622,17 +622,22 @@ def _render_widget(widget, submissions, schema):
     elif wtype == 'pie_chart':
         field = widget.get('field', '')
         choice_labels = api_client.get_choice_labels(schema, field) if field else {}
-        custom_labels = widget.get('custom_labels', {})
-        palette = widget.get('colors') or _WIDGET_COLORS
+        pie_meta = widget.get('pie_meta', {})
         counts = {}
         for sub in submissions:
             val = sub.get(field, '')
             if val:
                 counts[val] = counts.get(val, 0) + 1
         sorted_items = sorted(counts.items(), key=lambda x: -x[1])
-        labels = [custom_labels.get(v, choice_labels.get(v, v)) for v, _ in sorted_items]
+        labels = [
+            pie_meta.get(v, {}).get('label') or choice_labels.get(v, v)
+            for v, _ in sorted_items
+        ]
         values = [c for _, c in sorted_items]
-        colors = [palette[i % len(palette)] for i in range(len(labels))]
+        colors = [
+            pie_meta.get(v, {}).get('color') or _WIDGET_COLORS[i % len(_WIDGET_COLORS)]
+            for i, (v, _) in enumerate(sorted_items)
+        ]
         data = {'labels': labels, 'values': values, 'colors': colors}
 
     elif wtype == 'data_table':
@@ -992,6 +997,22 @@ def _build_widget_from_post(post):
     widget = {'type': wtype, 'title': post.get('title', '').strip()}
     if wtype == 'pie_chart':
         widget['field'] = post.get('field', '').strip()
+        pie_vals   = post.getlist('pie_val')
+        pie_colors = post.getlist('pie_color')
+        pie_labels = post.getlist('pie_label')
+        pie_meta = {}
+        for i, val in enumerate(pie_vals):
+            if not val:
+                continue
+            entry = {}
+            if i < len(pie_colors) and pie_colors[i]:
+                entry['color'] = pie_colors[i]
+            if i < len(pie_labels) and pie_labels[i].strip():
+                entry['label'] = pie_labels[i].strip()
+            if entry:
+                pie_meta[val] = entry
+        if pie_meta:
+            widget['pie_meta'] = pie_meta
     elif wtype == 'summary_stat':
         widget['field'] = post.get('field', '').strip() or None
         widget['aggregation'] = post.get('aggregation', 'count')
@@ -1183,11 +1204,13 @@ def dashboard_editor(request, uid, pk):
             w['series'] = raw_series
             w['series_meta'] = series_meta
             w['series_paths'] = series_paths
+            w['pie_meta'] = w.get('pie_meta', {})
             widgets_ctx.append({**w, 'widget_idx': j, 'edit_key': f'{i}-{j}'})
         cols = max(row.get('columns', 1), min(len(widgets_ctx), 3))
         rows_ctx.append({**row, 'row_idx': i, 'columns': cols, 'widgets': widgets_ctx})
 
     field_choices = []
+    pie_choices = {}
     has_schema = False
     try:
         kobo_config = _config()
@@ -1197,6 +1220,11 @@ def dashboard_editor(request, uid, pk):
             ttl=form.cache_ttl_seconds,
         )
         field_choices = api_client.get_field_choices(schema)
+        pie_choices = {
+            path: list(api_client.get_choice_labels(schema, path).items())
+            for path, lbl, ftype in field_choices
+            if ftype.startswith('select_one') and api_client.get_choice_labels(schema, path)
+        }
         has_schema = True
     except api_client.KoboAPIError:
         pass
@@ -1213,6 +1241,7 @@ def dashboard_editor(request, uid, pk):
         'rows': rows_ctx,
         'filters': filters_ctx,
         'field_choices': field_choices,
+        'pie_choices': pie_choices,
         'has_schema': has_schema,
     })
 

@@ -58,12 +58,61 @@
       <div class="wf-group" id="wf_pie_chart_{{ row_idx }}_{{ widget_idx }}">
         <div class="mb-3">
           <label class="form-label small fw-semibold">Champ de regroupement</label>
-          <select name="field" class="form-select form-select-sm">
+          <select name="field" id="wf_pie_field_{{ row_idx }}_{{ widget_idx }}"
+                  class="form-select form-select-sm">
             <option value="">— Choisir un champ —</option>
             {% for path, label, ftype in field_choices %}
             <option value="{{ path }}" {% if widget.field == path %}selected{% endif %}>{{ label }} ({{ path }})</option>
             {% endfor %}
           </select>
+        </div>
+        {# Per-value colour + label — one group per select_one field, shown/hidden by JS #}
+        {% load dashboard_extras %}
+        <div id="wf_pie_values_{{ row_idx }}_{{ widget_idx }}">
+          {% for path, label, ftype in field_choices %}
+          {% if ftype|slice:":10" == "select_one" %}
+          {% with choices=pie_choices|dict_get:path %}
+          {% if choices %}
+          <div class="pie-field-group"
+               data-field="{{ path }}"
+               style="{% if widget.field != path %}display:none{% endif %}">
+            <label class="form-label small fw-semibold mb-1">Valeurs — couleur et libellé</label>
+            <div style="max-height:200px;overflow-y:auto;border:1px solid #dee2e6;border-radius:.375rem;padding:.5rem">
+              {% for val, val_label in choices %}
+              {% with vmeta=widget.pie_meta|dict_get:val %}
+              <input type="hidden" name="pie_val"   value="{{ val }}">
+              <input type="hidden" name="pie_color"
+                     id="pcol_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}"
+                     value="{{ vmeta.color|default:'' }}">
+              <input type="hidden" name="pie_label"
+                     id="plbl_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}"
+                     value="{{ vmeta.label|default:'' }}">
+              <div class="d-flex align-items-center gap-2 py-1 border-bottom border-light">
+                <span class="small flex-grow-1">
+                  {{ val_label }} <span class="text-muted">({{ val }})</span>
+                </span>
+                <input type="color"
+                       value="{{ vmeta.color|default:'#888888' }}"
+                       class="form-control form-control-color p-0 border-0 flex-shrink-0"
+                       style="width:28px;height:28px;cursor:pointer"
+                       title="Couleur"
+                       oninput="document.getElementById('pcol_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}').value=this.value">
+                <input type="text"
+                       value="{{ vmeta.label|default:'' }}"
+                       class="form-control form-control-sm flex-shrink-0"
+                       style="width:140px"
+                       placeholder="{{ val_label }}"
+                       title="Libellé affiché"
+                       oninput="document.getElementById('plbl_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}').value=this.value">
+              </div>
+              {% endwith %}
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+          {% endwith %}
+          {% endif %}
+          {% endfor %}
         </div>
       </div>
 
@@ -193,5 +242,19 @@
   updateWidgetFields(null);
   const sel = document.getElementById('widgetType_{{ row_idx }}_{{ widget_idx }}');
   if (sel) sel.addEventListener('change', function(){ updateWidgetFields(this); });
+
+  // Pie chart: show/hide per-value group when field selector changes
+  function updatePieValues(fieldVal) {
+    var container = document.getElementById('wf_pie_values_{{ row_idx }}_{{ widget_idx }}');
+    if (!container) return;
+    container.querySelectorAll('.pie-field-group').forEach(function(el){
+      el.style.display = el.dataset.field === fieldVal ? '' : 'none';
+    });
+  }
+  var pieField = document.getElementById('wf_pie_field_{{ row_idx }}_{{ widget_idx }}');
+  if (pieField) {
+    pieField.addEventListener('change', function(){ updatePieValues(this.value); });
+    updatePieValues(pieField.value);
+  }
 })();
 </script>
