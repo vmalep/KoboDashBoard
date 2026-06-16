@@ -144,50 +144,55 @@
           </div>
         </div>
         <div class="mb-3">
-          <label class="form-label small fw-semibold">
-            Séries <span class="text-muted fw-normal">(sélectionner un ou plusieurs champs)</span>
-          </label>
-          <div style="max-height:240px;overflow-y:auto;border:1px solid #dee2e6;border-radius:.375rem;padding:.5rem">
-            {% load dashboard_extras %}
-            {% for path, label, ftype in field_choices %}
-            {% with meta=widget.series_meta|dict_get:path %}
-            {# Hidden inputs always present so POST indices stay aligned #}
-            <input type="hidden" name="series_path" value="{{ path }}">
-            <input type="hidden" name="series_color"
-                   id="sc_color_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}"
-                   value="{{ meta.color|default:'' }}">
-            <input type="hidden" name="series_label"
-                   id="sc_label_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}"
-                   value="{{ meta.label|default:'' }}">
-            <div class="d-flex align-items-center gap-2 py-1 border-bottom border-light">
-              <input class="form-check-input flex-shrink-0 mt-0" type="checkbox"
-                     name="series_sel" value="{{ path }}"
-                     id="sc_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}"
-                     {% if path in widget.series_paths %}checked{% endif %}>
-              <label class="form-check-label small flex-grow-1 mb-0"
-                     for="sc_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}">
-                {{ label }} <span class="text-muted small">{{ path }}</span>
-              </label>
-              <input type="color"
-                     value="{{ meta.color|default:'#888888' }}"
+          <label class="form-label small fw-semibold">Séries</label>
+          {# Selected series — ordered list #}
+          <div id="series_list_{{ row_idx }}_{{ widget_idx }}"
+               class="mb-2" style="border:1px solid #dee2e6;border-radius:.375rem;min-height:2.2rem;padding:.25rem .5rem">
+            {% for sd in widget.series_display %}
+            <div class="series-row d-flex align-items-center gap-2 py-1 {% if not forloop.last %}border-bottom border-light{% endif %}">
+              <div class="d-flex flex-column" style="gap:0">
+                <button type="button" class="btn p-0 lh-1 text-muted" style="font-size:.6rem" onclick="seriesMove(this,-1)" title="Monter">▲</button>
+                <button type="button" class="btn p-0 lh-1 text-muted" style="font-size:.6rem" onclick="seriesMove(this,1)" title="Descendre">▼</button>
+              </div>
+              <input type="hidden" name="series_path" value="{{ sd.path }}">
+              <input type="hidden" name="series_color" class="sc-color" value="{{ sd.color }}">
+              <input type="hidden" name="series_label" class="sc-label" value="{{ sd.label }}">
+              <span class="small flex-grow-1">{{ sd.field_label }} <span class="text-muted">{{ sd.path }}</span></span>
+              <input type="color" value="{{ sd.color|default:'#888888' }}"
                      class="form-control form-control-color p-0 border-0 flex-shrink-0"
-                     style="width:28px;height:28px;cursor:pointer"
-                     title="Couleur"
-                     oninput="document.getElementById('sc_color_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}').value=this.value">
-              <input type="text"
-                     value="{{ meta.label|default:'' }}"
-                     class="form-control form-control-sm flex-shrink-0"
-                     style="width:140px"
-                     placeholder="{{ label }}"
+                     style="width:28px;height:28px;cursor:pointer" title="Couleur"
+                     oninput="this.closest('.series-row').querySelector('.sc-color').value=this.value">
+              <input type="text" class="form-control form-control-sm flex-shrink-0" style="width:120px"
+                     value="{{ sd.label }}" placeholder="{{ sd.field_label }}"
                      title="Libellé affiché dans la légende"
-                     oninput="document.getElementById('sc_label_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}').value=this.value">
+                     oninput="this.closest('.series-row').querySelector('.sc-label').value=this.value">
+              <button type="button" class="btn btn-sm btn-outline-danger py-0 px-1"
+                      onclick="seriesRemove(this,'series_add_{{ row_idx }}_{{ widget_idx }}')"
+                      data-path="{{ sd.path }}" data-label="{{ sd.field_label }}" title="Supprimer">×</button>
             </div>
-            {% endwith %}
+            {% empty %}
+            <p class="text-muted small mb-0 py-1 px-1">Aucune série sélectionnée.</p>
             {% endfor %}
-            {% if not field_choices %}
-            <span class="text-muted small">Aucun champ disponible (schéma non chargé).</span>
-            {% endif %}
           </div>
+          {# Add series dropdown #}
+          <div class="d-flex gap-2">
+            <select id="series_add_{{ row_idx }}_{{ widget_idx }}" class="form-select form-select-sm flex-grow-1">
+              <option value="">— Ajouter un champ de série —</option>
+              {% load dashboard_extras %}
+              {% for path, label, ftype in field_choices %}
+              {% if path not in widget.series_paths %}
+              <option value="{{ path }}" data-label="{{ label }}">{{ label }} ({{ path }})</option>
+              {% endif %}
+              {% endfor %}
+            </select>
+            <button type="button" class="btn btn-sm btn-outline-secondary flex-shrink-0"
+                    onclick="seriesAdd('series_list_{{ row_idx }}_{{ widget_idx }}','series_add_{{ row_idx }}_{{ widget_idx }}')">
+              + Ajouter
+            </button>
+          </div>
+          {% if not field_choices %}
+          <p class="text-muted small mt-1 mb-0">Aucun champ disponible (schéma non chargé).</p>
+          {% endif %}
         </div>
         {# Per-value colours for selected select_one series fields #}
         {% for svc in widget.series_value_choices %}
@@ -265,7 +270,70 @@
   updateWidgetFields(null);
   const sel = document.getElementById('widgetType_{{ row_idx }}_{{ widget_idx }}');
   if (sel) sel.addEventListener('change', function(){ updateWidgetFields(this); });
-
-
 })();
+
+var _SERIES_COLORS = ['#dc3545','#0d6efd','#198754','#fd7e14','#6f42c1','#20c997','#ffc107','#0dcaf0'];
+
+function seriesMove(btn, dir) {
+  var row = btn.closest('.series-row');
+  var list = row.parentElement;
+  var rows = Array.from(list.querySelectorAll(':scope > .series-row'));
+  var idx = rows.indexOf(row);
+  var target = rows[idx + dir];
+  if (!target) return;
+  if (dir === -1) list.insertBefore(row, target);
+  else list.insertBefore(target, row);
+}
+
+function seriesRemove(btn, dropId) {
+  var row = btn.closest('.series-row');
+  var drop = document.getElementById(dropId || btn.getAttribute('onclick').match(/'([^']+)'/)[1]);
+  var path = btn.dataset.path;
+  var label = btn.dataset.label;
+  if (drop && path) {
+    var opt = document.createElement('option');
+    opt.value = path;
+    opt.dataset.label = label;
+    opt.textContent = label + ' (' + path + ')';
+    drop.appendChild(opt);
+  }
+  var list = row.parentElement;
+  row.remove();
+  if (!list.querySelector('.series-row')) {
+    var empty = document.createElement('p');
+    empty.className = 'text-muted small mb-0 py-1 px-1 series-empty';
+    empty.textContent = 'Aucune série sélectionnée.';
+    list.appendChild(empty);
+  }
+}
+
+function seriesAdd(listId, dropId) {
+  var drop = document.getElementById(dropId);
+  var opt = drop && drop.options[drop.selectedIndex];
+  if (!opt || !opt.value) return;
+  var path = opt.value;
+  var label = opt.dataset.label || path;
+  var list = document.getElementById(listId);
+  var count = list.querySelectorAll('.series-row').length;
+  var color = _SERIES_COLORS[count % _SERIES_COLORS.length];
+  var empty = list.querySelector('.series-empty');
+  if (empty) empty.remove();
+  var row = document.createElement('div');
+  row.className = 'series-row d-flex align-items-center gap-2 py-1';
+  row.innerHTML =
+    '<div class="d-flex flex-column" style="gap:0">' +
+      '<button type="button" class="btn p-0 lh-1 text-muted" style="font-size:.6rem" onclick="seriesMove(this,-1)" title="Monter">▲</button>' +
+      '<button type="button" class="btn p-0 lh-1 text-muted" style="font-size:.6rem" onclick="seriesMove(this,1)" title="Descendre">▼</button>' +
+    '</div>' +
+    '<input type="hidden" name="series_path" value="' + path + '">' +
+    '<input type="hidden" name="series_color" class="sc-color" value="' + color + '">' +
+    '<input type="hidden" name="series_label" class="sc-label" value="">' +
+    '<span class="small flex-grow-1">' + label + ' <span class="text-muted">' + path + '</span></span>' +
+    '<input type="color" value="' + color + '" class="form-control form-control-color p-0 border-0 flex-shrink-0" style="width:28px;height:28px;cursor:pointer" title="Couleur" oninput="this.closest(\'.series-row\').querySelector(\'.sc-color\').value=this.value">' +
+    '<input type="text" class="form-control form-control-sm flex-shrink-0" style="width:120px" value="" placeholder="' + label + '" title="Libellé affiché dans la légende" oninput="this.closest(\'.series-row\').querySelector(\'.sc-label\').value=this.value">' +
+    '<button type="button" class="btn btn-sm btn-outline-danger py-0 px-1" onclick="seriesRemove(this,\'' + dropId + '\')" data-path="' + path + '" data-label="' + label + '" title="Supprimer">×</button>';
+  list.appendChild(row);
+  opt.remove();
+  drop.selectedIndex = 0;
+}
 </script>

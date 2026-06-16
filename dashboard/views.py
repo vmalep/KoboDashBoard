@@ -1014,19 +1014,18 @@ def _build_widget_from_post(post):
         widget['field'] = post.get('field', '').strip()
         widget['chart_style'] = post.get('chart_style', 'bar')
         widget['stacked'] = post.get('stacked') == '1'
-        # Build series as list of {field, color, label} — hidden inputs supply all three per row
-        selected = set(post.getlist('series_sel'))
+        # Build series as ordered list of {field, color, label}
         paths  = post.getlist('series_path')
         colors = post.getlist('series_color')
         labels = post.getlist('series_label')
         series = []
-        for i, path in enumerate(paths):
-            if path in selected:
-                entry = {'field': path}
-                if i < len(colors) and colors[i]:
-                    entry['color'] = colors[i]
-                if i < len(labels) and labels[i].strip():
-                    entry['label'] = labels[i].strip()
+        for p, c, l in zip(paths, colors, labels):
+            if p:
+                entry = {'field': p}
+                if c:
+                    entry['color'] = c
+                if l.strip():
+                    entry['label'] = l.strip()
                 series.append(entry)
         widget['series'] = series
         # Per-value colors for select_one series fields
@@ -1231,10 +1230,21 @@ def dashboard_editor(request, uid, pk):
     except api_client.KoboAPIError:
         pass
 
-    # Second pass: enrich widget dicts with series_value_choices for the editor UI
+    # Second pass: enrich widget dicts for the editor UI
     field_label_map = {p: lbl for p, lbl, ft in field_choices}
     for row in rows_ctx:
         for w in row['widgets']:
+            # Ordered display list for the series editor
+            w['series_display'] = [
+                {
+                    'path': path,
+                    'field_label': field_label_map.get(path, path),
+                    'color': w['series_meta'].get(path, {}).get('color', ''),
+                    'label': w['series_meta'].get(path, {}).get('label', ''),
+                }
+                for path in w.get('series_paths', [])
+            ]
+            # Per-value color pickers for select_one series fields
             svc_store = w.get('series_value_colors') or {}
             svc_list = []
             for path in w.get('series_paths', []):
