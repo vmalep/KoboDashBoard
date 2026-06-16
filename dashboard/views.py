@@ -26,6 +26,23 @@ from form_modules import get_module
 PAGE_SIZE = 25
 MODULES_DIR = Path(__file__).resolve().parent.parent / 'form_modules'
 
+
+def _page_range(page_obj):
+    """Return a compact list of page numbers and '...' separators for pagination."""
+    total = page_obj.paginator.num_pages
+    current = page_obj.number
+    pages = set()
+    pages.update([1, total])
+    pages.update(range(max(1, current - 2), min(total + 1, current + 3)))
+    result = []
+    prev = None
+    for p in sorted(pages):
+        if prev is not None and p - prev > 1:
+            result.append('...')
+        result.append(p)
+        prev = p
+    return result
+
 def _is_power_user(user):
     return user.is_authenticated and user.email in django_settings.POWER_USER_EMAILS
 
@@ -565,6 +582,7 @@ def form_detail(request, uid):
         'active_group': active_group,
         'columns': columns,
         'page_obj': page_obj,
+        'page_range': _page_range(page_obj) if page_obj else [],
         'error': error,
     })
 
