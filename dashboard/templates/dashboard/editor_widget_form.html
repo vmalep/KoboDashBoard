@@ -16,11 +16,10 @@
           <label class="form-label small fw-semibold">Type</label>
           <select name="type" id="widgetType_{{ row_idx }}_{{ widget_idx }}" class="form-select form-select-sm"
                   onchange="updateWidgetFields(this)">
-            <option value="summary_stat"   {% if widget.type == "summary_stat"   %}selected{% endif %}>Chiffre résumé</option>
-            <option value="bar_chart"      {% if widget.type == "bar_chart"      %}selected{% endif %}>Graphique en barres (1 champ)</option>
-            <option value="pie_chart"      {% if widget.type == "pie_chart"      %}selected{% endif %}>Graphique en secteurs (1 champ)</option>
-            <option value="grouped_chart"  {% if widget.type == "grouped_chart"  %}selected{% endif %}>Graphique croisé (2 champs)</option>
-            <option value="data_table"     {% if widget.type == "data_table"     %}selected{% endif %}>Tableau de données</option>
+            <option value="summary_stat"  {% if widget.type == "summary_stat"  %}selected{% endif %}>Chiffre résumé</option>
+            <option value="pie_chart"     {% if widget.type == "pie_chart"     %}selected{% endif %}>Graphique en secteurs</option>
+            <option value="grouped_chart" {% if widget.type == "grouped_chart" or widget.type == "bar_chart" %}selected{% endif %}>Graphique en colonnes / lignes</option>
+            <option value="data_table"    {% if widget.type == "data_table"    %}selected{% endif %}>Tableau de données</option>
           </select>
         </div>
         <div class="col-md-8">
@@ -55,20 +54,7 @@
         </div>
       </div>
 
-      {# bar_chart / pie_chart fields #}
-      <div class="wf-group" id="wf_bar_chart_{{ row_idx }}_{{ widget_idx }}">
-        <div class="mb-3">
-          <label class="form-label small fw-semibold">Champ de regroupement</label>
-          <select name="field" class="form-select form-select-sm">
-            <option value="">— Choisir un champ —</option>
-            {% for path, label, ftype in field_choices %}
-            <option value="{{ path }}" {% if widget.field == path %}selected{% endif %}>{{ label }} ({{ path }})</option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-
-      {# pie_chart shares same field as bar_chart — handled via CSS visibility #}
+      {# pie_chart fields #}
       <div class="wf-group" id="wf_pie_chart_{{ row_idx }}_{{ widget_idx }}">
         <div class="mb-3">
           <label class="form-label small fw-semibold">Champ de regroupement</label>
@@ -84,30 +70,54 @@
       {# grouped_chart fields #}
       <div class="wf-group" id="wf_grouped_chart_{{ row_idx }}_{{ widget_idx }}">
         <div class="row g-3 mb-3">
-          <div class="col-md-5">
-            <label class="form-label small fw-semibold">Champ — axe X <span class="text-muted">(groupement)</span></label>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">
+              Axe X <span class="text-muted fw-normal">(optionnel)</span>
+            </label>
             <select name="field" class="form-select form-select-sm">
-              <option value="">— Choisir un champ —</option>
+              <option value="">— Aucun : comparaison absolue —</option>
               {% for path, label, ftype in field_choices %}
               <option value="{{ path }}" {% if widget.field == path %}selected{% endif %}>{{ label }} ({{ path }})</option>
               {% endfor %}
             </select>
           </div>
-          <div class="col-md-5">
-            <label class="form-label small fw-semibold">Champ — séries <span class="text-muted">(segmentation)</span></label>
-            <select name="field2" class="form-select form-select-sm">
-              <option value="">— Choisir un champ —</option>
-              {% for path, label, ftype in field_choices %}
-              <option value="{{ path }}" {% if widget.field2 == path %}selected{% endif %}>{{ label }} ({{ path }})</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-md-2">
+          <div class="col-md-3">
             <label class="form-label small fw-semibold">Style</label>
             <select name="chart_style" class="form-select form-select-sm">
               <option value="bar"  {% if widget.chart_style != "line" %}selected{% endif %}>Colonnes</option>
               <option value="line" {% if widget.chart_style == "line" %}selected{% endif %}>Lignes</option>
             </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-semibold d-block">Mode</label>
+            <div class="form-check mt-1">
+              <input class="form-check-input" type="checkbox" name="stacked" value="1"
+                     id="stacked_{{ row_idx }}_{{ widget_idx }}"
+                     {% if widget.stacked %}checked{% endif %}>
+              <label class="form-check-label small" for="stacked_{{ row_idx }}_{{ widget_idx }}">
+                Empilé (cumulatif)
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">
+            Séries <span class="text-muted fw-normal">(un ou plusieurs champs — chaque valeur devient une série)</span>
+          </label>
+          <div style="max-height:200px;overflow-y:auto;border:1px solid #dee2e6;border-radius:.375rem;padding:.5rem">
+            {% for path, label, ftype in field_choices %}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="series" value="{{ path }}"
+                     id="sc_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}"
+                     {% if widget.series and path in widget.series %}checked{% endif %}>
+              <label class="form-check-label small" for="sc_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}">
+                {{ label }} <span class="text-muted">{{ path }}</span>
+              </label>
+            </div>
+            {% endfor %}
+            {% if not field_choices %}
+            <span class="text-muted small">Aucun champ disponible (schéma non chargé).</span>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -149,7 +159,7 @@
   function updateWidgetFields(sel) {
     const type = sel ? sel.value : document.getElementById('widgetType_{{ row_idx }}_{{ widget_idx }}').value;
     const suffix = '_{{ row_idx }}_{{ widget_idx }}';
-    ['summary_stat','bar_chart','pie_chart','grouped_chart','data_table'].forEach(function(t){
+    ['summary_stat','pie_chart','grouped_chart','data_table'].forEach(function(t){
       const el = document.getElementById('wf_' + t + suffix);
       if (el) el.style.display = (t === type) ? '' : 'none';
     });

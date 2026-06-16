@@ -1,25 +1,29 @@
 <div class="card h-100">
   <div class="card-body">
     {% if widget.title %}<h6 class="card-title text-muted small text-uppercase">{{ widget.title }}</h6>{% endif %}
+    {% if widget.data.datasets %}
     <canvas id="{{ widget.canvas_id }}"></canvas>
+    <script>
+    (function(){
+      var raw = {{ widget.data_json|safe }};
+      var ctx = document.getElementById('{{ widget.canvas_id }}');
+      if (!ctx) return;
+      new Chart(ctx, {
+        type: raw.chart_style === 'line' ? 'line' : 'bar',
+        data: { labels: raw.labels, datasets: raw.datasets },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'bottom' } },
+          scales: {
+            x: { stacked: raw.stacked, beginAtZero: true },
+            y: { stacked: raw.stacked, beginAtZero: true }
+          }
+        }
+      });
+    })();
+    </script>
+    {% else %}
+    <p class="text-muted small mb-0">Aucune donnée — vérifiez les champs sélectionnés.</p>
+    {% endif %}
   </div>
 </div>
-<script>
-(function(){
-  var raw = {{ widget.data_json|safe }};
-  var ctx = document.getElementById('{{ widget.canvas_id }}');
-  if (!ctx || !raw.datasets) return;
-  new Chart(ctx, {
-    type: raw.chart_style === 'line' ? 'line' : 'bar',
-    data: { labels: raw.labels, datasets: raw.datasets },
-    options: {
-      responsive: true,
-      plugins: { legend: { position: 'bottom' } },
-      scales: {
-        x: { beginAtZero: true },
-        y: { beginAtZero: true }
-      }
-    }
-  });
-})();
-</script>

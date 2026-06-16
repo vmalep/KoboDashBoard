@@ -87,8 +87,6 @@
   <div class="{{ row.col_class }}">
     {% if widget.type == "summary_stat" %}
       {% include "dashboard/widgets/summary_stat.html" %}
-    {% elif widget.type == "bar_chart" %}
-      {% include "dashboard/widgets/bar_chart.html" %}
     {% elif widget.type == "pie_chart" %}
       {% include "dashboard/widgets/pie_chart.html" %}
     {% elif widget.type == "data_table" %}

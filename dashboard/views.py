@@ -619,7 +619,7 @@ def _render_widget(widget, submissions, schema):
                 value = round(sum(nums) / len(nums), 1) if nums else 0
         data = {'value': value}
 
-    elif wtype in ('bar_chart', 'pie_chart'):
+    elif wtype == 'pie_chart':
         field = widget.get('field', '')
         choice_labels = api_client.get_choice_labels(schema, field) if field else {}
         counts = {}
@@ -642,41 +642,88 @@ def _render_widget(widget, submissions, schema):
 
     elif wtype == 'grouped_chart':
         field1 = widget.get('field', '')
-        field2 = widget.get('field2', '')
+        # Backward compat: old field2 string → series list
+        series_fields = widget.get('series') or ([widget['field2']] if widget.get('field2') else [])
         chart_style = widget.get('chart_style', 'bar')
+        stacked = bool(widget.get('stacked', False))
         cl1 = api_client.get_choice_labels(schema, field1) if field1 else {}
-        cl2 = api_client.get_choice_labels(schema, field2) if field2 else {}
-        # Collect ordered unique values preserving first-seen order
-        labels_order, series_order = [], []
-        seen_l, seen_s = set(), set()
-        for sub in submissions:
-            v1 = str(sub.get(field1, '') or '')
-            v2 = str(sub.get(field2, '') or '')
-            if v1 and v1 not in seen_l:
-                seen_l.add(v1); labels_order.append(v1)
-            if v2 and v2 not in seen_s:
-                seen_s.add(v2); series_order.append(v2)
-        # Cross-count
-        counts = {s: {l: 0 for l in labels_order} for s in series_order}
-        for sub in submissions:
-            v1 = str(sub.get(field1, '') or '')
-            v2 = str(sub.get(field2, '') or '')
-            if v1 in seen_l and v2 in seen_s:
-                counts[v2][v1] += 1
-        datasets = [
-            {
-                'label': cl2.get(sk, sk),
-                'data': [counts[sk][lbl] for lbl in labels_order],
-                'backgroundColor': _WIDGET_COLORS[i % len(_WIDGET_COLORS)],
-                'borderColor': _WIDGET_COLORS[i % len(_WIDGET_COLORS)],
-                'fill': False,
-            }
-            for i, sk in enumerate(series_order)
-        ]
+        qlabels = api_client.get_question_labels(schema) if schema else {}
+        multi_sf = len(series_fields) > 1
+        color_idx = 0
+
+        def _unique_vals(field):
+            order, seen = [], set()
+            for sub in submissions:
+                v = str(sub.get(field, '') or '')
+                if v and v not in seen:
+                    seen.add(v); order.append(v)
+            return order, seen
+
+        if field1:
+            # X axis = values of field1
+            labels_order, seen_l = _unique_vals(field1)
+            if series_fields:
+                # Cross-tab: one dataset per unique value of each series field
+                datasets = []
+                for sf in series_fields:
+                    if not sf:
+                        continue
+                    cl2 = api_client.get_choice_labels(schema, sf)
+                    series_order, seen_s = _unique_vals(sf)
+                    counts = {s: {l: 0 for l in labels_order} for s in series_order}
+                    for sub in submissions:
+                        v1 = str(sub.get(field1, '') or '')
+                        v2 = str(sub.get(sf, '') or '')
+                        if v1 in seen_l and v2 in seen_s:
+                            counts[v2][v1] += 1
+                    for sk in series_order:
+                        lbl = cl2.get(sk, sk)
+                        if multi_sf:
+                            lbl = f"{qlabels.get(sf, sf)} — {lbl}"
+                        color = _WIDGET_COLORS[color_idx % len(_WIDGET_COLORS)]
+                        color_idx += 1
+                        datasets.append({
+                            'label': lbl,
+                            'data': [counts[sk][l] for l in labels_order],
+                            'backgroundColor': color, 'borderColor': color, 'fill': False,
+                        })
+            else:
+                # Simple distribution: count per field1 value, no series
+                counts_s = {}
+                for sub in submissions:
+                    v = str(sub.get(field1, '') or '')
+                    if v: counts_s[v] = counts_s.get(v, 0) + 1
+                color = _WIDGET_COLORS[0]
+                datasets = [{'label': qlabels.get(field1, field1),
+                             'data': [counts_s.get(l, 0) for l in labels_order],
+                             'backgroundColor': color, 'borderColor': color, 'fill': False}]
+            x_labels = [cl1.get(l, l) for l in labels_order]
+        else:
+            # No X field: flat absolute comparison — one dataset per series field,
+            # X axis = all (field, value) pairs concatenated
+            x_labels, datasets = [], []
+            for sf in series_fields:
+                if not sf:
+                    continue
+                cl2 = api_client.get_choice_labels(schema, sf)
+                series_order, _ = _unique_vals(sf)
+                counts_s = {}
+                for sub in submissions:
+                    v = str(sub.get(sf, '') or '')
+                    if v: counts_s[v] = counts_s.get(v, 0) + 1
+                start = len(x_labels)
+                x_labels.extend(cl2.get(v, v) for v in series_order)
+                data_arr = [None] * start + [counts_s.get(v, 0) for v in series_order]
+                color = _WIDGET_COLORS[color_idx % len(_WIDGET_COLORS)]
+                color_idx += 1
+                datasets.append({'label': qlabels.get(sf, sf), 'data': data_arr,
+                                 'backgroundColor': color, 'borderColor': color, 'fill': False})
+            # Pad all datasets to same length
+            for ds in datasets:
+                ds['data'] += [None] * (len(x_labels) - len(ds['data']))
         data = {
-            'chart_style': chart_style,
-            'labels': [cl1.get(l, l) for l in labels_order],
-            'datasets': datasets,
+            'chart_style': chart_style, 'stacked': stacked,
+            'labels': x_labels, 'datasets': datasets,
         }
 
     else:
@@ -920,7 +967,7 @@ def view_dashboard(request, uid, pk):
 def _build_widget_from_post(post):
     wtype = post.get('type', 'summary_stat')
     widget = {'type': wtype, 'title': post.get('title', '').strip()}
-    if wtype in ('bar_chart', 'pie_chart'):
+    if wtype == 'pie_chart':
         widget['field'] = post.get('field', '').strip()
     elif wtype == 'summary_stat':
         widget['field'] = post.get('field', '').strip() or None
@@ -929,8 +976,9 @@ def _build_widget_from_post(post):
         widget['fields'] = [f.strip() for f in post.getlist('fields') if f.strip()]
     elif wtype == 'grouped_chart':
         widget['field'] = post.get('field', '').strip()
-        widget['field2'] = post.get('field2', '').strip()
+        widget['series'] = [f.strip() for f in post.getlist('series') if f.strip()]
         widget['chart_style'] = post.get('chart_style', 'bar')
+        widget['stacked'] = post.get('stacked') == '1'
     return widget
 
 
@@ -1075,7 +1123,10 @@ def dashboard_editor(request, uid, pk):
     for i, row in enumerate(config_json.get('rows', [])):
         widgets_ctx = []
         for j, widget in enumerate(row.get('widgets', [])):
-            widgets_ctx.append({**widget, 'widget_idx': j, 'edit_key': f'{i}-{j}'})
+            w = dict(widget)
+            if w.get('type') == 'grouped_chart' and 'series' not in w:
+                w['series'] = [w['field2']] if w.get('field2') else []
+            widgets_ctx.append({**w, 'widget_idx': j, 'edit_key': f'{i}-{j}'})
         cols = max(row.get('columns', 1), min(len(widgets_ctx), 3))
         rows_ctx.append({**row, 'row_idx': i, 'columns': cols, 'widgets': widgets_ctx})
 
