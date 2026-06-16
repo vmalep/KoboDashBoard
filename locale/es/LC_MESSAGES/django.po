@@ -36,8 +36,8 @@ msgstr "Vista genérica"
 msgid "soumissions en cache"
 msgstr "envíos en caché"
 
-msgid "Visionner le dashboard"
-msgstr "Ver el dashboard"
+msgid "Explorer les données brutes"
+msgstr "Explorar datos brutos"
 
 msgid "Rafraîchir"
 msgstr "Actualizar"

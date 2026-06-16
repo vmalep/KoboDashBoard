@@ -36,8 +36,8 @@ msgstr "Generic view"
 msgid "soumissions en cache"
 msgstr "cached submissions"
 
-msgid "Visionner le dashboard"
-msgstr "View dashboard"
+msgid "Explorer les données brutes"
+msgstr "Explore raw data"
 
 msgid "Rafraîchir"
 msgstr "Refresh"

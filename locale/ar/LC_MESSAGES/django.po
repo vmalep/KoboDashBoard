@@ -36,8 +36,8 @@ msgstr "عرض عام"
 msgid "soumissions en cache"
 msgstr "تقديمات مؤقتة"
 
-msgid "Visionner le dashboard"
-msgstr "عرض لوحة البيانات"
+msgid "Explorer les données brutes"
+msgstr "استكشاف البيانات الخام"
 
 msgid "Rafraîchir"
 msgstr "تحديث"

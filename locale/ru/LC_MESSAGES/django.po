@@ -36,8 +36,8 @@ msgstr "Общий вид"
 msgid "soumissions en cache"
 msgstr "кешированных отправок"
 
-msgid "Visionner le dashboard"
-msgstr "Открыть дашборд"
+msgid "Explorer les données brutes"
+msgstr "Просмотр данных"
 
 msgid "Rafraîchir"
 msgstr "Обновить"

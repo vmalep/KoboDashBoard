@@ -118,10 +118,16 @@ def form_list(request):
     for f in forms:
         module = get_module(f.uid)
         cached_subs = cache_helpers.get_if_cached(cache_helpers.submissions_key(f.uid))
+        if module:
+            from pathlib import Path as _Path
+            module_name = module.form_label or _Path(module._source_file).stem
+        else:
+            module_name = None
         form_cards.append({
             'uid': f.uid,
             'name': f.name,
             'module_label': module.form_label if module else None,
+            'module_name': module_name,
             'sub_count': len(cached_subs) if cached_subs is not None else None,
             'dash_configs': list(f.dashboard_configs.values('id', 'name')),
         })
