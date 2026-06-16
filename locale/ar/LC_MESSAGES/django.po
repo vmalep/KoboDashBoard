@@ -1,283 +1,420 @@
 # Arabic translation for KoboDashBoard.
 msgid ""
 msgstr ""
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-16 14:44+0000\n"
+"Language: ar\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
-"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
 
-msgid "Mode d'emploi"
-msgstr "المساعدة"
-
-msgid "Déconnexion"
-msgstr "تسجيل الخروج"
-
-msgid "Built with"
-msgstr "مبني بـ"
-
-msgid "MIT Licence"
-msgstr "ترخيص MIT"
-
-msgid "Comptes en attente de validation"
-msgstr "حسابات في انتظار التحقق"
-
-msgid "Paramètres"
-msgstr "الإعدادات"
-
-msgid "Mon groupe"
-msgstr "مجموعتي"
-
-msgid "Formulaires"
-msgstr "النماذج"
-
-msgid "Vue générique"
-msgstr "عرض عام"
-
-msgid "soumissions en cache"
-msgstr "تقديمات مؤقتة"
-
-msgid "Explorer les données brutes"
-msgstr "استكشاف البيانات الخام"
-
-msgid "Rafraîchir"
-msgstr "تحديث"
-
-msgid "Actualiser"
-msgstr "تحديث"
-
-msgid "Export XLSX"
-msgstr "تصدير XLSX"
-
-msgid "Export CSV"
-msgstr "تصدير CSV"
-
-msgid "Pays"
-msgstr "البلد"
-
-msgid "Tous les pays"
-msgstr "جميع الدول"
-
-msgid "Année"
-msgstr "السنة"
-
-msgid "Toutes"
-msgstr "الكل"
-
-msgid "Tous"
-msgstr "الكل"
-
-msgid "Trimestre"
-msgstr "الربع"
-
-msgid "Résultat"
-msgstr "النتيجة"
-
-msgid "Tous les résultats"
-msgstr "جميع النتائج"
-
-msgid "Filtrer"
-msgstr "تصفية"
-
-msgid "Réinitialiser"
-msgstr "إعادة تعيين"
-
-msgid "Bénéficiaires rapportés"
-msgstr "المستفيدون المُبلَّغ عنهم"
-
-msgid "Rapports"
-msgstr "التقارير"
-
-msgid "Résultats actifs"
-msgstr "النتائج النشطة"
-
-msgid "Données détaillées"
-msgstr "البيانات التفصيلية"
-
-msgid "lignes"
-msgstr "صفوف"
-
-msgid "Période"
-msgstr "الفترة"
-
-msgid "Rapporteur"
-msgstr "المُبلِّغ"
-
-msgid "Indicateur"
-msgstr "المؤشر"
-
-msgid "Total"
-msgstr "الإجمالي"
-
-msgid "Hommes"
-msgstr "رجال"
-
-msgid "Femmes"
-msgstr "نساء"
-
-msgid "Handicap"
-msgstr "إعاقة"
-
-msgid "PDI"
-msgstr "نازحون داخلياً"
-
-msgid "Code"
-msgstr "الرمز"
-
-msgid "Filtres"
-msgstr "الفلاتر"
-
-msgid "Responsable"
-msgstr "المسؤول"
-
-msgid "Matrice de couverture"
-msgstr "مصفوفة التغطية"
-
-msgid "Toutes les activités"
-msgstr "جميع الأنشطة"
-
-msgid "Aucune soumission pour ces critères."
-msgstr "لا توجد تقديمات لهذه المعايير."
-
-msgid "Voir le détail"
-msgstr "عرض التفاصيل"
-
-msgid "Gestion des utilisateurs"
-msgstr "إدارة المستخدمين"
-
-msgid "En attente de validation"
-msgstr "في انتظار التحقق"
-
-msgid "Aucun compte en attente."
-msgstr "لا توجد حسابات معلقة."
-
-msgid "Nom"
-msgstr "الاسم"
-
-msgid "Demande le"
-msgstr "طُلب في"
-
-msgid "Activer"
-msgstr "تفعيل"
-
-msgid "Utilisateurs actifs"
-msgstr "المستخدمون النشطون"
-
-msgid "Aucun utilisateur actif (hors administrateurs)."
-msgstr "لا يوجد مستخدمون نشطون (باستثناء المديرين)."
-
-msgid "Créé le"
-msgstr "تاريخ الإنشاء"
-
-msgid "Désactiver"
-msgstr "تعطيل"
-
-msgid "Générer un lien de réinitialisation du mot de passe"
-msgstr "إنشاء رابط إعادة تعيين كلمة المرور"
-
-msgid "Supprimer ce compte ?"
-msgstr "حذف هذا الحساب؟"
-
-msgid "Désactiver ce compte ?"
-msgstr "تعطيل هذا الحساب؟"
-
-msgid "Supprimer définitivement ce compte ?"
-msgstr "حذف هذا الحساب نهائياً؟"
-
+#: accounts/templates/accounts/login.html:9
 msgid "Connexion"
 msgstr "تسجيل الدخول"
 
+#: accounts/templates/accounts/login.html:25
 msgid "Email ou mot de passe incorrect."
 msgstr "البريد الإلكتروني أو كلمة المرور غير صحيحة."
 
+#: accounts/templates/accounts/login.html:32
+#: accounts/templates/accounts/register.html:46
 msgid "Adresse email"
 msgstr "عنوان البريد الإلكتروني"
 
+#: accounts/templates/accounts/login.html:37
+#: accounts/templates/accounts/register.html:56
 msgid "Mot de passe"
 msgstr "كلمة المرور"
 
+#: accounts/templates/accounts/login.html:42
+#: accounts/templates/accounts/register.html:80
 msgid "Se connecter"
 msgstr "تسجيل الدخول"
 
+#: accounts/templates/accounts/login.html:44
 msgid "Mot de passe oublié ?"
 msgstr "هل نسيت كلمة المرور؟"
 
+#: accounts/templates/accounts/login.html:50
 msgid "Pas encore de compte ?"
 msgstr "ليس لديك حساب؟"
 
+#: accounts/templates/accounts/login.html:51
 msgid "S'enregistrer"
 msgstr "تسجيل"
 
+#: accounts/templates/accounts/register.html:9
+#: accounts/templates/accounts/register.html:21
 msgid "Demande d'accès"
 msgstr "طلب الوصول"
 
+#: accounts/templates/accounts/register.html:23
 msgid "Votre compte sera activé après validation par un administrateur."
 msgstr "سيتم تفعيل حسابك بعد التحقق من قبل مسؤول."
 
+#: accounts/templates/accounts/register.html:36
 msgid "Nom complet"
 msgstr "الاسم الكامل"
 
+#: accounts/templates/accounts/register.html:65
 msgid "Confirmer le mot de passe"
 msgstr "تأكيد كلمة المرور"
 
+#: accounts/templates/accounts/register.html:74
 msgid "Envoyer la demande"
 msgstr "إرسال الطلب"
 
+#: accounts/templates/accounts/register.html:80
 msgid "Déjà un compte ?"
 msgstr "هل لديك حساب؟"
 
+#: dashboard/templates/dashboard/amopah_dashboard.html:12
+#: dashboard/templates/dashboard/form_detail.html:47
+#: dashboard/templates/dashboard/form_list.html:4
+#: dashboard/templates/dashboard/form_list.html:8
+msgid "Formulaires"
+msgstr "النماذج"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:19
+#: dashboard/templates/dashboard/form_detail.html:55
+msgid "Rafraîchir"
+msgstr "تحديث"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:22
+msgid "Export XLSX"
+msgstr "تصدير XLSX"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:25
+msgid "Export CSV"
+msgstr "تصدير CSV"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:39
+#: dashboard/templates/dashboard/amopah_dashboard.html:112
+#: dashboard/templates/dashboard/amopah_dashboard.html:140
+#: dashboard/templates/dashboard/coverage.html:51
+msgid "Pays"
+msgstr "البلد"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:41
+#: dashboard/templates/dashboard/coverage.html:54
+msgid "Tous les pays"
+msgstr "جميع الدول"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:50
+msgid "Année"
+msgstr "السنة"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:52
+msgid "Toutes"
+msgstr "الكل"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:59
+msgid "Trimestre"
+msgstr "الربع"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:61
+#: dashboard/templates/dashboard/coverage.html:78
+msgid "Tous"
+msgstr "الكل"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:68
+#: dashboard/templates/dashboard/amopah_dashboard.html:143
+#: dashboard/templates/dashboard/coverage.html:63
+msgid "Résultat"
+msgstr "النتيجة"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:70
+#: dashboard/templates/dashboard/coverage.html:66
+msgid "Tous les résultats"
+msgstr "جميع النتائج"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:80
+msgid "Filtrer"
+msgstr "تصفية"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:83
+#: dashboard/templates/dashboard/coverage.html:90
+msgid "Réinitialiser"
+msgstr "إعادة تعيين"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:96
+msgid "Bénéficiaires rapportés"
+msgstr "المستفيدون المُبلَّغ عنهم"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:104
+msgid "Rapports"
+msgstr "التقارير"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:120
+msgid "Résultats actifs"
+msgstr "النتائج النشطة"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:133
+msgid "Données détaillées"
+msgstr "البيانات التفصيلية"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:134
+msgid "lignes"
+msgstr "صفوف"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:141
+msgid "Période"
+msgstr "الفترة"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:142
+msgid "Rapporteur"
+msgstr "المُبلِّغ"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:144
+msgid "Code"
+msgstr "الرمز"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:145
+msgid "Indicateur"
+msgstr "المؤشر"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:146
+msgid "Total"
+msgstr "الإجمالي"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:147
+msgid "Hommes"
+msgstr "رجال"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:148
+msgid "Femmes"
+msgstr "نساء"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:149
+msgid "Handicap"
+msgstr "إعاقة"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:150
+msgid "PDI"
+msgstr "نازحون داخلياً"
+
+#: dashboard/templates/dashboard/base.html:79
+msgid "Comptes en attente de validation"
+msgstr "حسابات في انتظار التحقق"
+
+#: dashboard/templates/dashboard/base.html:89
+#: dashboard/templates/dashboard/form_list.html:11
+msgid "Paramètres"
+msgstr "الإعدادات"
+
+#: dashboard/templates/dashboard/base.html:94
+msgid "Mon groupe"
+msgstr "مجموعتي"
+
+#: dashboard/templates/dashboard/base.html:98
+msgid "Mode d'emploi"
+msgstr "المساعدة"
+
+#: dashboard/templates/dashboard/base.html:127
+msgid "Déconnexion"
+msgstr "تسجيل الخروج"
+
+#: dashboard/templates/dashboard/base.html:151
+msgid "Built with"
+msgstr "مبني بـ"
+
+#: dashboard/templates/dashboard/coverage.html:26
+msgid "Actualiser"
+msgstr "تحديث"
+
+#: dashboard/templates/dashboard/coverage.html:47
+msgid "Filtres"
+msgstr "الفلاتر"
+
+#: dashboard/templates/dashboard/coverage.html:75
+msgid "Responsable"
+msgstr "المسؤول"
+
+#: dashboard/templates/dashboard/form_detail.html:50
+#, fuzzy
+#| msgid "soumissions en cache"
+msgid "soumissions"
+msgstr "تقديمات مؤقتة"
+
+#: dashboard/templates/dashboard/form_detail.html:69
+msgid "Aucune question trouvée dans le schéma de ce formulaire."
+msgstr ""
+
+#: dashboard/templates/dashboard/form_detail.html:95
+msgid "Page précédente"
+msgstr ""
+
+#: dashboard/templates/dashboard/form_detail.html:106
+msgid "Page"
+msgstr ""
+
+#: dashboard/templates/dashboard/form_detail.html:125
+msgid "Page suivante"
+msgstr ""
+
+#: dashboard/templates/dashboard/form_detail.html:141
+#, fuzzy
+#| msgid "Aucun membre dans ce groupe."
+msgid "Aucune question dans ce groupe."
+msgstr "لا يوجد أعضاء في هذه المجموعة."
+
+#: dashboard/templates/dashboard/form_detail.html:143
+#, fuzzy
+#| msgid "Aucune soumission pour ces critères."
+msgid "Aucune soumission."
+msgstr "لا توجد تقديمات لهذه المعايير."
+
+#: dashboard/templates/dashboard/form_list.html:28
+msgid "Vue générique"
+msgstr "عرض عام"
+
+#: dashboard/templates/dashboard/form_list.html:33
+msgid "soumissions en cache"
+msgstr "تقديمات مؤقتة"
+
+#: dashboard/templates/dashboard/form_list.html:50
+msgid "Éditeur dashboard"
+msgstr "محرر لوحة التحكم"
+
+#: dashboard/templates/dashboard/form_list.html:54
+msgid "Explorer les données brutes"
+msgstr "استكشاف البيانات الخام"
+
+#: dashboard/templates/dashboard/group_edit.html:3
+#: dashboard/templates/dashboard/group_edit.html:9
 msgid "Modifier le groupe"
 msgstr "تعديل المجموعة"
 
+#: dashboard/templates/dashboard/group_edit.html:16
 msgid "Nom du groupe"
 msgstr "اسم المجموعة"
 
+#: dashboard/templates/dashboard/group_edit.html:25
 msgid "Formulaires accessibles"
 msgstr "النماذج المتاحة"
 
+#: dashboard/templates/dashboard/group_edit.html:37
 msgid "Aucun formulaire configuré."
 msgstr "لا توجد نماذج مُعدَّة."
 
+#: dashboard/templates/dashboard/group_edit.html:44
 msgid "Membres"
 msgstr "الأعضاء"
 
+#: dashboard/templates/dashboard/group_edit.html:57
+#: dashboard/templates/dashboard/group_edit.html:78
 msgid "Aucun utilisateur actif."
 msgstr "لا يوجد مستخدمون نشطون."
 
+#: dashboard/templates/dashboard/group_edit.html:64
 msgid "Administrateurs du groupe"
 msgstr "مديرو المجموعة"
 
-msgid "Les administrateurs peuvent charger des modules et gérer les membres de ce groupe."
+#: dashboard/templates/dashboard/group_edit.html:66
+msgid ""
+"Les administrateurs peuvent charger des modules et gérer les membres de ce "
+"groupe."
 msgstr "يمكن للمديرين تحميل الوحدات وإدارة أعضاء هذه المجموعة."
 
+#: dashboard/templates/dashboard/group_edit.html:85
 msgid "Enregistrer"
 msgstr "حفظ"
 
+#: dashboard/templates/dashboard/group_edit.html:87
 msgid "Annuler"
 msgstr "إلغاء"
 
-msgid "Vous n'administrez aucun groupe pour le moment."
-msgstr "أنت لا تدير أي مجموعة في الوقت الحالي."
+#: dashboard/templates/dashboard/user_list.html:3
+#: dashboard/templates/dashboard/user_list.html:6
+msgid "Gestion des utilisateurs"
+msgstr "إدارة المستخدمين"
 
-msgid "Aucun membre dans ce groupe."
-msgstr "لا يوجد أعضاء في هذه المجموعة."
+#: dashboard/templates/dashboard/user_list.html:10
+msgid "En attente de validation"
+msgstr "في انتظار التحقق"
 
-msgid "Aucun formulaire dans ce groupe."
-msgstr "لا توجد نماذج في هذه المجموعة."
+#: dashboard/templates/dashboard/user_list.html:17
+msgid "Aucun compte en attente."
+msgstr "لا توجد حسابات معلقة."
 
-msgid "Ajouter"
-msgstr "إضافة"
+#: dashboard/templates/dashboard/user_list.html:23
+#: dashboard/templates/dashboard/user_list.html:69
+msgid "Nom"
+msgstr "الاسم"
 
-msgid "Charger"
-msgstr "تحميل"
+#: dashboard/templates/dashboard/user_list.html:25
+msgid "Demande le"
+msgstr "طُلب في"
 
-msgid "Dashboard"
-msgstr "لوحة البيانات"
+#: dashboard/templates/dashboard/user_list.html:40
+msgid "Activer"
+msgstr "تفعيل"
 
-msgid "Couleur principale"
-msgstr "اللون الرئيسي"
+#: dashboard/templates/dashboard/user_list.html:45
+msgid "Supprimer ce compte ?"
+msgstr "حذف هذا الحساب؟"
 
-msgid "Défaut"
-msgstr "افتراضي"
+#: dashboard/templates/dashboard/user_list.html:60
+msgid "Utilisateurs actifs"
+msgstr "المستخدمون النشطون"
 
-msgid "Serveur KoboToolBox"
-msgstr "خادم KoboToolBox"
+#: dashboard/templates/dashboard/user_list.html:63
+msgid "Aucun utilisateur actif (hors administrateurs)."
+msgstr "لا يوجد مستخدمون نشطون (باستثناء المديرين)."
+
+#: dashboard/templates/dashboard/user_list.html:71
+msgid "Créé le"
+msgstr "تاريخ الإنشاء"
+
+#: dashboard/templates/dashboard/user_list.html:86
+msgid "Générer un lien de réinitialisation du mot de passe"
+msgstr "إنشاء رابط إعادة تعيين كلمة المرور"
+
+#: dashboard/templates/dashboard/user_list.html:92
+msgid "Désactiver ce compte ?"
+msgstr "تعطيل هذا الحساب؟"
+
+#: dashboard/templates/dashboard/user_list.html:95
+msgid "Désactiver"
+msgstr "تعطيل"
+
+#: dashboard/templates/dashboard/user_list.html:100
+msgid "Supprimer définitivement ce compte ?"
+msgstr "حذف هذا الحساب نهائياً؟"
+
+#~ msgid "MIT Licence"
+#~ msgstr "ترخيص MIT"
+
+#~ msgid "Matrice de couverture"
+#~ msgstr "مصفوفة التغطية"
+
+#~ msgid "Toutes les activités"
+#~ msgstr "جميع الأنشطة"
+
+#~ msgid "Voir le détail"
+#~ msgstr "عرض التفاصيل"
+
+#~ msgid "Vous n'administrez aucun groupe pour le moment."
+#~ msgstr "أنت لا تدير أي مجموعة في الوقت الحالي."
+
+#~ msgid "Aucun formulaire dans ce groupe."
+#~ msgstr "لا توجد نماذج في هذه المجموعة."
+
+#~ msgid "Ajouter"
+#~ msgstr "إضافة"
+
+#~ msgid "Charger"
+#~ msgstr "تحميل"
+
+#~ msgid "Dashboard"
+#~ msgstr "لوحة البيانات"
+
+#~ msgid "Couleur principale"
+#~ msgstr "اللون الرئيسي"
+
+#~ msgid "Défaut"
+#~ msgstr "افتراضي"
+
+#~ msgid "Serveur KoboToolBox"
+#~ msgstr "خادم KoboToolBox"

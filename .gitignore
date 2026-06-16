@@ -12,6 +12,12 @@ __pycache__/
 staticfiles/
 .cache/
 
+# Form modules and programme-specific code — not part of the framework
+form_modules/*.py
+!form_modules/__init__.py
+!form_modules/base.py
+kobo/program_structure.py
+
 # Annexes (screenshots and form exports — keep locally only)
 Annexes/
 

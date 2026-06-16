@@ -68,7 +68,7 @@
         </div>
         {# Per-value colour + label — only for the currently selected field #}
         {% load dashboard_extras %}
-        {% with choices=pie_choices|dict_get:widget.field %}
+        {% with choices=pie_choices|pie_field_choices:widget %}
         {% if choices %}
         <div class="mb-0">
           <label class="form-label small fw-semibold mb-1">Valeurs — couleur et libellé</label>
@@ -189,6 +189,35 @@
             {% endif %}
           </div>
         </div>
+        {# Per-value colours for selected select_one series fields #}
+        {% for svc in widget.series_value_choices %}
+        <div class="mb-3">
+          <label class="form-label small fw-semibold mb-1">
+            Couleurs par valeur — <span class="fw-normal">{{ svc.field_label }}</span>
+            <span class="text-muted fw-normal">({{ svc.field }})</span>
+          </label>
+          <div style="max-height:180px;overflow-y:auto;border:1px solid #dee2e6;border-radius:.375rem;padding:.5rem">
+            {% for choice in svc.choices %}
+            <input type="hidden" name="svc_field" value="{{ svc.field }}">
+            <input type="hidden" name="svc_val"   value="{{ choice.val }}">
+            <input type="hidden" name="svc_color"
+                   id="svc_color_{{ row_idx }}_{{ widget_idx }}_{{ forloop.parentloop.counter }}_{{ forloop.counter }}"
+                   value="{{ choice.color }}">
+            <div class="d-flex align-items-center gap-2 py-1 border-bottom border-light">
+              <span class="small flex-grow-1">
+                {{ choice.label }} <span class="text-muted">({{ choice.val }})</span>
+              </span>
+              <input type="color"
+                     value="{{ choice.color|default:'#888888' }}"
+                     class="form-control form-control-color p-0 border-0 flex-shrink-0"
+                     style="width:28px;height:28px;cursor:pointer"
+                     title="Couleur"
+                     oninput="document.getElementById('svc_color_{{ row_idx }}_{{ widget_idx }}_{{ forloop.parentloop.counter }}_{{ forloop.counter }}').value=this.value">
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
       </div>
 
       {# data_table fields #}

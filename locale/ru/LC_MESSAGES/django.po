@@ -1,283 +1,421 @@
 # Russian translation for KoboDashBoard.
 msgid ""
 msgstr ""
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-16 14:44+0000\n"
+"Language: ru\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-msgid "Mode d'emploi"
-msgstr "Помощь"
-
-msgid "Déconnexion"
-msgstr "Выход"
-
-msgid "Built with"
-msgstr "Создано с"
-
-msgid "MIT Licence"
-msgstr "Лицензия MIT"
-
-msgid "Comptes en attente de validation"
-msgstr "Аккаунты на проверке"
-
-msgid "Paramètres"
-msgstr "Настройки"
-
-msgid "Mon groupe"
-msgstr "Моя группа"
-
-msgid "Formulaires"
-msgstr "Формы"
-
-msgid "Vue générique"
-msgstr "Общий вид"
-
-msgid "soumissions en cache"
-msgstr "кешированных отправок"
-
-msgid "Explorer les données brutes"
-msgstr "Просмотр данных"
-
-msgid "Rafraîchir"
-msgstr "Обновить"
-
-msgid "Actualiser"
-msgstr "Обновить"
-
-msgid "Export XLSX"
-msgstr "Экспорт XLSX"
-
-msgid "Export CSV"
-msgstr "Экспорт CSV"
-
-msgid "Pays"
-msgstr "Страна"
-
-msgid "Tous les pays"
-msgstr "Все страны"
-
-msgid "Année"
-msgstr "Год"
-
-msgid "Toutes"
-msgstr "Все"
-
-msgid "Tous"
-msgstr "Все"
-
-msgid "Trimestre"
-msgstr "Квартал"
-
-msgid "Résultat"
-msgstr "Результат"
-
-msgid "Tous les résultats"
-msgstr "Все результаты"
-
-msgid "Filtrer"
-msgstr "Фильтр"
-
-msgid "Réinitialiser"
-msgstr "Сбросить"
-
-msgid "Bénéficiaires rapportés"
-msgstr "Заявленные бенефициары"
-
-msgid "Rapports"
-msgstr "Отчёты"
-
-msgid "Résultats actifs"
-msgstr "Активные результаты"
-
-msgid "Données détaillées"
-msgstr "Подробные данные"
-
-msgid "lignes"
-msgstr "строк"
-
-msgid "Période"
-msgstr "Период"
-
-msgid "Rapporteur"
-msgstr "Репортёр"
-
-msgid "Indicateur"
-msgstr "Показатель"
-
-msgid "Total"
-msgstr "Итого"
-
-msgid "Hommes"
-msgstr "Мужчины"
-
-msgid "Femmes"
-msgstr "Женщины"
-
-msgid "Handicap"
-msgstr "Инвалидность"
-
-msgid "PDI"
-msgstr "ВПЛ"
-
-msgid "Code"
-msgstr "Код"
-
-msgid "Filtres"
-msgstr "Фильтры"
-
-msgid "Responsable"
-msgstr "Ответственный"
-
-msgid "Matrice de couverture"
-msgstr "Матрица охвата"
-
-msgid "Toutes les activités"
-msgstr "Все мероприятия"
-
-msgid "Aucune soumission pour ces critères."
-msgstr "Нет отправок по этим критериям."
-
-msgid "Voir le détail"
-msgstr "Подробнее"
-
-msgid "Gestion des utilisateurs"
-msgstr "Управление пользователями"
-
-msgid "En attente de validation"
-msgstr "На проверке"
-
-msgid "Aucun compte en attente."
-msgstr "Нет аккаунтов на проверке."
-
-msgid "Nom"
-msgstr "Имя"
-
-msgid "Demande le"
-msgstr "Запрошено"
-
-msgid "Activer"
-msgstr "Активировать"
-
-msgid "Utilisateurs actifs"
-msgstr "Активные пользователи"
-
-msgid "Aucun utilisateur actif (hors administrateurs)."
-msgstr "Нет активных пользователей (кроме администраторов)."
-
-msgid "Créé le"
-msgstr "Создан"
-
-msgid "Désactiver"
-msgstr "Деактивировать"
-
-msgid "Générer un lien de réinitialisation du mot de passe"
-msgstr "Создать ссылку сброса пароля"
-
-msgid "Supprimer ce compte ?"
-msgstr "Удалить этот аккаунт?"
-
-msgid "Désactiver ce compte ?"
-msgstr "Деактивировать этот аккаунт?"
-
-msgid "Supprimer définitivement ce compte ?"
-msgstr "Навсегда удалить этот аккаунт?"
-
+#: accounts/templates/accounts/login.html:9
 msgid "Connexion"
 msgstr "Вход"
 
+#: accounts/templates/accounts/login.html:25
 msgid "Email ou mot de passe incorrect."
 msgstr "Неверный email или пароль."
 
+#: accounts/templates/accounts/login.html:32
+#: accounts/templates/accounts/register.html:46
 msgid "Adresse email"
 msgstr "Адрес эл. почты"
 
+#: accounts/templates/accounts/login.html:37
+#: accounts/templates/accounts/register.html:56
 msgid "Mot de passe"
 msgstr "Пароль"
 
+#: accounts/templates/accounts/login.html:42
+#: accounts/templates/accounts/register.html:80
 msgid "Se connecter"
 msgstr "Войти"
 
+#: accounts/templates/accounts/login.html:44
 msgid "Mot de passe oublié ?"
 msgstr "Забыли пароль?"
 
+#: accounts/templates/accounts/login.html:50
 msgid "Pas encore de compte ?"
 msgstr "Нет аккаунта?"
 
+#: accounts/templates/accounts/login.html:51
 msgid "S'enregistrer"
 msgstr "Зарегистрироваться"
 
+#: accounts/templates/accounts/register.html:9
+#: accounts/templates/accounts/register.html:21
 msgid "Demande d'accès"
 msgstr "Запрос доступа"
 
+#: accounts/templates/accounts/register.html:23
 msgid "Votre compte sera activé après validation par un administrateur."
 msgstr "Ваш аккаунт будет активирован после проверки администратором."
 
+#: accounts/templates/accounts/register.html:36
 msgid "Nom complet"
 msgstr "Полное имя"
 
+#: accounts/templates/accounts/register.html:65
 msgid "Confirmer le mot de passe"
 msgstr "Подтвердите пароль"
 
+#: accounts/templates/accounts/register.html:74
 msgid "Envoyer la demande"
 msgstr "Отправить запрос"
 
+#: accounts/templates/accounts/register.html:80
 msgid "Déjà un compte ?"
 msgstr "Уже есть аккаунт?"
 
+#: dashboard/templates/dashboard/amopah_dashboard.html:12
+#: dashboard/templates/dashboard/form_detail.html:47
+#: dashboard/templates/dashboard/form_list.html:4
+#: dashboard/templates/dashboard/form_list.html:8
+msgid "Formulaires"
+msgstr "Формы"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:19
+#: dashboard/templates/dashboard/form_detail.html:55
+msgid "Rafraîchir"
+msgstr "Обновить"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:22
+msgid "Export XLSX"
+msgstr "Экспорт XLSX"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:25
+msgid "Export CSV"
+msgstr "Экспорт CSV"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:39
+#: dashboard/templates/dashboard/amopah_dashboard.html:112
+#: dashboard/templates/dashboard/amopah_dashboard.html:140
+#: dashboard/templates/dashboard/coverage.html:51
+msgid "Pays"
+msgstr "Страна"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:41
+#: dashboard/templates/dashboard/coverage.html:54
+msgid "Tous les pays"
+msgstr "Все страны"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:50
+msgid "Année"
+msgstr "Год"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:52
+msgid "Toutes"
+msgstr "Все"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:59
+msgid "Trimestre"
+msgstr "Квартал"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:61
+#: dashboard/templates/dashboard/coverage.html:78
+msgid "Tous"
+msgstr "Все"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:68
+#: dashboard/templates/dashboard/amopah_dashboard.html:143
+#: dashboard/templates/dashboard/coverage.html:63
+msgid "Résultat"
+msgstr "Результат"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:70
+#: dashboard/templates/dashboard/coverage.html:66
+msgid "Tous les résultats"
+msgstr "Все результаты"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:80
+msgid "Filtrer"
+msgstr "Фильтр"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:83
+#: dashboard/templates/dashboard/coverage.html:90
+msgid "Réinitialiser"
+msgstr "Сбросить"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:96
+msgid "Bénéficiaires rapportés"
+msgstr "Заявленные бенефициары"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:104
+msgid "Rapports"
+msgstr "Отчёты"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:120
+msgid "Résultats actifs"
+msgstr "Активные результаты"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:133
+msgid "Données détaillées"
+msgstr "Подробные данные"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:134
+msgid "lignes"
+msgstr "строк"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:141
+msgid "Période"
+msgstr "Период"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:142
+msgid "Rapporteur"
+msgstr "Репортёр"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:144
+msgid "Code"
+msgstr "Код"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:145
+msgid "Indicateur"
+msgstr "Показатель"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:146
+msgid "Total"
+msgstr "Итого"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:147
+msgid "Hommes"
+msgstr "Мужчины"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:148
+msgid "Femmes"
+msgstr "Женщины"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:149
+msgid "Handicap"
+msgstr "Инвалидность"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:150
+msgid "PDI"
+msgstr "ВПЛ"
+
+#: dashboard/templates/dashboard/base.html:79
+msgid "Comptes en attente de validation"
+msgstr "Аккаунты на проверке"
+
+#: dashboard/templates/dashboard/base.html:89
+#: dashboard/templates/dashboard/form_list.html:11
+msgid "Paramètres"
+msgstr "Настройки"
+
+#: dashboard/templates/dashboard/base.html:94
+msgid "Mon groupe"
+msgstr "Моя группа"
+
+#: dashboard/templates/dashboard/base.html:98
+msgid "Mode d'emploi"
+msgstr "Помощь"
+
+#: dashboard/templates/dashboard/base.html:127
+msgid "Déconnexion"
+msgstr "Выход"
+
+#: dashboard/templates/dashboard/base.html:151
+msgid "Built with"
+msgstr "Создано с"
+
+#: dashboard/templates/dashboard/coverage.html:26
+msgid "Actualiser"
+msgstr "Обновить"
+
+#: dashboard/templates/dashboard/coverage.html:47
+msgid "Filtres"
+msgstr "Фильтры"
+
+#: dashboard/templates/dashboard/coverage.html:75
+msgid "Responsable"
+msgstr "Ответственный"
+
+#: dashboard/templates/dashboard/form_detail.html:50
+#, fuzzy
+#| msgid "soumissions en cache"
+msgid "soumissions"
+msgstr "кешированных отправок"
+
+#: dashboard/templates/dashboard/form_detail.html:69
+msgid "Aucune question trouvée dans le schéma de ce formulaire."
+msgstr ""
+
+#: dashboard/templates/dashboard/form_detail.html:95
+msgid "Page précédente"
+msgstr ""
+
+#: dashboard/templates/dashboard/form_detail.html:106
+msgid "Page"
+msgstr ""
+
+#: dashboard/templates/dashboard/form_detail.html:125
+msgid "Page suivante"
+msgstr ""
+
+#: dashboard/templates/dashboard/form_detail.html:141
+#, fuzzy
+#| msgid "Aucun membre dans ce groupe."
+msgid "Aucune question dans ce groupe."
+msgstr "В этой группе нет участников."
+
+#: dashboard/templates/dashboard/form_detail.html:143
+#, fuzzy
+#| msgid "Aucune soumission pour ces critères."
+msgid "Aucune soumission."
+msgstr "Нет отправок по этим критериям."
+
+#: dashboard/templates/dashboard/form_list.html:28
+msgid "Vue générique"
+msgstr "Общий вид"
+
+#: dashboard/templates/dashboard/form_list.html:33
+msgid "soumissions en cache"
+msgstr "кешированных отправок"
+
+#: dashboard/templates/dashboard/form_list.html:50
+msgid "Éditeur dashboard"
+msgstr "Редактор панели"
+
+#: dashboard/templates/dashboard/form_list.html:54
+msgid "Explorer les données brutes"
+msgstr "Просмотр данных"
+
+#: dashboard/templates/dashboard/group_edit.html:3
+#: dashboard/templates/dashboard/group_edit.html:9
 msgid "Modifier le groupe"
 msgstr "Редактировать группу"
 
+#: dashboard/templates/dashboard/group_edit.html:16
 msgid "Nom du groupe"
 msgstr "Название группы"
 
+#: dashboard/templates/dashboard/group_edit.html:25
 msgid "Formulaires accessibles"
 msgstr "Доступные формы"
 
+#: dashboard/templates/dashboard/group_edit.html:37
 msgid "Aucun formulaire configuré."
 msgstr "Формы не настроены."
 
+#: dashboard/templates/dashboard/group_edit.html:44
 msgid "Membres"
 msgstr "Участники"
 
+#: dashboard/templates/dashboard/group_edit.html:57
+#: dashboard/templates/dashboard/group_edit.html:78
 msgid "Aucun utilisateur actif."
 msgstr "Нет активных пользователей."
 
+#: dashboard/templates/dashboard/group_edit.html:64
 msgid "Administrateurs du groupe"
 msgstr "Администраторы группы"
 
-msgid "Les administrateurs peuvent charger des modules et gérer les membres de ce groupe."
-msgstr "Администраторы могут загружать модули и управлять участниками этой группы."
+#: dashboard/templates/dashboard/group_edit.html:66
+msgid ""
+"Les administrateurs peuvent charger des modules et gérer les membres de ce "
+"groupe."
+msgstr ""
+"Администраторы могут загружать модули и управлять участниками этой группы."
 
+#: dashboard/templates/dashboard/group_edit.html:85
 msgid "Enregistrer"
 msgstr "Сохранить"
 
+#: dashboard/templates/dashboard/group_edit.html:87
 msgid "Annuler"
 msgstr "Отмена"
 
-msgid "Vous n'administrez aucun groupe pour le moment."
-msgstr "Вы не администрируете ни одну группу в данный момент."
+#: dashboard/templates/dashboard/user_list.html:3
+#: dashboard/templates/dashboard/user_list.html:6
+msgid "Gestion des utilisateurs"
+msgstr "Управление пользователями"
 
-msgid "Aucun membre dans ce groupe."
-msgstr "В этой группе нет участников."
+#: dashboard/templates/dashboard/user_list.html:10
+msgid "En attente de validation"
+msgstr "На проверке"
 
-msgid "Aucun formulaire dans ce groupe."
-msgstr "В этой группе нет форм."
+#: dashboard/templates/dashboard/user_list.html:17
+msgid "Aucun compte en attente."
+msgstr "Нет аккаунтов на проверке."
 
-msgid "Ajouter"
-msgstr "Добавить"
+#: dashboard/templates/dashboard/user_list.html:23
+#: dashboard/templates/dashboard/user_list.html:69
+msgid "Nom"
+msgstr "Имя"
 
-msgid "Charger"
-msgstr "Загрузить"
+#: dashboard/templates/dashboard/user_list.html:25
+msgid "Demande le"
+msgstr "Запрошено"
 
-msgid "Dashboard"
-msgstr "Дашборд"
+#: dashboard/templates/dashboard/user_list.html:40
+msgid "Activer"
+msgstr "Активировать"
 
-msgid "Couleur principale"
-msgstr "Основной цвет"
+#: dashboard/templates/dashboard/user_list.html:45
+msgid "Supprimer ce compte ?"
+msgstr "Удалить этот аккаунт?"
 
-msgid "Défaut"
-msgstr "По умолчанию"
+#: dashboard/templates/dashboard/user_list.html:60
+msgid "Utilisateurs actifs"
+msgstr "Активные пользователи"
 
-msgid "Serveur KoboToolBox"
-msgstr "Сервер KoboToolBox"
+#: dashboard/templates/dashboard/user_list.html:63
+msgid "Aucun utilisateur actif (hors administrateurs)."
+msgstr "Нет активных пользователей (кроме администраторов)."
+
+#: dashboard/templates/dashboard/user_list.html:71
+msgid "Créé le"
+msgstr "Создан"
+
+#: dashboard/templates/dashboard/user_list.html:86
+msgid "Générer un lien de réinitialisation du mot de passe"
+msgstr "Создать ссылку сброса пароля"
+
+#: dashboard/templates/dashboard/user_list.html:92
+msgid "Désactiver ce compte ?"
+msgstr "Деактивировать этот аккаунт?"
+
+#: dashboard/templates/dashboard/user_list.html:95
+msgid "Désactiver"
+msgstr "Деактивировать"
+
+#: dashboard/templates/dashboard/user_list.html:100
+msgid "Supprimer définitivement ce compte ?"
+msgstr "Навсегда удалить этот аккаунт?"
+
+#~ msgid "MIT Licence"
+#~ msgstr "Лицензия MIT"
+
+#~ msgid "Matrice de couverture"
+#~ msgstr "Матрица охвата"
+
+#~ msgid "Toutes les activités"
+#~ msgstr "Все мероприятия"
+
+#~ msgid "Voir le détail"
+#~ msgstr "Подробнее"
+
+#~ msgid "Vous n'administrez aucun groupe pour le moment."
+#~ msgstr "Вы не администрируете ни одну группу в данный момент."
+
+#~ msgid "Aucun formulaire dans ce groupe."
+#~ msgstr "В этой группе нет форм."
+
+#~ msgid "Ajouter"
+#~ msgstr "Добавить"
+
+#~ msgid "Charger"
+#~ msgstr "Загрузить"
+
+#~ msgid "Dashboard"
+#~ msgstr "Дашборд"
+
+#~ msgid "Couleur principale"
+#~ msgstr "Основной цвет"
+
+#~ msgid "Défaut"
+#~ msgstr "По умолчанию"
+
+#~ msgid "Serveur KoboToolBox"
+#~ msgstr "Сервер KoboToolBox"

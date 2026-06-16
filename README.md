@@ -44,15 +44,13 @@ accounts/               Email-based login, registration, password reset
     init_admin.py       First-access / locked-out recovery command
 
 dashboard/              UI views and Bootstrap 5 templates
-  views.py              form_list, settings_view, coverage, amopah_dashboard,
+  views.py              form_list, settings_view, coverage, module_dashboard,
                         submission_list, submission_detail, export_csv/xlsx,
                         module_download/upload, group_edit, my_group, aide
 
-form_modules/           Dashboard module plugin system
+form_modules/           Dashboard module plugin system (not included — create your own)
   __init__.py           Registry + auto-discovery of *.py files
   base.py               FormModule base class
-  dnh.py                Do Not Harm checklist module
-  amopah3.py            AMOPAH III indicator monitoring module
 
 locale/                 Translation files (en, es, ar, ru)
   <lang>/LC_MESSAGES/django.po / django.mo
@@ -78,7 +76,7 @@ Forms not assigned to any group are only visible to the power user.
 
 Each form type has a **module** — a Python file in `form_modules/` decorated with `@register('form-uid')`. Two patterns exist:
 
-**Coverage-matrix modules** (e.g. Do Not Harm): implement `parse_structure` and `parse_submission_detail`. The dashboard shows an activity × country matrix with submission drill-down.
+**Coverage-matrix modules**: implement `parse_structure` and `parse_submission_detail`. The dashboard shows an activity × country matrix with submission drill-down.
 
 ```python
 from form_modules import register
@@ -94,7 +92,7 @@ class MyFormModule(FormModule):
     def parse_submission_detail(self, sub, structure): ...
 ```
 
-**Indicator-monitoring modules** (e.g. AMOPAH III): also implement `parse_submissions`. The dashboard shows summary charts, disaggregation breakdowns (age/sex, disability, population status), and a data table.
+**Indicator-monitoring modules**: also implement `parse_submissions`. The dashboard shows summary charts, disaggregation breakdowns, and a data table.
 
 ```python
     def parse_submissions(self, submissions): ...
@@ -201,7 +199,7 @@ sudo systemctl enable --now kobodashboard
 # 7. Install nginx config and obtain TLS certificate
 sudo cp deploy/nginx-kobodash.conf /etc/nginx/sites-available/kobodash
 sudo ln -s /etc/nginx/sites-available/kobodash /etc/nginx/sites-enabled/
-sudo certbot --nginx -d kobodash.vmalep.eu
+sudo certbot --nginx -d your.domain.example
 sudo systemctl reload nginx
 
 # 8. Create the first admin account

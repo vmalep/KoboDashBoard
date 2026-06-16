@@ -1,283 +1,421 @@
 # Spanish translation for KoboDashBoard.
 msgid ""
 msgstr ""
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-16 14:44+0000\n"
+"Language: es\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: es\n"
 
-msgid "Mode d'emploi"
-msgstr "Ayuda"
-
-msgid "Déconnexion"
-msgstr "Cerrar sesión"
-
-msgid "Built with"
-msgstr "Creado con"
-
-msgid "MIT Licence"
-msgstr "Licencia MIT"
-
-msgid "Comptes en attente de validation"
-msgstr "Cuentas pendientes de validación"
-
-msgid "Paramètres"
-msgstr "Configuración"
-
-msgid "Mon groupe"
-msgstr "Mi grupo"
-
-msgid "Formulaires"
-msgstr "Formularios"
-
-msgid "Vue générique"
-msgstr "Vista genérica"
-
-msgid "soumissions en cache"
-msgstr "envíos en caché"
-
-msgid "Explorer les données brutes"
-msgstr "Explorar datos brutos"
-
-msgid "Rafraîchir"
-msgstr "Actualizar"
-
-msgid "Actualiser"
-msgstr "Actualizar"
-
-msgid "Export XLSX"
-msgstr "Exportar XLSX"
-
-msgid "Export CSV"
-msgstr "Exportar CSV"
-
-msgid "Pays"
-msgstr "País"
-
-msgid "Tous les pays"
-msgstr "Todos los países"
-
-msgid "Année"
-msgstr "Año"
-
-msgid "Toutes"
-msgstr "Todos"
-
-msgid "Tous"
-msgstr "Todos"
-
-msgid "Trimestre"
-msgstr "Trimestre"
-
-msgid "Résultat"
-msgstr "Resultado"
-
-msgid "Tous les résultats"
-msgstr "Todos los resultados"
-
-msgid "Filtrer"
-msgstr "Filtrar"
-
-msgid "Réinitialiser"
-msgstr "Restablecer"
-
-msgid "Bénéficiaires rapportés"
-msgstr "Beneficiarios reportados"
-
-msgid "Rapports"
-msgstr "Informes"
-
-msgid "Résultats actifs"
-msgstr "Resultados activos"
-
-msgid "Données détaillées"
-msgstr "Datos detallados"
-
-msgid "lignes"
-msgstr "filas"
-
-msgid "Période"
-msgstr "Período"
-
-msgid "Rapporteur"
-msgstr "Informador"
-
-msgid "Indicateur"
-msgstr "Indicador"
-
-msgid "Total"
-msgstr "Total"
-
-msgid "Hommes"
-msgstr "Hombres"
-
-msgid "Femmes"
-msgstr "Mujeres"
-
-msgid "Handicap"
-msgstr "Discapacidad"
-
-msgid "PDI"
-msgstr "PDI"
-
-msgid "Code"
-msgstr "Código"
-
-msgid "Filtres"
-msgstr "Filtros"
-
-msgid "Responsable"
-msgstr "Responsable"
-
-msgid "Matrice de couverture"
-msgstr "Matriz de cobertura"
-
-msgid "Toutes les activités"
-msgstr "Todas las actividades"
-
-msgid "Aucune soumission pour ces critères."
-msgstr "No hay envíos para estos criterios."
-
-msgid "Voir le détail"
-msgstr "Ver detalles"
-
-msgid "Gestion des utilisateurs"
-msgstr "Gestión de usuarios"
-
-msgid "En attente de validation"
-msgstr "Pendiente de validación"
-
-msgid "Aucun compte en attente."
-msgstr "No hay cuentas pendientes."
-
-msgid "Nom"
-msgstr "Nombre"
-
-msgid "Demande le"
-msgstr "Solicitado el"
-
-msgid "Activer"
-msgstr "Activar"
-
-msgid "Utilisateurs actifs"
-msgstr "Usuarios activos"
-
-msgid "Aucun utilisateur actif (hors administrateurs)."
-msgstr "No hay usuarios activos (excepto administradores)."
-
-msgid "Créé le"
-msgstr "Creado el"
-
-msgid "Désactiver"
-msgstr "Desactivar"
-
-msgid "Générer un lien de réinitialisation du mot de passe"
-msgstr "Generar enlace de restablecimiento de contraseña"
-
-msgid "Supprimer ce compte ?"
-msgstr "¿Eliminar esta cuenta?"
-
-msgid "Désactiver ce compte ?"
-msgstr "¿Desactivar esta cuenta?"
-
-msgid "Supprimer définitivement ce compte ?"
-msgstr "¿Eliminar permanentemente esta cuenta?"
-
+#: accounts/templates/accounts/login.html:9
 msgid "Connexion"
 msgstr "Iniciar sesión"
 
+#: accounts/templates/accounts/login.html:25
 msgid "Email ou mot de passe incorrect."
 msgstr "Email o contraseña incorrectos."
 
+#: accounts/templates/accounts/login.html:32
+#: accounts/templates/accounts/register.html:46
 msgid "Adresse email"
 msgstr "Dirección de correo electrónico"
 
+#: accounts/templates/accounts/login.html:37
+#: accounts/templates/accounts/register.html:56
 msgid "Mot de passe"
 msgstr "Contraseña"
 
+#: accounts/templates/accounts/login.html:42
+#: accounts/templates/accounts/register.html:80
 msgid "Se connecter"
 msgstr "Iniciar sesión"
 
+#: accounts/templates/accounts/login.html:44
 msgid "Mot de passe oublié ?"
 msgstr "¿Olvidó su contraseña?"
 
+#: accounts/templates/accounts/login.html:50
 msgid "Pas encore de compte ?"
 msgstr "¿Aún no tiene cuenta?"
 
+#: accounts/templates/accounts/login.html:51
 msgid "S'enregistrer"
 msgstr "Registrarse"
 
+#: accounts/templates/accounts/register.html:9
+#: accounts/templates/accounts/register.html:21
 msgid "Demande d'accès"
 msgstr "Solicitud de acceso"
 
+#: accounts/templates/accounts/register.html:23
 msgid "Votre compte sera activé après validation par un administrateur."
 msgstr "Su cuenta será activada tras la validación por un administrador."
 
+#: accounts/templates/accounts/register.html:36
 msgid "Nom complet"
 msgstr "Nombre completo"
 
+#: accounts/templates/accounts/register.html:65
 msgid "Confirmer le mot de passe"
 msgstr "Confirmar contraseña"
 
+#: accounts/templates/accounts/register.html:74
 msgid "Envoyer la demande"
 msgstr "Enviar solicitud"
 
+#: accounts/templates/accounts/register.html:80
 msgid "Déjà un compte ?"
 msgstr "¿Ya tiene una cuenta?"
 
+#: dashboard/templates/dashboard/amopah_dashboard.html:12
+#: dashboard/templates/dashboard/form_detail.html:47
+#: dashboard/templates/dashboard/form_list.html:4
+#: dashboard/templates/dashboard/form_list.html:8
+msgid "Formulaires"
+msgstr "Formularios"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:19
+#: dashboard/templates/dashboard/form_detail.html:55
+msgid "Rafraîchir"
+msgstr "Actualizar"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:22
+msgid "Export XLSX"
+msgstr "Exportar XLSX"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:25
+msgid "Export CSV"
+msgstr "Exportar CSV"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:39
+#: dashboard/templates/dashboard/amopah_dashboard.html:112
+#: dashboard/templates/dashboard/amopah_dashboard.html:140
+#: dashboard/templates/dashboard/coverage.html:51
+msgid "Pays"
+msgstr "País"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:41
+#: dashboard/templates/dashboard/coverage.html:54
+msgid "Tous les pays"
+msgstr "Todos los países"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:50
+msgid "Année"
+msgstr "Año"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:52
+msgid "Toutes"
+msgstr "Todos"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:59
+msgid "Trimestre"
+msgstr "Trimestre"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:61
+#: dashboard/templates/dashboard/coverage.html:78
+msgid "Tous"
+msgstr "Todos"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:68
+#: dashboard/templates/dashboard/amopah_dashboard.html:143
+#: dashboard/templates/dashboard/coverage.html:63
+msgid "Résultat"
+msgstr "Resultado"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:70
+#: dashboard/templates/dashboard/coverage.html:66
+msgid "Tous les résultats"
+msgstr "Todos los resultados"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:80
+msgid "Filtrer"
+msgstr "Filtrar"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:83
+#: dashboard/templates/dashboard/coverage.html:90
+msgid "Réinitialiser"
+msgstr "Restablecer"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:96
+msgid "Bénéficiaires rapportés"
+msgstr "Beneficiarios reportados"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:104
+msgid "Rapports"
+msgstr "Informes"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:120
+msgid "Résultats actifs"
+msgstr "Resultados activos"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:133
+msgid "Données détaillées"
+msgstr "Datos detallados"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:134
+msgid "lignes"
+msgstr "filas"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:141
+msgid "Période"
+msgstr "Período"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:142
+msgid "Rapporteur"
+msgstr "Informador"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:144
+msgid "Code"
+msgstr "Código"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:145
+msgid "Indicateur"
+msgstr "Indicador"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:146
+msgid "Total"
+msgstr "Total"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:147
+msgid "Hommes"
+msgstr "Hombres"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:148
+msgid "Femmes"
+msgstr "Mujeres"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:149
+msgid "Handicap"
+msgstr "Discapacidad"
+
+#: dashboard/templates/dashboard/amopah_dashboard.html:150
+msgid "PDI"
+msgstr "PDI"
+
+#: dashboard/templates/dashboard/base.html:79
+msgid "Comptes en attente de validation"
+msgstr "Cuentas pendientes de validación"
+
+#: dashboard/templates/dashboard/base.html:89
+#: dashboard/templates/dashboard/form_list.html:11
+msgid "Paramètres"
+msgstr "Configuración"
+
+#: dashboard/templates/dashboard/base.html:94
+msgid "Mon groupe"
+msgstr "Mi grupo"
+
+#: dashboard/templates/dashboard/base.html:98
+msgid "Mode d'emploi"
+msgstr "Ayuda"
+
+#: dashboard/templates/dashboard/base.html:127
+msgid "Déconnexion"
+msgstr "Cerrar sesión"
+
+#: dashboard/templates/dashboard/base.html:151
+msgid "Built with"
+msgstr "Creado con"
+
+#: dashboard/templates/dashboard/coverage.html:26
+msgid "Actualiser"
+msgstr "Actualizar"
+
+#: dashboard/templates/dashboard/coverage.html:47
+msgid "Filtres"
+msgstr "Filtros"
+
+#: dashboard/templates/dashboard/coverage.html:75
+msgid "Responsable"
+msgstr "Responsable"
+
+#: dashboard/templates/dashboard/form_detail.html:50
+#, fuzzy
+#| msgid "soumissions en cache"
+msgid "soumissions"
+msgstr "envíos en caché"
+
+#: dashboard/templates/dashboard/form_detail.html:69
+msgid "Aucune question trouvée dans le schéma de ce formulaire."
+msgstr ""
+
+#: dashboard/templates/dashboard/form_detail.html:95
+msgid "Page précédente"
+msgstr ""
+
+#: dashboard/templates/dashboard/form_detail.html:106
+msgid "Page"
+msgstr ""
+
+#: dashboard/templates/dashboard/form_detail.html:125
+msgid "Page suivante"
+msgstr ""
+
+#: dashboard/templates/dashboard/form_detail.html:141
+#, fuzzy
+#| msgid "Aucun membre dans ce groupe."
+msgid "Aucune question dans ce groupe."
+msgstr "No hay miembros en este grupo."
+
+#: dashboard/templates/dashboard/form_detail.html:143
+#, fuzzy
+#| msgid "Aucune soumission pour ces critères."
+msgid "Aucune soumission."
+msgstr "No hay envíos para estos criterios."
+
+#: dashboard/templates/dashboard/form_list.html:28
+msgid "Vue générique"
+msgstr "Vista genérica"
+
+#: dashboard/templates/dashboard/form_list.html:33
+msgid "soumissions en cache"
+msgstr "envíos en caché"
+
+#: dashboard/templates/dashboard/form_list.html:50
+msgid "Éditeur dashboard"
+msgstr "Editor de tablero"
+
+#: dashboard/templates/dashboard/form_list.html:54
+msgid "Explorer les données brutes"
+msgstr "Explorar datos brutos"
+
+#: dashboard/templates/dashboard/group_edit.html:3
+#: dashboard/templates/dashboard/group_edit.html:9
 msgid "Modifier le groupe"
 msgstr "Editar grupo"
 
+#: dashboard/templates/dashboard/group_edit.html:16
 msgid "Nom du groupe"
 msgstr "Nombre del grupo"
 
+#: dashboard/templates/dashboard/group_edit.html:25
 msgid "Formulaires accessibles"
 msgstr "Formularios accesibles"
 
+#: dashboard/templates/dashboard/group_edit.html:37
 msgid "Aucun formulaire configuré."
 msgstr "No hay formularios configurados."
 
+#: dashboard/templates/dashboard/group_edit.html:44
 msgid "Membres"
 msgstr "Miembros"
 
+#: dashboard/templates/dashboard/group_edit.html:57
+#: dashboard/templates/dashboard/group_edit.html:78
 msgid "Aucun utilisateur actif."
 msgstr "No hay usuarios activos."
 
+#: dashboard/templates/dashboard/group_edit.html:64
 msgid "Administrateurs du groupe"
 msgstr "Administradores del grupo"
 
-msgid "Les administrateurs peuvent charger des modules et gérer les membres de ce groupe."
-msgstr "Los administradores pueden cargar módulos y gestionar los miembros de este grupo."
+#: dashboard/templates/dashboard/group_edit.html:66
+msgid ""
+"Les administrateurs peuvent charger des modules et gérer les membres de ce "
+"groupe."
+msgstr ""
+"Los administradores pueden cargar módulos y gestionar los miembros de este "
+"grupo."
 
+#: dashboard/templates/dashboard/group_edit.html:85
 msgid "Enregistrer"
 msgstr "Guardar"
 
+#: dashboard/templates/dashboard/group_edit.html:87
 msgid "Annuler"
 msgstr "Cancelar"
 
-msgid "Vous n'administrez aucun groupe pour le moment."
-msgstr "No administra ningún grupo por el momento."
+#: dashboard/templates/dashboard/user_list.html:3
+#: dashboard/templates/dashboard/user_list.html:6
+msgid "Gestion des utilisateurs"
+msgstr "Gestión de usuarios"
 
-msgid "Aucun membre dans ce groupe."
-msgstr "No hay miembros en este grupo."
+#: dashboard/templates/dashboard/user_list.html:10
+msgid "En attente de validation"
+msgstr "Pendiente de validación"
 
-msgid "Aucun formulaire dans ce groupe."
-msgstr "No hay formularios en este grupo."
+#: dashboard/templates/dashboard/user_list.html:17
+msgid "Aucun compte en attente."
+msgstr "No hay cuentas pendientes."
 
-msgid "Ajouter"
-msgstr "Agregar"
+#: dashboard/templates/dashboard/user_list.html:23
+#: dashboard/templates/dashboard/user_list.html:69
+msgid "Nom"
+msgstr "Nombre"
 
-msgid "Charger"
-msgstr "Subir"
+#: dashboard/templates/dashboard/user_list.html:25
+msgid "Demande le"
+msgstr "Solicitado el"
 
-msgid "Dashboard"
-msgstr "Dashboard"
+#: dashboard/templates/dashboard/user_list.html:40
+msgid "Activer"
+msgstr "Activar"
 
-msgid "Couleur principale"
-msgstr "Color principal"
+#: dashboard/templates/dashboard/user_list.html:45
+msgid "Supprimer ce compte ?"
+msgstr "¿Eliminar esta cuenta?"
 
-msgid "Défaut"
-msgstr "Predeterminado"
+#: dashboard/templates/dashboard/user_list.html:60
+msgid "Utilisateurs actifs"
+msgstr "Usuarios activos"
 
-msgid "Serveur KoboToolBox"
-msgstr "Servidor KoboToolBox"
+#: dashboard/templates/dashboard/user_list.html:63
+msgid "Aucun utilisateur actif (hors administrateurs)."
+msgstr "No hay usuarios activos (excepto administradores)."
+
+#: dashboard/templates/dashboard/user_list.html:71
+msgid "Créé le"
+msgstr "Creado el"
+
+#: dashboard/templates/dashboard/user_list.html:86
+msgid "Générer un lien de réinitialisation du mot de passe"
+msgstr "Generar enlace de restablecimiento de contraseña"
+
+#: dashboard/templates/dashboard/user_list.html:92
+msgid "Désactiver ce compte ?"
+msgstr "¿Desactivar esta cuenta?"
+
+#: dashboard/templates/dashboard/user_list.html:95
+msgid "Désactiver"
+msgstr "Desactivar"
+
+#: dashboard/templates/dashboard/user_list.html:100
+msgid "Supprimer définitivement ce compte ?"
+msgstr "¿Eliminar permanentemente esta cuenta?"
+
+#~ msgid "MIT Licence"
+#~ msgstr "Licencia MIT"
+
+#~ msgid "Matrice de couverture"
+#~ msgstr "Matriz de cobertura"
+
+#~ msgid "Toutes les activités"
+#~ msgstr "Todas las actividades"
+
+#~ msgid "Voir le détail"
+#~ msgstr "Ver detalles"
+
+#~ msgid "Vous n'administrez aucun groupe pour le moment."
+#~ msgstr "No administra ningún grupo por el momento."
+
+#~ msgid "Aucun formulaire dans ce groupe."
+#~ msgstr "No hay formularios en este grupo."
+
+#~ msgid "Ajouter"
+#~ msgstr "Agregar"
+
+#~ msgid "Charger"
+#~ msgstr "Subir"
+
+#~ msgid "Dashboard"
+#~ msgstr "Dashboard"
+
+#~ msgid "Couleur principale"
+#~ msgstr "Color principal"
+
+#~ msgid "Défaut"
+#~ msgstr "Predeterminado"
+
+#~ msgid "Serveur KoboToolBox"
+#~ msgstr "Servidor KoboToolBox"

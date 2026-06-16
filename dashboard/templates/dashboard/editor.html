@@ -215,7 +215,7 @@
                     </div>
                   </div>
                   <div class="d-flex gap-1 flex-shrink-0">
-                    <a href="?edit={{ widget.edit_key }}"
+                    <a href="?edit={{ widget.edit_key }}#wedit-{{ widget.edit_key }}"
                        class="btn btn-sm btn-outline-secondary py-0 px-1" title="Modifier">
                       <i class="bi bi-pencil" style="font-size:.75rem"></i>
                     </a>
@@ -237,7 +237,7 @@
 
           {# Inline edit form #}
           {% if request.GET.edit == widget.edit_key %}
-          <div class="col-12">
+          <div class="col-12" id="wedit-{{ widget.edit_key }}">
             {% include "dashboard/editor_widget_form.html" with action="edit_widget" row_idx=row.row_idx widget_idx=widget.widget_idx widget=widget field_choices=field_choices uid=uid %}
           </div>
           {% endif %}
@@ -250,7 +250,7 @@
         {# Add widget button / inline form #}
         {% with add_key=row.row_idx|stringformat:"s" %}
         {% if request.GET.add_to_row == add_key %}
-          {% include "dashboard/editor_widget_form.html" with action="add_widget" row_idx=row.row_idx widget_idx=None widget=None field_choices=field_choices uid=uid %}
+          {% include "dashboard/editor_widget_form.html" with action="add_widget" row_idx=row.row_idx widget_idx="" widget=empty_widget field_choices=field_choices uid=uid pie_choices=pie_choices %}
         {% else %}
           <a href="?add_to_row={{ row.row_idx }}" class="btn btn-sm btn-outline-primary">
             <i class="bi bi-plus-lg me-1"></i>Ajouter un widget

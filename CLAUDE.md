@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Django dashboard (v1.0, GPL v3) that pulls form submission data from a KoboToolBox server via the v2 REST API and displays it to authenticated users. Generic: any KoboToolBox server, any number of forms, each with its own dashboard module. Currently deployed for the AMOPAH III humanitarian programme (IFRC/Red Cross) at kobodash.vmalep.eu.
+Django dashboard (v1.0, GPL v3) that pulls form submission data from a KoboToolBox server via the v2 REST API and displays it to authenticated users. Generic: any KoboToolBox server, any number of forms, each with its own dashboard module.
 
 ## Commands
 
@@ -45,11 +45,9 @@ dashboard/
   static/dashboard/favicon.svg
   templates/dashboard/base.html     Bootstrap 5, RTL, i18n, responsive navbar
 
-form_modules/
+form_modules/           Not included in git — create your own per-form modules
   __init__.py           Registry + auto-discovery of *.py files
   base.py               FormModule base class
-  amopah3.py            AMOPAH III indicator monitoring
-  dnh.py                Do Not Harm coverage matrix
 
 locale/                 Translation files (en, es, ar, ru) — fr is default
   <lang>/LC_MESSAGES/django.po / django.mo
@@ -69,7 +67,7 @@ locale/                 Translation files (en, es, ar, ru) — fr is default
 **i18n**: `LocaleMiddleware` + `{% trans %}` tags + `.po`/`.mo` files. Language switcher in navbar posts to `{% url 'set_language' %}`. Arabic triggers `dir="rtl"` and Bootstrap RTL CSS.
 
 **Form module plugin system**: `form_modules/__init__.py` auto-discovers all `.py` files. `@register('kobo-uid')` decorator links a class to a form UID. Two patterns:
-- Has `parse_submissions()` → `amopah_dashboard` view (indicator charts + disaggregation)
+- Has `parse_submissions()` → `module_dashboard` view (indicator charts + disaggregation)
 - No `parse_submissions()` → `coverage` view (activity × country matrix)
 - No module at all → `form_detail` (generic group/tab view)
 
@@ -77,7 +75,7 @@ locale/                 Translation files (en, es, ar, ru) — fr is default
 
 **Static files**: WhiteNoise `CompressedManifestStaticFilesStorage`. App static files in `dashboard/static/dashboard/`. Always run `collectstatic` after adding new static files in production.
 
-**Export**: CSV (`StreamingHttpResponse`) and XLSX (`openpyxl`). AMOPAH: one row per indicator per submission with disaggregation columns. DNH: one row per risk per submission.
+**Export**: CSV (`StreamingHttpResponse`) and XLSX (`openpyxl`). Indicator modules: one row per indicator per submission with disaggregation columns. Coverage-matrix modules: one row per risk per submission.
 
 ## View reference
 
@@ -111,12 +109,12 @@ locale/                 Translation files (en, es, ar, ru) — fr is default
 ```
 SECRET_KEY=...
 DEBUG=False
-ALLOWED_HOSTS=kobodash.vmalep.eu,localhost
-CSRF_TRUSTED_ORIGINS=https://kobodash.vmalep.eu   # required in production, not in git
+ALLOWED_HOSTS=your.domain.example,localhost
+CSRF_TRUSTED_ORIGINS=https://your.domain.example   # required in production, not in git
 
 EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
 EMAIL_HOST=...  EMAIL_PORT=587  EMAIL_HOST_USER=...  EMAIL_HOST_PASSWORD=...
-EMAIL_USE_TLS=True  DEFAULT_FROM_EMAIL=noreply@kobodash.vmalep.eu
+EMAIL_USE_TLS=True  DEFAULT_FROM_EMAIL=noreply@your.domain.example
 ```
 
 ## Deployment
@@ -128,7 +126,7 @@ bash /srv/kobodashboard/deploy/update.sh
 # runs: git pull → migrate → collectstatic → systemctl restart kobodashboard
 ```
 
-First-time setup: server is Ubuntu alongside Nextcloud snap (owns 80/443). Django runs on port 8001 behind system nginx reverse proxy. See `deploy/` for service and nginx configs.
+Django runs on port 8001 behind a system nginx reverse proxy. See `deploy/` for service and nginx configs.
 
 Admin recovery (SSH to server):
 ```bash

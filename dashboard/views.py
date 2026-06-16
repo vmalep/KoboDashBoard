@@ -131,6 +131,11 @@ def form_list(request):
             return redirect('/dashboard/settings/')
         return render(request, 'dashboard/no_form.html', {})
 
+    is_power_user = _is_power_user(request.user)
+    admin_uids = set(
+        _user_admin_forms(request.user).values_list('uid', flat=True)
+    ) if not is_power_user else None
+
     form_cards = []
     for f in forms:
         module = get_module(f.uid)
@@ -140,6 +145,7 @@ def form_list(request):
             module_name = module.form_label or _Path(module._source_file).stem
         else:
             module_name = None
+        can_edit = is_power_user or f.uid in admin_uids
         form_cards.append({
             'uid': f.uid,
             'name': f.name,
@@ -147,11 +153,12 @@ def form_list(request):
             'module_name': module_name,
             'sub_count': len(cached_subs) if cached_subs is not None else None,
             'dash_configs': list(f.dashboard_configs.values('id', 'name')),
+            'can_edit': can_edit,
         })
 
     return render(request, 'dashboard/form_list.html', {
         'form_cards': form_cards,
-        'is_power_user': _is_power_user(request.user),
+        'is_power_user': is_power_user,
     })
 
 
@@ -339,19 +346,21 @@ def _build_table_rows(filtered, f_result):
 # ── Generic form detail (fallback for forms with no module) ───────────────────
 
 @login_required
-def amopah_dashboard(request, uid):
-    """Dashboard for AMOPAH III indicator monitoring form."""
+def module_dashboard(request, uid):
+    """Dashboard for indicator-monitoring form modules (modules with parse_submissions)."""
     if not _user_can_access_form(request.user, uid):
         return redirect('/dashboard/')
     error = None
     chart_data = {}
-    periods = []
-    countries_used = []
-    results_used = []
     parsed_all = []
     filtered = []
     total_beneficiaries = 0
     total_reports = 0
+    countries_used = []
+    results_used = []
+    country_labels = {}
+    result_labels = {}
+    module = None
 
     f_country = request.GET.get('country', '')
     f_year = request.GET.get('year', '')
@@ -363,16 +372,22 @@ def amopah_dashboard(request, uid):
         if module is None or not hasattr(module, 'parse_submissions'):
             return form_detail(request, uid)
 
+        country_labels = getattr(module, 'COUNTRY_LABELS', {})
+        result_labels = getattr(module, 'RESULT_LABELS', {})
+        indicator_labels = getattr(module, 'INDICATOR_LABELS', {})
+        result_keys = getattr(module, 'RESULT_KEYS', [])
+        country_colors = getattr(module, 'COUNTRY_COLORS', {})
+        aggregate = getattr(module, 'aggregate', None)
+
         parsed_all = module.parse_submissions(submissions)
 
         # Collect filter options from data
-        periods_set = sorted({ps['period'] for ps in parsed_all if ps['period']})
         countries_used = sorted({ps['country'] for ps in parsed_all if ps['country']})
         results_used_set = set()
         for ps in parsed_all:
             for ind in ps['indicators']:
                 results_used_set.add(ind['result_key'])
-        results_used = [r for r in ['result1', 'result2', 'result3', 'result4']
+        results_used = [r for r in (result_keys or sorted(results_used_set))
                         if r in results_used_set]
 
         # Apply filters
@@ -386,75 +401,51 @@ def amopah_dashboard(request, uid):
 
         total_reports = len(filtered)
 
-        # Build per-indicator aggregates for filtered set
-        from form_modules.amopah3 import (
-            COUNTRY_LABELS, RESULT_LABELS, INDICATOR_LABELS, aggregate
-        )
-
-        agg = aggregate(filtered)
+        agg = {'by_country': {}, 'by_indicator': {}, 'by_period': {}}
+        if aggregate is not None:
+            agg = aggregate(filtered)
         total_beneficiaries = sum(agg['by_country'].values())
 
-        # Build Chart.js data: one chart per result, indicators on x-axis, countries stacked
-        country_colors = {
-            'burkina': '#c00000',
-            'niger':   '#e97132',
-            'mali':    '#156082',
-            'burundi': '#196b24',
-            'rdc':     '#7f7f7f',
-        }
-        country_list = [c for c in COUNTRY_LABELS if c in countries_used]
+        country_list = [c for c in country_labels if c in countries_used]
         if f_country:
-            country_list = [f_country] if f_country in COUNTRY_LABELS else []
+            country_list = [f_country] if f_country in country_labels else []
 
-        # Group indicators by result
-        from form_modules.amopah3 import RESULT_KEYS
         result_charts = []
-        for rkey in RESULT_KEYS:
+        for rkey in result_keys:
             if f_result and rkey != f_result:
                 continue
-            # Collect indicators that appear in this result in filtered data
             ind_codes = []
             for ps in filtered:
                 for ind in ps['indicators']:
                     if ind['result_key'] == rkey and ind['code'] not in ind_codes:
                         ind_codes.append(ind['code'])
-
             if not ind_codes:
                 continue
-
-            ind_labels = [INDICATOR_LABELS.get(c, c) for c in ind_codes]
+            ind_labels = [indicator_labels.get(c, c) for c in ind_codes]
             datasets = []
             for country in country_list:
-                data = []
-                for code in ind_codes:
-                    val = agg['by_indicator'].get(code, {}).get(country, 0)
-                    data.append(val)
+                data = [agg['by_indicator'].get(code, {}).get(country, 0) for code in ind_codes]
                 datasets.append({
-                    'label': COUNTRY_LABELS.get(country, country),
+                    'label': country_labels.get(country, country),
                     'data': data,
                     'backgroundColor': country_colors.get(country, '#999'),
                 })
-
             result_charts.append({
                 'result_key': rkey,
-                'result_label': RESULT_LABELS.get(rkey, rkey),
+                'result_label': result_labels.get(rkey, rkey),
                 'indicator_labels': ind_labels,
                 'indicator_codes': ind_codes,
                 'datasets': datasets,
             })
 
-        # Summary chart: total by country
         country_summary = {
-            'labels': [COUNTRY_LABELS.get(c, c) for c in country_list],
+            'labels': [country_labels.get(c, c) for c in country_list],
             'data': [agg['by_country'].get(c, 0) for c in country_list],
             'colors': [country_colors.get(c, '#999') for c in country_list],
         }
-
-        # Period trend chart
         period_labels = sorted({ps['period'] for ps in filtered if ps['period']})
         period_data = [agg['by_period'].get(p, 0) for p in period_labels]
 
-        # Disaggregation chart: aggregate age/sex across all filtered indicators
         age_totals = {'male_0_5': 0, 'male_6_18': 0, 'male_19_49': 0, 'male_50p': 0,
                       'fem_0_5': 0, 'fem_6_18': 0, 'fem_19_49': 0, 'fem_50p': 0}
         disability_totals = {'with': 0, 'without': 0}
@@ -478,14 +469,15 @@ def amopah_dashboard(request, uid):
 
         disagg_chart = None
         if has_disagg:
-            age_labels = ['0–5 H', '6–18 H', '19–49 H', '50+ H',
-                          '0–5 F', '6–18 F', '19–49 F', '50+ F']
+            age_labels = getattr(module, 'AGE_DISAGG_LABELS',
+                                 ['0–5 M', '6–18 M', '19–49 M', '50+ M',
+                                  '0–5 F', '6–18 F', '19–49 F', '50+ F'])
             age_data = [age_totals[k] for k in age_totals]
-            age_colors = (['#156082'] * 4) + (['#c00000'] * 4)
-
-            status_labels = ['PDI', 'Hôte', 'Réfugié', 'Rapatrié', 'Migrant', 'Autre']
+            age_colors = getattr(module, 'AGE_DISAGG_COLORS',
+                                 (['#156082'] * 4) + (['#c00000'] * 4))
+            status_labels = getattr(module, 'STATUS_LABELS',
+                                    ['PDI', 'Hôte', 'Réfugié', 'Rapatrié', 'Migrant', 'Autre'])
             status_data = [status_totals[k] for k in status_totals]
-
             disagg_chart = {
                 'age': {'labels': age_labels, 'data': age_data, 'colors': age_colors},
                 'disability': {
@@ -506,11 +498,10 @@ def amopah_dashboard(request, uid):
     except api_client.KoboAPIError as exc:
         error = str(exc)
 
-    from form_modules.amopah3 import COUNTRY_LABELS, RESULT_LABELS
-
-    return render(request, 'dashboard/amopah_dashboard.html', {
+    template = getattr(module, 'dashboard_template', 'dashboard/module_dashboard.html')
+    return render(request, template, {
         'uid': uid,
-        'form_label': 'AMOPAH III — Suivi des indicateurs',
+        'form_label': getattr(module, 'form_label', uid),
         'error': error,
         'total_beneficiaries': total_beneficiaries,
         'total_reports': total_reports,
@@ -523,8 +514,8 @@ def amopah_dashboard(request, uid):
         'f_year': f_year,
         'f_quarter': f_quarter,
         'f_result': f_result,
-        'country_labels': COUNTRY_LABELS,
-        'result_labels': RESULT_LABELS,
+        'country_labels': country_labels,
+        'result_labels': result_labels,
         'chart_data_json': json.dumps(chart_data),
         'table_rows': _build_table_rows(filtered, f_result),
     })
@@ -673,6 +664,7 @@ def _render_widget(widget, submissions, schema):
         series_fields = [s['field'] for s in series_configs if s['field']]
         multi_sf = len(series_fields) > 1
         color_idx = 0
+        series_value_colors = widget.get('series_value_colors') or {}
 
         def _unique_vals(field):
             order, seen = [], set()
@@ -700,13 +692,13 @@ def _render_widget(widget, submissions, schema):
                         v2 = str(sub.get(sf, '') or '')
                         if v1 in seen_l and v2 in seen_s:
                             counts[v2][v1] += 1
-                    base_color = sc['color']
+                    path_svc = series_value_colors.get(sf, {})
                     for sk in series_order:
                         lbl = cl2.get(sk, sk)
                         if multi_sf:
                             field_lbl = sc['label'] or qlabels.get(sf, sf)
                             lbl = f"{field_lbl} — {lbl}"
-                        color = base_color
+                        color = path_svc.get(sk) or _WIDGET_COLORS[color_idx % len(_WIDGET_COLORS)]
                         color_idx += 1
                         datasets.append({
                             'label': lbl,
@@ -876,7 +868,7 @@ def coverage(request, uid):
 
     # Route modules that have their own dashboard view
     if module is not None and hasattr(module, 'parse_submissions') and not error:
-        return amopah_dashboard(request, uid)
+        return module_dashboard(request, uid)
 
     if not error:
         fp = module.FIELD_PATHS
@@ -1037,6 +1029,16 @@ def _build_widget_from_post(post):
                     entry['label'] = labels[i].strip()
                 series.append(entry)
         widget['series'] = series
+        # Per-value colors for select_one series fields
+        svc_fields = post.getlist('svc_field')
+        svc_vals   = post.getlist('svc_val')
+        svc_colors = post.getlist('svc_color')
+        series_value_colors = {}
+        for f, v, c in zip(svc_fields, svc_vals, svc_colors):
+            if f and v:
+                series_value_colors.setdefault(f, {})[v] = c
+        if series_value_colors:
+            widget['series_value_colors'] = series_value_colors
     return widget
 
 
@@ -1229,6 +1231,26 @@ def dashboard_editor(request, uid, pk):
     except api_client.KoboAPIError:
         pass
 
+    # Second pass: enrich widget dicts with series_value_choices for the editor UI
+    field_label_map = {p: lbl for p, lbl, ft in field_choices}
+    for row in rows_ctx:
+        for w in row['widgets']:
+            svc_store = w.get('series_value_colors') or {}
+            svc_list = []
+            for path in w.get('series_paths', []):
+                if path in pie_choices:
+                    path_colors = svc_store.get(path, {}) if isinstance(svc_store, dict) else {}
+                    svc_list.append({
+                        'field': path,
+                        'field_label': field_label_map.get(path, path),
+                        'choices': [
+                            {'val': val, 'label': val_label,
+                             'color': path_colors.get(val, '')}
+                            for val, val_label in pie_choices[path]
+                        ],
+                    })
+            w['series_value_choices'] = svc_list
+
     filters_ctx = [
         {**f, 'filter_idx': i}
         for i, f in enumerate(config_json.get('filters', []))
@@ -1243,6 +1265,7 @@ def dashboard_editor(request, uid, pk):
         'field_choices': field_choices,
         'pie_choices': pie_choices,
         'has_schema': has_schema,
+        'empty_widget': {},
     })
 
 
@@ -1369,7 +1392,7 @@ class _Echo:
         return value
 
 
-def _amopah_csv_rows(writer, submissions, module):
+def _module_csv_rows(writer, submissions, module):
     yield writer.writerow(module.EXPORT_HEADERS)
     i = 1
     for sub in submissions:
@@ -1416,10 +1439,9 @@ def export_csv(request, uid):
     pseudo_buffer = _Echo()
     writer = csv.writer(pseudo_buffer)
 
-    # AMOPAH-style export
     if hasattr(module, 'parse_submissions'):
         response = StreamingHttpResponse(
-            _amopah_csv_rows(writer, submissions, module),
+            _module_csv_rows(writer, submissions, module),
             content_type='text/csv; charset=utf-8-sig',
         )
         response['Content-Disposition'] = f'attachment; filename="{uid}_donnees.csv"'
@@ -1455,8 +1477,8 @@ def export_csv(request, uid):
     return response
 
 
-def _amopah_xlsx(submissions, module):
-    """Build openpyxl Workbook for AMOPAH export."""
+def _module_xlsx(submissions, module):
+    """Build openpyxl Workbook for indicator-module export."""
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = 'Données'
@@ -1512,9 +1534,8 @@ def export_xlsx(request, uid):
     if module is None:
         return HttpResponse('Export non disponible sans module de formulaire.', status=400)
 
-    # AMOPAH-style export
     if hasattr(module, 'parse_submissions'):
-        wb = _amopah_xlsx(submissions, module)
+        wb = _module_xlsx(submissions, module)
         output = io.BytesIO()
         wb.save(output)
         output.seek(0)
