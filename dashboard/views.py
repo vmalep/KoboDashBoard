@@ -854,6 +854,33 @@ def coverage(request, uid):
     if not _user_can_access_form(request.user, uid):
         return redirect('/dashboard/')
 
+    # Build list of all available dashboard options (JSON dashboards + Python module).
+    # Skip selection when ?view=module is present (direct module link from selection page).
+    if request.GET.get('view') != 'module':
+        _module = get_module(uid)
+        try:
+            _cf = ConfiguredForm.objects.get(uid=uid)
+            _json_dbs = list(_cf.dashboard_configs.order_by('pk'))
+        except ConfiguredForm.DoesNotExist:
+            _json_dbs = []
+            _cf = None
+
+        _options = []
+        for _d in _json_dbs:
+            _options.append({'type': 'json', 'pk': _d.pk, 'name': _d.name or str(_d.pk)})
+        _module_inst = _module
+        if _module_inst is not None:
+            _label = getattr(_module_inst, 'form_label', '') or uid
+            _mtype = 'indicator' if hasattr(_module_inst, 'parse_submissions') else 'coverage_matrix'
+            _options.append({'type': _mtype, 'name': _label})
+
+        if len(_options) > 1:
+            return render(request, 'dashboard/dashboard_select.html',
+                          {'options': _options, 'uid': uid, 'form': _cf})
+
+        if len(_options) == 1 and _options[0]['type'] == 'json':
+            return redirect('view_dashboard', uid=uid, pk=_options[0]['pk'])
+
     error = None
     structure = {}
     coverage_data = {}

@@ -1,8 +1,11 @@
 import importlib
 import inspect
+import logging
 from pathlib import Path
 
 REGISTRY = {}
+
+_log = logging.getLogger(__name__)
 
 
 def register(uid):
@@ -25,4 +28,7 @@ def get_module(uid):
 _dir = Path(__file__).parent
 for _path in sorted(_dir.glob('*.py')):
     if _path.stem not in ('__init__', 'base'):
-        importlib.import_module(f'form_modules.{_path.stem}')
+        try:
+            importlib.import_module(f'form_modules.{_path.stem}')
+        except Exception as exc:
+            _log.error('Failed to load form module %s: %s', _path.stem, exc)
