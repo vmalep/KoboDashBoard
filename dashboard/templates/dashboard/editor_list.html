@@ -1,5 +1,6 @@
 {% extends "dashboard/base.html" %}
-{% block title %}Dashboards — {{ form.name }} — KoboDashBoard{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Dashboards" %} — {{ form.name }} — KoboDashBoard{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -7,11 +8,11 @@
 
     <div class="d-flex align-items-center justify-content-between mb-4">
       <div>
-        <h2 class="h4 mb-0"><i class="bi bi-layout-wtf me-2"></i>Dashboards</h2>
+        <h2 class="h4 mb-0"><i class="bi bi-layout-wtf me-2"></i>{% trans "Dashboards" %}</h2>
         <small class="text-muted">{{ form.name }}</small>
       </div>
       <a href="/dashboard/{{ uid }}/" class="btn btn-outline-secondary btn-sm">
-        <i class="bi bi-arrow-left me-1"></i>Retour
+        <i class="bi bi-arrow-left me-1"></i>{% trans "Retour" %}
       </a>
     </div>
 
@@ -22,36 +23,39 @@
       <div class="list-group-item d-flex align-items-center justify-content-between py-3">
         <div>
           <div class="fw-semibold">{{ dc.name }}</div>
-          <div class="text-muted small">{{ dc.config.rows|length }} ligne{{ dc.config.rows|length|pluralize }}
-            · {{ dc.config.filters|length }} filtre{{ dc.config.filters|length|pluralize }}</div>
+          <div class="text-muted small">
+            {% blocktranslate with n=dc.config.rows|length %}{{ n }} ligne{% plural %}{{ n }} lignes{% endblocktranslate %}
+            ·
+            {% blocktranslate with n=dc.config.filters|length %}{{ n }} filtre{% plural %}{{ n }} filtres{% endblocktranslate %}
+          </div>
         </div>
         <div class="d-flex gap-2">
           <a href="/dashboard/{{ uid }}/view/{{ dc.pk }}/" class="btn btn-sm btn-danger">
-            <i class="bi bi-eye me-1"></i>Voir
+            <i class="bi bi-eye me-1"></i>{% trans "Voir" %}
           </a>
           <a href="/dashboard/{{ uid }}/editor/{{ dc.pk }}/" class="btn btn-sm btn-outline-secondary">
-            <i class="bi bi-pencil me-1"></i>Modifier
+            <i class="bi bi-pencil me-1"></i>{% trans "Modifier" %}
           </a>
         </div>
       </div>
       {% endfor %}
     </div>
     {% else %}
-    <p class="text-muted mb-4">Aucun dashboard créé pour ce formulaire.</p>
+    <p class="text-muted mb-4">{% trans "Aucun dashboard créé pour ce formulaire." %}</p>
     {% endif %}
 
     {# Create new dashboard #}
     <div class="card shadow-sm">
       <div class="card-header fw-semibold">
-        <i class="bi bi-plus-circle me-1"></i>Créer un nouveau dashboard
+        <i class="bi bi-plus-circle me-1"></i>{% trans "Créer un nouveau dashboard" %}
       </div>
       <div class="card-body">
         <form method="post" class="d-flex gap-2 align-items-center">
           {% csrf_token %}
-          <input type="text" name="name" class="form-control" placeholder="Nom du dashboard" required
+          <input type="text" name="name" class="form-control" placeholder="{% trans 'Nom du dashboard' %}" required
                  style="max-width:320px">
           <button type="submit" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i>Créer
+            <i class="bi bi-plus-lg me-1"></i>{% trans "Créer" %}
           </button>
         </form>
       </div>

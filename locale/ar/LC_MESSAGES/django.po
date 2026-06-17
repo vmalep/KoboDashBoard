@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-16 14:44+0000\n"
+"POT-Creation-Date: 2026-06-17 05:30+0000\n"
 "Language: ar\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -30,7 +30,7 @@ msgstr "كلمة المرور"
 #: accounts/templates/accounts/login.html:42
 #: accounts/templates/accounts/register.html:80
 msgid "Se connecter"
-msgstr "تسجيل الدخول"
+msgstr "دخول"
 
 #: accounts/templates/accounts/login.html:44
 msgid "Mot de passe oublié ?"
@@ -51,7 +51,7 @@ msgstr "طلب الوصول"
 
 #: accounts/templates/accounts/register.html:23
 msgid "Votre compte sera activé après validation par un administrateur."
-msgstr "سيتم تفعيل حسابك بعد التحقق من قبل مسؤول."
+msgstr "سيتم تفعيل حسابك بعد التحقق من قِبَل المسؤول."
 
 #: accounts/templates/accounts/register.html:36
 msgid "Nom complet"
@@ -67,132 +67,7 @@ msgstr "إرسال الطلب"
 
 #: accounts/templates/accounts/register.html:80
 msgid "Déjà un compte ?"
-msgstr "هل لديك حساب؟"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:12
-#: dashboard/templates/dashboard/form_detail.html:47
-#: dashboard/templates/dashboard/form_list.html:4
-#: dashboard/templates/dashboard/form_list.html:8
-msgid "Formulaires"
-msgstr "النماذج"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:19
-#: dashboard/templates/dashboard/form_detail.html:55
-msgid "Rafraîchir"
-msgstr "تحديث"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:22
-msgid "Export XLSX"
-msgstr "تصدير XLSX"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:25
-msgid "Export CSV"
-msgstr "تصدير CSV"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:39
-#: dashboard/templates/dashboard/amopah_dashboard.html:112
-#: dashboard/templates/dashboard/amopah_dashboard.html:140
-#: dashboard/templates/dashboard/coverage.html:51
-msgid "Pays"
-msgstr "البلد"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:41
-#: dashboard/templates/dashboard/coverage.html:54
-msgid "Tous les pays"
-msgstr "جميع الدول"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:50
-msgid "Année"
-msgstr "السنة"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:52
-msgid "Toutes"
-msgstr "الكل"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:59
-msgid "Trimestre"
-msgstr "الربع"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:61
-#: dashboard/templates/dashboard/coverage.html:78
-msgid "Tous"
-msgstr "الكل"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:68
-#: dashboard/templates/dashboard/amopah_dashboard.html:143
-#: dashboard/templates/dashboard/coverage.html:63
-msgid "Résultat"
-msgstr "النتيجة"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:70
-#: dashboard/templates/dashboard/coverage.html:66
-msgid "Tous les résultats"
-msgstr "جميع النتائج"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:80
-msgid "Filtrer"
-msgstr "تصفية"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:83
-#: dashboard/templates/dashboard/coverage.html:90
-msgid "Réinitialiser"
-msgstr "إعادة تعيين"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:96
-msgid "Bénéficiaires rapportés"
-msgstr "المستفيدون المُبلَّغ عنهم"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:104
-msgid "Rapports"
-msgstr "التقارير"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:120
-msgid "Résultats actifs"
-msgstr "النتائج النشطة"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:133
-msgid "Données détaillées"
-msgstr "البيانات التفصيلية"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:134
-msgid "lignes"
-msgstr "صفوف"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:141
-msgid "Période"
-msgstr "الفترة"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:142
-msgid "Rapporteur"
-msgstr "المُبلِّغ"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:144
-msgid "Code"
-msgstr "الرمز"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:145
-msgid "Indicateur"
-msgstr "المؤشر"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:146
-msgid "Total"
-msgstr "الإجمالي"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:147
-msgid "Hommes"
-msgstr "رجال"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:148
-msgid "Femmes"
-msgstr "نساء"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:149
-msgid "Handicap"
-msgstr "إعاقة"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:150
-msgid "PDI"
-msgstr "نازحون داخلياً"
+msgstr "هل لديك حساب بالفعل؟"
 
 #: dashboard/templates/dashboard/base.html:79
 msgid "Comptes en attente de validation"
@@ -200,10 +75,14 @@ msgstr "حسابات في انتظار التحقق"
 
 #: dashboard/templates/dashboard/base.html:89
 #: dashboard/templates/dashboard/form_list.html:11
+#: dashboard/templates/dashboard/settings.html:3
+#: dashboard/templates/dashboard/settings.html:9
 msgid "Paramètres"
 msgstr "الإعدادات"
 
 #: dashboard/templates/dashboard/base.html:94
+#: dashboard/templates/dashboard/my_group.html:3
+#: dashboard/templates/dashboard/my_group.html:6
 msgid "Mon groupe"
 msgstr "مجموعتي"
 
@@ -217,9 +96,10 @@ msgstr "تسجيل الخروج"
 
 #: dashboard/templates/dashboard/base.html:151
 msgid "Built with"
-msgstr "مبني بـ"
+msgstr "مبني بواسطة"
 
 #: dashboard/templates/dashboard/coverage.html:26
+#: dashboard/templates/dashboard/generic_dashboard.html:28
 msgid "Actualiser"
 msgstr "تحديث"
 
@@ -227,51 +107,476 @@ msgstr "تحديث"
 msgid "Filtres"
 msgstr "الفلاتر"
 
+#: dashboard/templates/dashboard/coverage.html:51
+#: dashboard/templates/dashboard/module_dashboard.html:39
+#: dashboard/templates/dashboard/module_dashboard.html:112
+#: dashboard/templates/dashboard/module_dashboard.html:140
+msgid "Pays"
+msgstr "البلد"
+
+#: dashboard/templates/dashboard/coverage.html:54
+#: dashboard/templates/dashboard/module_dashboard.html:41
+msgid "Tous les pays"
+msgstr "جميع البلدان"
+
+#: dashboard/templates/dashboard/coverage.html:63
+#: dashboard/templates/dashboard/module_dashboard.html:68
+#: dashboard/templates/dashboard/module_dashboard.html:143
+msgid "Résultat"
+msgstr "النتيجة"
+
+#: dashboard/templates/dashboard/coverage.html:66
+#: dashboard/templates/dashboard/module_dashboard.html:70
+msgid "Tous les résultats"
+msgstr "جميع النتائج"
+
 #: dashboard/templates/dashboard/coverage.html:75
 msgid "Responsable"
 msgstr "المسؤول"
 
+#: dashboard/templates/dashboard/coverage.html:78
+#: dashboard/templates/dashboard/generic_dashboard.html:46
+#: dashboard/templates/dashboard/module_dashboard.html:61
+msgid "Tous"
+msgstr "الكل"
+
+#: dashboard/templates/dashboard/coverage.html:90
+#: dashboard/templates/dashboard/generic_dashboard.html:61
+#: dashboard/templates/dashboard/module_dashboard.html:83
+msgid "Réinitialiser"
+msgstr "إعادة تعيين"
+
+#: dashboard/templates/dashboard/coverage.html:98
+msgid "Liste des soumissions"
+msgstr "قائمة الإرسالات"
+
+#: dashboard/templates/dashboard/coverage.html:108
+msgid "soumissions effectuées"
+msgstr "إرسالات مكتملة"
+
+#: dashboard/templates/dashboard/coverage.html:109
+msgid "activité applicable, non soumise"
+msgstr "نشاط قابل للتطبيق، لم يُرسَل"
+
+#: dashboard/templates/dashboard/coverage.html:110
+msgid "activité non applicable dans ce pays"
+msgstr "النشاط غير قابل للتطبيق في هذا البلد"
+
+#: dashboard/templates/dashboard/coverage.html:118
+msgid "Activité principale"
+msgstr "النشاط الرئيسي"
+
+#: dashboard/templates/dashboard/editor.html:3
+msgid "Éditeur"
+msgstr "المحرر"
+
+#: dashboard/templates/dashboard/editor.html:12
+msgid "Tous les dashboards"
+msgstr "جميع لوحات التحكم"
+
+#: dashboard/templates/dashboard/editor.html:16
+msgid "Aperçu"
+msgstr "معاينة"
+
+#: dashboard/templates/dashboard/editor.html:21
+msgid "Supprimer ce dashboard ?"
+msgstr "هل تريد حذف لوحة التحكم هذه؟"
+
+#: dashboard/templates/dashboard/editor.html:22
+#: dashboard/templates/dashboard/editor.html:90
+#: dashboard/templates/dashboard/editor.html:228
+#: dashboard/templates/dashboard/editor_widget_form.html:171
+#: dashboard/templates/dashboard/editor_widget_form.html:333
+msgid "Supprimer"
+msgstr "حذف"
+
+#: dashboard/templates/dashboard/editor.html:33
+msgid "Nom :"
+msgstr "الاسم:"
+
+#: dashboard/templates/dashboard/editor.html:37
+msgid "Renommer"
+msgstr "إعادة تسمية"
+
+#: dashboard/templates/dashboard/editor.html:46
+msgid ""
+"Impossible de charger le schéma du formulaire — le sélecteur de champs sera "
+"vide. Vérifiez la connexion KoboToolBox dans les paramètres."
+msgstr "تعذّر تحميل مخطط النموذج — سيكون محدد الحقل فارغاً. تحقق من اتصال KoboToolBox في الإعدادات."
+
+#: dashboard/templates/dashboard/editor.html:53
+msgid "Filtres du dashboard"
+msgstr "فلاتر لوحة التحكم"
+
+#: dashboard/templates/dashboard/editor.html:54
+msgid "Champs affichés comme filtres en haut du dashboard"
+msgstr "الحقول المعروضة كفلاتر أعلى لوحة التحكم"
+
+#: dashboard/templates/dashboard/editor.html:71
+#: dashboard/templates/dashboard/editor.html:163
+#: dashboard/templates/dashboard/editor_widget_form.html:154
+#: dashboard/templates/dashboard/editor_widget_form.html:324
+msgid "Monter"
+msgstr "تحريك للأعلى"
+
+#: dashboard/templates/dashboard/editor.html:81
+#: dashboard/templates/dashboard/editor.html:175
+#: dashboard/templates/dashboard/editor_widget_form.html:155
+#: dashboard/templates/dashboard/editor_widget_form.html:325
+msgid "Descendre"
+msgstr "تحريك للأسفل"
+
+#: dashboard/templates/dashboard/editor.html:91
+msgid "Supprimer ce filtre ?"
+msgstr "هل تريد حذف هذا الفلتر؟"
+
+#: dashboard/templates/dashboard/editor.html:100
+msgid "Aucun filtre configuré."
+msgstr "لا توجد فلاتر مكوّنة."
+
+#: dashboard/templates/dashboard/editor.html:110
+msgid "Champ"
+msgstr "حقل"
+
+#: dashboard/templates/dashboard/editor.html:112
+#: dashboard/templates/dashboard/editor_widget_form.html:64
+msgid "Choisir un champ"
+msgstr "اختر حقلاً"
+
+#: dashboard/templates/dashboard/editor.html:119
+msgid "Étiquette (optionnelle)"
+msgstr "التسمية (اختياري)"
+
+#: dashboard/templates/dashboard/editor.html:121
+msgid "ex. Pays"
+msgstr "مثال: البلد"
+
+#: dashboard/templates/dashboard/editor.html:124
+#: dashboard/templates/dashboard/editor_widget_form.html:189
+#: dashboard/templates/dashboard/editor_widget_form.html:251
+#: dashboard/templates/dashboard/my_group.html:87
+msgid "Ajouter"
+msgstr "إضافة"
+
+#: dashboard/templates/dashboard/editor.html:130
+msgid "Ajouter un filtre"
+msgstr "إضافة فلتر"
+
+#: dashboard/templates/dashboard/editor.html:140
+#, python-format
+msgid "Ligne %(n)s"
+msgstr "الصف %(n)s"
+
+#: dashboard/templates/dashboard/editor.html:148
+msgid "Colonnes :"
+msgstr "الأعمدة:"
+
+#: dashboard/templates/dashboard/editor.html:186
+msgid "Supprimer la ligne"
+msgstr "حذف الصف"
+
+#: dashboard/templates/dashboard/editor.html:187
+msgid "Supprimer cette ligne et ses widgets ?"
+msgstr "هل تريد حذف هذا الصف وأدواته؟"
+
+#: dashboard/templates/dashboard/editor.html:209
+#: dashboard/templates/dashboard/editor_widget_form.html:20
+msgid "Chiffre résumé"
+msgstr "رقم ملخص"
+
+#: dashboard/templates/dashboard/editor.html:210
+msgid "Barres"
+msgstr "أشرطة"
+
+#: dashboard/templates/dashboard/editor.html:211
+msgid "Secteurs"
+msgstr "قطاعات"
+
+#: dashboard/templates/dashboard/editor.html:212
+msgid "Tableau"
+msgstr "جدول"
+
+#: dashboard/templates/dashboard/editor.html:219
+#: dashboard/templates/dashboard/editor_list.html:37
+#: dashboard/templates/dashboard/generic_dashboard.html:24
+msgid "Modifier"
+msgstr "تعديل"
+
+#: dashboard/templates/dashboard/editor.html:228
+msgid "Supprimer ce widget ?"
+msgstr "هل تريد حذف هذه الأداة؟"
+
+#: dashboard/templates/dashboard/editor.html:247
+msgid "Aucun widget dans cette ligne."
+msgstr "لا توجد أدوات في هذا الصف."
+
+#: dashboard/templates/dashboard/editor.html:256
+#: dashboard/templates/dashboard/editor_widget_form.html:4
+msgid "Ajouter un widget"
+msgstr "إضافة أداة"
+
+#: dashboard/templates/dashboard/editor.html:265
+msgid "Aucune ligne. Commencez par en ajouter une."
+msgstr "لا توجد صفوف. ابدأ بإضافة واحد."
+
+#: dashboard/templates/dashboard/editor.html:273
+msgid "Ajouter une ligne"
+msgstr "إضافة صف"
+
+#: dashboard/templates/dashboard/editor_list.html:3
+#: dashboard/templates/dashboard/editor_list.html:11
+msgid "Dashboards"
+msgstr "لوحات التحكم"
+
+#: dashboard/templates/dashboard/editor_list.html:15
+#: dashboard/templates/dashboard/generic_dashboard.html:20
+#: dashboard/templates/dashboard/submission_detail.html:8
+msgid "Retour"
+msgstr "رجوع"
+
+#: dashboard/templates/dashboard/editor_list.html:27
+#, python-format
+msgid "%(n)s ligne"
+msgid_plural "%(n)s lignes"
+msgstr[0] "%(n)s صف"
+msgstr[1] "%(n)s صفوف"
+msgstr[2] "%(n)s صفوف"
+msgstr[3] "%(n)s صفوف"
+msgstr[4] "%(n)s صفوف"
+msgstr[5] "%(n)s صفوف"
+
+#: dashboard/templates/dashboard/editor_list.html:29
+#, python-format
+msgid "%(n)s filtre"
+msgid_plural "%(n)s filtres"
+msgstr[0] "%(n)s فلتر"
+msgstr[1] "%(n)s فلاتر"
+msgstr[2] "%(n)s فلاتر"
+msgstr[3] "%(n)s فلاتر"
+msgstr[4] "%(n)s فلاتر"
+msgstr[5] "%(n)s فلاتر"
+
+#: dashboard/templates/dashboard/editor_list.html:34
+msgid "Voir"
+msgstr "عرض"
+
+#: dashboard/templates/dashboard/editor_list.html:44
+msgid "Aucun dashboard créé pour ce formulaire."
+msgstr "لم يتم إنشاء لوحة تحكم لهذا النموذج."
+
+#: dashboard/templates/dashboard/editor_list.html:50
+msgid "Créer un nouveau dashboard"
+msgstr "إنشاء لوحة تحكم جديدة"
+
+#: dashboard/templates/dashboard/editor_list.html:55
+msgid "Nom du dashboard"
+msgstr "اسم لوحة التحكم"
+
+#: dashboard/templates/dashboard/editor_list.html:58
+#: dashboard/templates/dashboard/settings.html:286
+msgid "Créer"
+msgstr "إنشاء"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:4
+msgid "Modifier le widget"
+msgstr "تعديل الأداة"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:17
+msgid "Type"
+msgstr "النوع"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:21
+msgid "Graphique en secteurs"
+msgstr "مخطط دائري"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:22
+msgid "Graphique en colonnes / lignes"
+msgstr "مخطط أشرطة / خطوط"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:23
+msgid "Tableau de données"
+msgstr "جدول البيانات"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:27
+msgid "Titre"
+msgstr "العنوان"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:29
+msgid "Ex. Total bénéficiaires"
+msgstr "مثال: مجموع المستفيدين"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:37
+msgid "Champ (optionnel)"
+msgstr "حقل (اختياري)"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:39
+msgid "Compter toutes les soumissions"
+msgstr "عدّ جميع الإرسالات"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:48
+msgid "Agrégation"
+msgstr "التجميع"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:50
+msgid "Nombre de soumissions"
+msgstr "عدد الإرسالات"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:51
+msgid "Somme"
+msgstr "مجموع"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:52
+msgid "Moyenne"
+msgstr "متوسط"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:61
+msgid "Champ de regroupement"
+msgstr "حقل التجميع"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:74
+msgid "Valeurs — couleur et libellé"
+msgstr "القيم — اللون والتسمية"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:93
+#: dashboard/templates/dashboard/editor_widget_form.html:163
+#: dashboard/templates/dashboard/editor_widget_form.html:218
+#: dashboard/templates/dashboard/editor_widget_form.html:331
+msgid "Couleur"
+msgstr "اللون"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:100
+msgid "Libellé affiché"
+msgstr "التسمية المعروضة"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:108
+msgid "Ce champ n'a pas de valeurs fixes — libellés non modifiables."
+msgstr "هذا الحقل لا يحتوي على قيم ثابتة — لا يمكن تعديل التسميات."
+
+#: dashboard/templates/dashboard/editor_widget_form.html:118
+msgid "Axe X"
+msgstr "المحور X"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:118
+msgid "optionnel"
+msgstr "اختياري"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:121
+msgid "Aucun : comparaison absolue"
+msgstr "لا شيء: مقارنة مطلقة"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:128
+msgid "Style"
+msgstr "النمط"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:130
+msgid "Colonnes"
+msgstr "أعمدة"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:131
+msgid "Lignes"
+msgstr "خطوط"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:135
+msgid "Mode"
+msgstr "الوضع"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:141
+msgid "Empilé (cumulatif)"
+msgstr "مكدّس (تراكمي)"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:147
+msgid "Séries"
+msgstr "المتسلسلات"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:167
+#: dashboard/templates/dashboard/editor_widget_form.html:332
+msgid "Libellé affiché dans la légende"
+msgstr "التسمية المعروضة في المفتاح"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:174
+#: dashboard/templates/dashboard/editor_widget_form.html:304
+msgid "Aucune série sélectionnée."
+msgstr "لم يتم تحديد متسلسلة."
+
+#: dashboard/templates/dashboard/editor_widget_form.html:180
+msgid "Ajouter un champ de série"
+msgstr "إضافة حقل متسلسلة"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:193
+#: dashboard/templates/dashboard/editor_widget_form.html:243
+msgid "Aucun champ disponible (schéma non chargé)."
+msgstr "لا توجد حقول متاحة (لم يتم تحميل المخطط)."
+
+#: dashboard/templates/dashboard/editor_widget_form.html:200
+msgid "Couleurs par valeur —"
+msgstr "ألوان حسب القيمة —"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:230
+msgid "Colonnes à afficher"
+msgstr "الأعمدة المراد عرضها"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:251
+#: dashboard/templates/dashboard/group_edit.html:85
+#: dashboard/templates/dashboard/settings.html:73
+#: dashboard/templates/dashboard/settings.html:102
+msgid "Enregistrer"
+msgstr "حفظ"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:253
+#: dashboard/templates/dashboard/group_edit.html:87
+msgid "Annuler"
+msgstr "إلغاء"
+
+#: dashboard/templates/dashboard/form_detail.html:47
+#: dashboard/templates/dashboard/form_list.html:4
+#: dashboard/templates/dashboard/form_list.html:8
+#: dashboard/templates/dashboard/module_dashboard.html:12
+#: dashboard/templates/dashboard/my_group.html:92
+msgid "Formulaires"
+msgstr "النماذج"
+
 #: dashboard/templates/dashboard/form_detail.html:50
-#, fuzzy
-#| msgid "soumissions en cache"
+#: dashboard/templates/dashboard/settings.html:215
 msgid "soumissions"
-msgstr "تقديمات مؤقتة"
+msgstr "إرسالات"
+
+#: dashboard/templates/dashboard/form_detail.html:55
+#: dashboard/templates/dashboard/module_dashboard.html:19
+msgid "Rafraîchir"
+msgstr "تحديث"
 
 #: dashboard/templates/dashboard/form_detail.html:69
 msgid "Aucune question trouvée dans le schéma de ce formulaire."
-msgstr ""
+msgstr "لم يتم العثور على أسئلة في مخطط هذا النموذج."
 
 #: dashboard/templates/dashboard/form_detail.html:95
 msgid "Page précédente"
-msgstr ""
+msgstr "الصفحة السابقة"
 
 #: dashboard/templates/dashboard/form_detail.html:106
 msgid "Page"
-msgstr ""
+msgstr "صفحة"
 
 #: dashboard/templates/dashboard/form_detail.html:125
 msgid "Page suivante"
-msgstr ""
+msgstr "الصفحة التالية"
 
 #: dashboard/templates/dashboard/form_detail.html:141
-#, fuzzy
-#| msgid "Aucun membre dans ce groupe."
 msgid "Aucune question dans ce groupe."
-msgstr "لا يوجد أعضاء في هذه المجموعة."
+msgstr "لا توجد أسئلة في هذه المجموعة."
 
 #: dashboard/templates/dashboard/form_detail.html:143
-#, fuzzy
-#| msgid "Aucune soumission pour ces critères."
 msgid "Aucune soumission."
-msgstr "لا توجد تقديمات لهذه المعايير."
+msgstr "لا توجد إرسالات."
 
 #: dashboard/templates/dashboard/form_list.html:28
+#: dashboard/templates/dashboard/settings.html:138
 msgid "Vue générique"
 msgstr "عرض عام"
 
 #: dashboard/templates/dashboard/form_list.html:33
 msgid "soumissions en cache"
-msgstr "تقديمات مؤقتة"
+msgstr "إرسالات مؤقتة"
 
 #: dashboard/templates/dashboard/form_list.html:50
 msgid "Éditeur dashboard"
@@ -279,7 +584,37 @@ msgstr "محرر لوحة التحكم"
 
 #: dashboard/templates/dashboard/form_list.html:54
 msgid "Explorer les données brutes"
-msgstr "استكشاف البيانات الخام"
+msgstr "استعراض البيانات الخام"
+
+#: dashboard/templates/dashboard/generic_dashboard.html:15
+#: dashboard/templates/dashboard/submission_list.html:20
+#, python-format
+msgid "%(n)s soumission"
+msgid_plural "%(n)s soumissions"
+msgstr[0] "%(n)s إرسال"
+msgstr[1] "%(n)s إرسالات"
+msgstr[2] "%(n)s إرسالات"
+msgstr[3] "%(n)s إرسالات"
+msgstr[4] "%(n)s إرسالات"
+msgstr[5] "%(n)s إرسالات"
+
+#: dashboard/templates/dashboard/generic_dashboard.html:57
+#: dashboard/templates/dashboard/module_dashboard.html:80
+msgid "Filtrer"
+msgstr "فلترة"
+
+#: dashboard/templates/dashboard/generic_dashboard.html:69
+#, python-format
+msgid "%(filtered)s soumission sur %(total)s"
+msgstr "%(filtered)s إرسال من %(total)s"
+
+#: dashboard/templates/dashboard/generic_dashboard.html:78
+msgid "Ce tableau de bord est vide."
+msgstr "لوحة التحكم هذه فارغة."
+
+#: dashboard/templates/dashboard/generic_dashboard.html:80
+msgid "Ajouter des widgets →"
+msgstr "← إضافة أدوات"
 
 #: dashboard/templates/dashboard/group_edit.html:3
 #: dashboard/templates/dashboard/group_edit.html:9
@@ -296,9 +631,10 @@ msgstr "النماذج المتاحة"
 
 #: dashboard/templates/dashboard/group_edit.html:37
 msgid "Aucun formulaire configuré."
-msgstr "لا توجد نماذج مُعدَّة."
+msgstr "لا توجد نماذج مكوّنة."
 
 #: dashboard/templates/dashboard/group_edit.html:44
+#: dashboard/templates/dashboard/my_group.html:20
 msgid "Membres"
 msgstr "الأعضاء"
 
@@ -309,21 +645,480 @@ msgstr "لا يوجد مستخدمون نشطون."
 
 #: dashboard/templates/dashboard/group_edit.html:64
 msgid "Administrateurs du groupe"
-msgstr "مديرو المجموعة"
+msgstr "مسؤولو المجموعة"
 
 #: dashboard/templates/dashboard/group_edit.html:66
 msgid ""
 "Les administrateurs peuvent charger des modules et gérer les membres de ce "
 "groupe."
-msgstr "يمكن للمديرين تحميل الوحدات وإدارة أعضاء هذه المجموعة."
+msgstr "يمكن للمسؤولين تحميل الوحدات وإدارة أعضاء هذه المجموعة."
 
-#: dashboard/templates/dashboard/group_edit.html:85
-msgid "Enregistrer"
-msgstr "حفظ"
+#: dashboard/templates/dashboard/module_dashboard.html:22
+msgid "Export XLSX"
+msgstr "تصدير XLSX"
 
-#: dashboard/templates/dashboard/group_edit.html:87
-msgid "Annuler"
-msgstr "إلغاء"
+#: dashboard/templates/dashboard/module_dashboard.html:25
+msgid "Export CSV"
+msgstr "تصدير CSV"
+
+#: dashboard/templates/dashboard/module_dashboard.html:50
+msgid "Année"
+msgstr "السنة"
+
+#: dashboard/templates/dashboard/module_dashboard.html:52
+msgid "Toutes"
+msgstr "الكل"
+
+#: dashboard/templates/dashboard/module_dashboard.html:59
+msgid "Trimestre"
+msgstr "الربع"
+
+#: dashboard/templates/dashboard/module_dashboard.html:96
+msgid "Bénéficiaires rapportés"
+msgstr "المستفيدون المُبلَّغ عنهم"
+
+#: dashboard/templates/dashboard/module_dashboard.html:104
+msgid "Rapports"
+msgstr "التقارير"
+
+#: dashboard/templates/dashboard/module_dashboard.html:120
+msgid "Résultats actifs"
+msgstr "النتائج النشطة"
+
+#: dashboard/templates/dashboard/module_dashboard.html:133
+msgid "Données détaillées"
+msgstr "البيانات التفصيلية"
+
+#: dashboard/templates/dashboard/module_dashboard.html:134
+msgid "lignes"
+msgstr "صفوف"
+
+#: dashboard/templates/dashboard/module_dashboard.html:141
+msgid "Période"
+msgstr "الفترة"
+
+#: dashboard/templates/dashboard/module_dashboard.html:142
+msgid "Rapporteur"
+msgstr "المُبلِّغ"
+
+#: dashboard/templates/dashboard/module_dashboard.html:144
+msgid "Code"
+msgstr "الرمز"
+
+#: dashboard/templates/dashboard/module_dashboard.html:145
+msgid "Indicateur"
+msgstr "المؤشر"
+
+#: dashboard/templates/dashboard/module_dashboard.html:146
+msgid "Total"
+msgstr "الإجمالي"
+
+#: dashboard/templates/dashboard/module_dashboard.html:147
+msgid "Hommes"
+msgstr "رجال"
+
+#: dashboard/templates/dashboard/module_dashboard.html:148
+msgid "Femmes"
+msgstr "نساء"
+
+#: dashboard/templates/dashboard/module_dashboard.html:149
+msgid "Handicap"
+msgstr "إعاقة"
+
+#: dashboard/templates/dashboard/module_dashboard.html:150
+msgid "PDI"
+msgstr "نازحون داخلياً"
+
+#: dashboard/templates/dashboard/module_uploaded.html:3
+msgid "Module chargé"
+msgstr "تم تحميل الوحدة"
+
+#: dashboard/templates/dashboard/module_uploaded.html:9
+msgid "Module chargé avec succès"
+msgstr "تم تحميل الوحدة بنجاح"
+
+#: dashboard/templates/dashboard/module_uploaded.html:11
+#, python-format
+msgid ""
+"Le fichier <code>%(filename)s</code> a été installé. Redémarrez le serveur "
+"pour activer le nouveau module."
+msgstr "تم تثبيت الملف <code>%(filename)s</code>. أعد تشغيل الخادم لتفعيل الوحدة الجديدة."
+
+#: dashboard/templates/dashboard/module_uploaded.html:14
+msgid "Retour aux paramètres"
+msgstr "العودة إلى الإعدادات"
+
+#: dashboard/templates/dashboard/module_uploaded.html:17
+msgid "Ouvrir le tableau de bord"
+msgstr "فتح لوحة التحكم"
+
+#: dashboard/templates/dashboard/my_group.html:9
+msgid "Vous n'administrez aucun groupe pour le moment."
+msgstr "لا تدير أي مجموعة في الوقت الحالي."
+
+#: dashboard/templates/dashboard/my_group.html:26
+#: dashboard/templates/dashboard/user_list.html:23
+#: dashboard/templates/dashboard/user_list.html:69
+msgid "Nom"
+msgstr "الاسم"
+
+#: dashboard/templates/dashboard/my_group.html:27
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#: dashboard/templates/dashboard/my_group.html:41
+#: dashboard/templates/dashboard/user_list.html:86
+msgid "Générer un lien de réinitialisation du mot de passe"
+msgstr "إنشاء رابط إعادة تعيين كلمة المرور"
+
+#: dashboard/templates/dashboard/my_group.html:47
+#: dashboard/templates/dashboard/user_list.html:92
+msgid "Désactiver ce compte ?"
+msgstr "هل تريد تعطيل هذا الحساب؟"
+
+#: dashboard/templates/dashboard/my_group.html:56
+#: dashboard/templates/dashboard/user_list.html:100
+msgid "Supprimer définitivement ce compte ?"
+msgstr "هل تريد حذف هذا الحساب نهائياً؟"
+
+#: dashboard/templates/dashboard/my_group.html:70
+msgid "Aucun membre dans ce groupe."
+msgstr "لا يوجد أعضاء في هذه المجموعة."
+
+#: dashboard/templates/dashboard/my_group.html:79
+msgid "Ajouter un membre"
+msgstr "إضافة عضو"
+
+#: dashboard/templates/dashboard/my_group.html:105
+msgid "Module"
+msgstr "وحدة"
+
+#: dashboard/templates/dashboard/my_group.html:113
+msgid "Charger"
+msgstr "تحميل"
+
+#: dashboard/templates/dashboard/my_group.html:117
+msgid "Dashboard"
+msgstr "لوحة التحكم"
+
+#: dashboard/templates/dashboard/my_group.html:125
+msgid "Aucun formulaire dans ce groupe."
+msgstr "لا توجد نماذج في هذه المجموعة."
+
+#: dashboard/templates/dashboard/no_form.html:7
+msgid "Aucun formulaire configuré"
+msgstr "لا توجد نماذج مكوّنة"
+
+#: dashboard/templates/dashboard/no_form.html:8
+msgid "Contactez l'administrateur pour configurer l'accès à KoboToolBox."
+msgstr "اتصل بالمسؤول لتكوين الوصول إلى KoboToolBox."
+
+#: dashboard/templates/dashboard/settings.html:25
+msgid "Identité"
+msgstr "الهوية"
+
+#: dashboard/templates/dashboard/settings.html:31
+msgid "Nom de l'organisation"
+msgstr "اسم المنظمة"
+
+#: dashboard/templates/dashboard/settings.html:34
+msgid "ex. My Organization"
+msgstr "مثال: My Organization"
+
+#: dashboard/templates/dashboard/settings.html:35
+msgid "Affiché dans la barre de navigation à la place de « KoboDashBoard »."
+msgstr "يظهر في شريط التنقل بدلاً من «KoboDashBoard»."
+
+#: dashboard/templates/dashboard/settings.html:38
+msgid "Logo"
+msgstr "الشعار"
+
+#: dashboard/templates/dashboard/settings.html:41
+msgid "Logo actuel"
+msgstr "الشعار الحالي"
+
+#: dashboard/templates/dashboard/settings.html:45
+msgid "Supprimer le logo"
+msgstr "حذف الشعار"
+
+#: dashboard/templates/dashboard/settings.html:49
+msgid "Aucun logo configuré."
+msgstr "لا يوجد شعار مكوَّن."
+
+#: dashboard/templates/dashboard/settings.html:52
+msgid ""
+"Formats recommandés : PNG ou SVG sur fond transparent. Hauteur idéale : 48 "
+"px."
+msgstr "الصيغ الموصى بها: PNG أو SVG بخلفية شفافة. الارتفاع المثالي: 48 بكسل."
+
+#: dashboard/templates/dashboard/settings.html:56
+msgid "Couleur principale"
+msgstr "اللون الرئيسي"
+
+#: dashboard/templates/dashboard/settings.html:66
+msgid "Réinitialiser la couleur par défaut"
+msgstr "إعادة تعيين اللون الافتراضي"
+
+#: dashboard/templates/dashboard/settings.html:67
+msgid "Défaut"
+msgstr "افتراضي"
+
+#: dashboard/templates/dashboard/settings.html:82
+msgid "Serveur KoboToolBox"
+msgstr "خادم KoboToolBox"
+
+#: dashboard/templates/dashboard/settings.html:88
+msgid "URL du serveur"
+msgstr "رابط الخادم"
+
+#: dashboard/templates/dashboard/settings.html:93
+msgid "Token API"
+msgstr "رمز API"
+
+#: dashboard/templates/dashboard/settings.html:95
+msgid "(token enregistré — laisser vide pour conserver)"
+msgstr "(الرمز محفوظ — اتركه فارغاً للاحتفاظ به)"
+
+#: dashboard/templates/dashboard/settings.html:95
+msgid "Entrer le token API"
+msgstr "أدخل رمز API"
+
+#: dashboard/templates/dashboard/settings.html:97
+#, python-format
+msgid "Obtenir votre token sur <code>%(url)s/token/?format=json</code>"
+msgstr "احصل على رمزك من <code>%(url)s/token/?format=json</code>"
+
+#: dashboard/templates/dashboard/settings.html:105
+msgid "Tester & charger les formulaires"
+msgstr "اختبار وتحميل النماذج"
+
+#: dashboard/templates/dashboard/settings.html:115
+msgid "Formulaires configurés"
+msgstr "النماذج المكوّنة"
+
+#: dashboard/templates/dashboard/settings.html:122
+msgid ""
+"Aucun formulaire configuré. Chargez la liste ci-dessus pour en ajouter un."
+msgstr "لا توجد نماذج مكوّنة. قم بتحميل القائمة أعلاه لإضافة واحدة."
+
+#: dashboard/templates/dashboard/settings.html:144
+msgid "Télécharger le module"
+msgstr "تنزيل الوحدة"
+
+#: dashboard/templates/dashboard/settings.html:154
+msgid "Charger un module"
+msgstr "تحميل وحدة"
+
+#: dashboard/templates/dashboard/settings.html:164
+msgid "Cache (s) :"
+msgstr "ذاكرة التخزين المؤقت (ث):"
+
+#: dashboard/templates/dashboard/settings.html:179
+msgid "Supprimer ce formulaire ?"
+msgstr "هل تريد حذف هذا النموذج؟"
+
+#: dashboard/templates/dashboard/settings.html:180
+msgid "Supprimer le formulaire"
+msgstr "حذف النموذج"
+
+#: dashboard/templates/dashboard/settings.html:184
+msgid "Éditeur de dashboard"
+msgstr "محرر لوحة التحكم"
+
+#: dashboard/templates/dashboard/settings.html:187
+msgid "Visionner le dashboard"
+msgstr "عرض لوحة التحكم"
+
+#: dashboard/templates/dashboard/settings.html:201
+msgid "Ajouter un formulaire"
+msgstr "إضافة نموذج"
+
+#: dashboard/templates/dashboard/settings.html:208
+msgid "Formulaire disponible sur le serveur"
+msgstr "نموذج متاح على الخادم"
+
+#: dashboard/templates/dashboard/settings.html:211
+msgid "Choisir un formulaire"
+msgstr "اختر نموذجاً"
+
+#: dashboard/templates/dashboard/settings.html:222
+msgid "Durée du cache (secondes)"
+msgstr "مدة التخزين المؤقت (ثوانٍ)"
+
+#: dashboard/templates/dashboard/settings.html:227
+msgid "Ajouter ce formulaire"
+msgstr "إضافة هذا النموذج"
+
+#: dashboard/templates/dashboard/settings.html:231
+msgid "Aucun formulaire trouvé sur le serveur."
+msgstr "لم يتم العثور على نماذج على الخادم."
+
+#: dashboard/templates/dashboard/settings.html:238
+msgid ""
+"Pour ajouter un nouveau formulaire, cliquez sur « Tester & charger les "
+"formulaires » ci-dessus, puis sélectionnez-en un dans la liste."
+msgstr "لإضافة نموذج جديد، انقر على «اختبار وتحميل النماذج» أعلاه، ثم حدد نموذجاً من القائمة."
+
+#: dashboard/templates/dashboard/settings.html:245
+msgid "Groupes d'utilisateurs"
+msgstr "مجموعات المستخدمين"
+
+#: dashboard/templates/dashboard/settings.html:256
+#, python-format
+msgid "%(n)s membre"
+msgid_plural "%(n)s membres"
+msgstr[0] "%(n)s عضو"
+msgstr[1] "%(n)s أعضاء"
+msgstr[2] "%(n)s أعضاء"
+msgstr[3] "%(n)s أعضاء"
+msgstr[4] "%(n)s أعضاء"
+msgstr[5] "%(n)s أعضاء"
+
+#: dashboard/templates/dashboard/settings.html:257
+#, python-format
+msgid "%(n)s formulaire"
+msgid_plural "%(n)s formulaires"
+msgstr[0] "%(n)s نموذج"
+msgstr[1] "%(n)s نماذج"
+msgstr[2] "%(n)s نماذج"
+msgstr[3] "%(n)s نماذج"
+msgstr[4] "%(n)s نماذج"
+msgstr[5] "%(n)s نماذج"
+
+#: dashboard/templates/dashboard/settings.html:258
+#, python-format
+msgid "%(n)s admin"
+msgid_plural "%(n)s admins"
+msgstr[0] "%(n)s مسؤول"
+msgstr[1] "%(n)s مسؤولون"
+msgstr[2] "%(n)s مسؤولون"
+msgstr[3] "%(n)s مسؤولون"
+msgstr[4] "%(n)s مسؤولون"
+msgstr[5] "%(n)s مسؤولون"
+
+#: dashboard/templates/dashboard/settings.html:270
+#, python-format
+msgid "Supprimer le groupe « %(name)s » ?"
+msgstr "هل تريد حذف المجموعة «%(name)s»؟"
+
+#: dashboard/templates/dashboard/settings.html:279
+msgid "Aucun groupe configuré."
+msgstr "لا توجد مجموعات مكوّنة."
+
+#: dashboard/templates/dashboard/settings.html:284
+msgid "Nom du nouveau groupe"
+msgstr "اسم المجموعة الجديدة"
+
+#: dashboard/templates/dashboard/settings.html:295
+msgid "Récupération d'accès"
+msgstr "استعادة الوصول"
+
+#: dashboard/templates/dashboard/settings.html:298
+msgid ""
+"En cas de perte de mot de passe, connectez-vous au serveur via SSH et "
+"exécutez :"
+msgstr "إذا فقدت كلمة مرورك، اتصل بالخادم عبر SSH ونفّذ:"
+
+#: dashboard/templates/dashboard/settings.html:300
+msgid ""
+"Un lien de connexion à usage unique (valable 3 jours) sera affiché dans le "
+"terminal."
+msgstr "سيتم عرض رابط تسجيل دخول لمرة واحدة (صالح لمدة 3 أيام) في الطرفية."
+
+#: dashboard/templates/dashboard/submission_detail.html:3
+msgid "Détail soumission"
+msgstr "تفاصيل الإرسال"
+
+#: dashboard/templates/dashboard/submission_detail.html:24
+#, python-format
+msgid "Soumis le %(date)s"
+msgstr "أُرسل في %(date)s"
+
+#: dashboard/templates/dashboard/submission_detail.html:30
+msgid "Lieu :"
+msgstr "الموقع:"
+
+#: dashboard/templates/dashboard/submission_detail.html:34
+msgid "Responsable :"
+msgstr "المسؤول:"
+
+#: dashboard/templates/dashboard/submission_detail.html:38
+msgid "Date de début :"
+msgstr "تاريخ البدء:"
+
+#: dashboard/templates/dashboard/submission_detail.html:42
+msgid "Date de fin :"
+msgstr "تاريخ الانتهاء:"
+
+#: dashboard/templates/dashboard/submission_detail.html:47
+msgid "Description :"
+msgstr "الوصف:"
+
+#: dashboard/templates/dashboard/submission_detail.html:54
+#, python-format
+msgid "%(n)s risque identifié"
+msgid_plural "%(n)s risques identifiés"
+msgstr[0] "%(n)s خطر تم تحديده"
+msgstr[1] "%(n)s مخاطر تم تحديدها"
+msgstr[2] "%(n)s مخاطر تم تحديدها"
+msgstr[3] "%(n)s مخاطر تم تحديدها"
+msgstr[4] "%(n)s مخاطر تم تحديدها"
+msgstr[5] "%(n)s مخاطر تم تحديدها"
+
+#: dashboard/templates/dashboard/submission_detail.html:60
+msgid "Aucun risque enregistré pour cette soumission."
+msgstr "لا توجد مخاطر مسجلة لهذا الإرسال."
+
+#: dashboard/templates/dashboard/submission_detail.html:65
+#, python-format
+msgid "Risque %(n)s"
+msgstr "الخطر %(n)s"
+
+#: dashboard/templates/dashboard/submission_detail.html:74
+#, python-format
+msgid "Mesure de mitigation (%(n)s)"
+msgid_plural "Mesures de mitigation (%(n)s)"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: dashboard/templates/dashboard/submission_detail.html:86
+msgid "Aucune mesure de mitigation enregistrée."
+msgstr "لا توجد تدابير تخفيف مسجلة."
+
+#: dashboard/templates/dashboard/submission_list.html:4
+msgid "Soumissions"
+msgstr "الإرسالات"
+
+#: dashboard/templates/dashboard/submission_list.html:11
+msgid "Matrice de couverture"
+msgstr "مصفوفة التغطية"
+
+#: dashboard/templates/dashboard/submission_list.html:14
+msgid "Toutes les activités"
+msgstr "جميع الأنشطة"
+
+#: dashboard/templates/dashboard/submission_list.html:27
+msgid "Aucune soumission pour ces critères."
+msgstr "لا توجد إرسالات لهذه المعايير."
+
+#: dashboard/templates/dashboard/submission_list.html:57
+#, python-format
+msgid "%(n)s risque"
+msgid_plural "%(n)s risques"
+msgstr[0] "%(n)s خطر"
+msgstr[1] "%(n)s مخاطر"
+msgstr[2] "%(n)s مخاطر"
+msgstr[3] "%(n)s مخاطر"
+msgstr[4] "%(n)s مخاطر"
+msgstr[5] "%(n)s مخاطر"
+
+#: dashboard/templates/dashboard/submission_list.html:64
+msgid "Voir le détail"
+msgstr "عرض التفاصيل"
 
 #: dashboard/templates/dashboard/user_list.html:3
 #: dashboard/templates/dashboard/user_list.html:6
@@ -338,14 +1133,9 @@ msgstr "في انتظار التحقق"
 msgid "Aucun compte en attente."
 msgstr "لا توجد حسابات معلقة."
 
-#: dashboard/templates/dashboard/user_list.html:23
-#: dashboard/templates/dashboard/user_list.html:69
-msgid "Nom"
-msgstr "الاسم"
-
 #: dashboard/templates/dashboard/user_list.html:25
 msgid "Demande le"
-msgstr "طُلب في"
+msgstr "مطلوب في"
 
 #: dashboard/templates/dashboard/user_list.html:40
 msgid "Activer"
@@ -353,7 +1143,7 @@ msgstr "تفعيل"
 
 #: dashboard/templates/dashboard/user_list.html:45
 msgid "Supprimer ce compte ?"
-msgstr "حذف هذا الحساب؟"
+msgstr "هل تريد حذف هذا الحساب؟"
 
 #: dashboard/templates/dashboard/user_list.html:60
 msgid "Utilisateurs actifs"
@@ -361,60 +1151,68 @@ msgstr "المستخدمون النشطون"
 
 #: dashboard/templates/dashboard/user_list.html:63
 msgid "Aucun utilisateur actif (hors administrateurs)."
-msgstr "لا يوجد مستخدمون نشطون (باستثناء المديرين)."
+msgstr "لا يوجد مستخدمون نشطون (باستثناء المسؤولين)."
 
 #: dashboard/templates/dashboard/user_list.html:71
 msgid "Créé le"
-msgstr "تاريخ الإنشاء"
-
-#: dashboard/templates/dashboard/user_list.html:86
-msgid "Générer un lien de réinitialisation du mot de passe"
-msgstr "إنشاء رابط إعادة تعيين كلمة المرور"
-
-#: dashboard/templates/dashboard/user_list.html:92
-msgid "Désactiver ce compte ?"
-msgstr "تعطيل هذا الحساب؟"
+msgstr "تم الإنشاء في"
 
 #: dashboard/templates/dashboard/user_list.html:95
 msgid "Désactiver"
 msgstr "تعطيل"
 
-#: dashboard/templates/dashboard/user_list.html:100
-msgid "Supprimer définitivement ce compte ?"
-msgstr "حذف هذا الحساب نهائياً؟"
+#: dashboard/templates/dashboard/widgets/bar_chart.html:19
+#: dashboard/templates/dashboard/widgets/data_table.html:25
+#: dashboard/templates/dashboard/widgets/pie_chart.html:18
+msgid "Aucune donnée."
+msgstr "لا توجد بيانات."
 
-#~ msgid "MIT Licence"
-#~ msgstr "ترخيص MIT"
+#: dashboard/templates/dashboard/widgets/data_table.html:31
+msgid "Aucun champ sélectionné."
+msgstr "لم يتم تحديد حقل."
 
-#~ msgid "Matrice de couverture"
-#~ msgstr "مصفوفة التغطية"
+#: dashboard/templates/dashboard/widgets/grouped_chart.html:27
+msgid "Aucune donnée — vérifiez les champs sélectionnés."
+msgstr "لا توجد بيانات — تحقق من الحقول المحددة."
 
-#~ msgid "Toutes les activités"
-#~ msgstr "جميع الأنشطة"
+#: dashboard/views.py:191
+msgid "Connexion enregistrée."
+msgstr "تم حفظ الاتصال."
 
-#~ msgid "Voir le détail"
-#~ msgstr "عرض التفاصيل"
+#: dashboard/views.py:219
+#, python-format
+msgid "Formulaire « %(name)s » ajouté."
+msgstr "تمت إضافة النموذج «%(name)s»."
 
-#~ msgid "Vous n'administrez aucun groupe pour le moment."
-#~ msgstr "أنت لا تدير أي مجموعة في الوقت الحالي."
+#: dashboard/views.py:221
+msgid "Ce formulaire est déjà configuré."
+msgstr "هذا النموذج مكوَّن بالفعل."
 
-#~ msgid "Aucun formulaire dans ce groupe."
-#~ msgstr "لا توجد نماذج في هذه المجموعة."
+#: dashboard/views.py:230
+msgid "Formulaire supprimé."
+msgstr "تم حذف النموذج."
 
-#~ msgid "Ajouter"
-#~ msgstr "إضافة"
+#: dashboard/views.py:238
+msgid "Durée du cache mise à jour."
+msgstr "تم تحديث مدة التخزين المؤقت."
 
-#~ msgid "Charger"
-#~ msgstr "تحميل"
+#: dashboard/views.py:249
+msgid "Apparence enregistrée."
+msgstr "تم حفظ المظهر."
 
-#~ msgid "Dashboard"
-#~ msgstr "لوحة البيانات"
+#: dashboard/views.py:255
+#, python-format
+msgid "Groupe « %(name)s » créé."
+msgstr "تم إنشاء المجموعة «%(name)s»."
 
-#~ msgid "Couleur principale"
-#~ msgstr "اللون الرئيسي"
+#: dashboard/views.py:255
+msgid "Ce nom de groupe existe déjà."
+msgstr "اسم هذه المجموعة موجود بالفعل."
 
-#~ msgid "Défaut"
-#~ msgstr "افتراضي"
+#: dashboard/views.py:260
+msgid "Groupe supprimé."
+msgstr "تم حذف المجموعة."
 
-#~ msgid "Serveur KoboToolBox"
-#~ msgstr "خادم KoboToolBox"
+#: dashboard/views.py:312
+msgid "Nom de fichier invalide (doit être un identifiant Python valide)."
+msgstr "اسم الملف غير صالح (يجب أن يكون معرّفاً صالحاً في Python)."

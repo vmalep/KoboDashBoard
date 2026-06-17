@@ -1,11 +1,12 @@
 {% extends "dashboard/base.html" %}
-{% block title %}Mon groupe — KoboDashBoard{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Mon groupe" %} — KoboDashBoard{% endblock %}
 
 {% block content %}
-<h2 class="h4 mb-4"><i class="bi bi-people-fill me-2"></i>Mon groupe</h2>
+<h2 class="h4 mb-4"><i class="bi bi-people-fill me-2"></i>{% trans "Mon groupe" %}</h2>
 
 {% if not groups %}
-  <p class="text-muted">Vous n'administrez aucun groupe pour le moment.</p>
+  <p class="text-muted">{% trans "Vous n'administrez aucun groupe pour le moment." %}</p>
 {% endif %}
 
 {% for group in groups %}
@@ -16,14 +17,14 @@
   <div class="card-body">
 
     {# Members #}
-    <h6 class="text-muted mb-2">Membres</h6>
+    <h6 class="text-muted mb-2">{% trans "Membres" %}</h6>
     {% if group.members.all %}
     <div class="table-responsive mb-4">
       <table class="table table-sm table-hover align-middle">
         <thead class="table-light">
           <tr>
-            <th>Nom</th>
-            <th>Email</th>
+            <th>{% trans "Nom" %}</th>
+            <th>{% trans "Email" %}</th>
             <th></th>
           </tr>
         </thead>
@@ -37,13 +38,13 @@
                     class="d-inline">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-sm btn-outline-secondary"
-                        title="Générer un lien de réinitialisation du mot de passe">
+                        title="{% trans 'Générer un lien de réinitialisation du mot de passe' %}">
                   <i class="bi bi-key"></i>
                 </button>
               </form>
               <form method="post" action="/dashboard/my-group/{{ member.pk }}/"
                     class="d-inline ms-1"
-                    onsubmit="return confirm('Désactiver ce compte ?')">
+                    onsubmit="return confirm('{% trans "Désactiver ce compte ?" %}')">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="deactivate">
                 <button type="submit" class="btn btn-sm btn-outline-warning">
@@ -52,7 +53,7 @@
               </form>
               <form method="post" action="/dashboard/my-group/{{ member.pk }}/"
                     class="d-inline ms-1"
-                    onsubmit="return confirm('Supprimer définitivement ce compte ?')">
+                    onsubmit="return confirm('{% trans "Supprimer définitivement ce compte ?" %}')">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="delete">
                 <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -66,7 +67,7 @@
       </table>
     </div>
     {% else %}
-      <p class="text-muted small mb-3">Aucun membre dans ce groupe.</p>
+      <p class="text-muted small mb-3">{% trans "Aucun membre dans ce groupe." %}</p>
     {% endif %}
 
     {# Add member #}
@@ -75,7 +76,7 @@
       <input type="hidden" name="action" value="add_member">
       <input type="hidden" name="group_id" value="{{ group.pk }}">
       <select name="new_user_id" class="form-select form-select-sm" style="max-width:280px" required>
-        <option value="">— Ajouter un membre —</option>
+        <option value="">— {% trans "Ajouter un membre" %} —</option>
         {% for u in all_active_users %}
           {% if u not in group.members.all %}
           <option value="{{ u.pk }}">{{ u.profile.full_name|default:u.email }} ({{ u.email }})</option>
@@ -83,12 +84,12 @@
         {% endfor %}
       </select>
       <button type="submit" class="btn btn-sm btn-outline-primary">
-        <i class="bi bi-person-plus me-1"></i>Ajouter
+        <i class="bi bi-person-plus me-1"></i>{% trans "Ajouter" %}
       </button>
     </form>
 
     {# Forms #}
-    <h6 class="text-muted mb-2">Formulaires</h6>
+    <h6 class="text-muted mb-2">{% trans "Formulaires" %}</h6>
     {% if group.forms.all %}
     <div class="list-group list-group-flush">
       {% for f in group.forms.all %}
@@ -101,7 +102,7 @@
           <div class="d-flex gap-2 flex-wrap align-items-center">
             <a href="/dashboard/settings/module-download/{{ f.uid }}/"
                class="btn btn-sm btn-outline-secondary">
-              <i class="bi bi-download me-1"></i>Module
+              <i class="bi bi-download me-1"></i>{% trans "Module" %}
             </a>
             <form method="post" action="/dashboard/settings/module-upload/{{ f.uid }}/"
                   enctype="multipart/form-data" class="d-flex align-items-center gap-1">
@@ -109,11 +110,11 @@
               <input type="file" name="module_file" accept=".py"
                      class="form-control form-control-sm" style="max-width:200px" required>
               <button type="submit" class="btn btn-sm btn-outline-primary">
-                <i class="bi bi-upload me-1"></i>Charger
+                <i class="bi bi-upload me-1"></i>{% trans "Charger" %}
               </button>
             </form>
             <a href="/dashboard/{{ f.uid }}/" class="btn btn-sm btn-danger">
-              <i class="bi bi-bar-chart-line me-1"></i>Dashboard
+              <i class="bi bi-bar-chart-line me-1"></i>{% trans "Dashboard" %}
             </a>
           </div>
         </div>
@@ -121,7 +122,7 @@
       {% endfor %}
     </div>
     {% else %}
-      <p class="text-muted small">Aucun formulaire dans ce groupe.</p>
+      <p class="text-muted small">{% trans "Aucun formulaire dans ce groupe." %}</p>
     {% endif %}
 
   </div>

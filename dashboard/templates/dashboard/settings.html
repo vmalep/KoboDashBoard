@@ -1,11 +1,12 @@
 {% extends "dashboard/base.html" %}
-{% block title %}Paramètres — KoboDashBoard{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Paramètres" %} — KoboDashBoard{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
   <div class="col-12 col-lg-8">
 
-    <h2 class="h4 mb-4"><i class="bi bi-gear me-2"></i>Paramètres</h2>
+    <h2 class="h4 mb-4"><i class="bi bi-gear me-2"></i>{% trans "Paramètres" %}</h2>
 
     {% if error %}
       <div class="alert alert-danger">
@@ -21,38 +22,38 @@
     {# ── Identité ── #}
     <div class="card shadow-sm mb-4">
       <div class="card-header fw-semibold">
-        <i class="bi bi-building me-1"></i>Identité
+        <i class="bi bi-building me-1"></i>{% trans "Identité" %}
       </div>
       <div class="card-body">
         <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="mb-3">
-            <label class="form-label">Nom de l'organisation</label>
+            <label class="form-label">{% trans "Nom de l'organisation" %}</label>
             <input type="text" name="org_name" class="form-control"
                    value="{{ config.org_name }}"
-                   placeholder="ex. My Organization">
-            <div class="form-text">Affiché dans la barre de navigation à la place de « KoboDashBoard ».</div>
+                   placeholder="{% trans 'ex. My Organization' %}">
+            <div class="form-text">{% trans "Affiché dans la barre de navigation à la place de « KoboDashBoard »." %}</div>
           </div>
           <div class="mb-3">
-            <label class="form-label">Logo</label>
+            <label class="form-label">{% trans "Logo" %}</label>
             {% if config.logo %}
               <div class="mb-2 d-flex align-items-center gap-3">
-                <img src="{{ config.logo.url }}" alt="Logo actuel"
+                <img src="{{ config.logo.url }}" alt="{% trans 'Logo actuel' %}"
                      style="max-height:48px;max-width:200px;object-fit:contain">
                 <div class="form-check mb-0">
                   <input class="form-check-input" type="checkbox" name="remove_logo" id="removeLogo">
-                  <label class="form-check-label text-danger small" for="removeLogo">Supprimer le logo</label>
+                  <label class="form-check-label text-danger small" for="removeLogo">{% trans "Supprimer le logo" %}</label>
                 </div>
               </div>
             {% else %}
-              <div class="text-muted small mb-2">Aucun logo configuré.</div>
+              <div class="text-muted small mb-2">{% trans "Aucun logo configuré." %}</div>
             {% endif %}
             <input type="file" name="logo" class="form-control" accept="image/*">
-            <div class="form-text">Formats recommandés : PNG ou SVG sur fond transparent. Hauteur idéale : 48 px.</div>
+            <div class="form-text">{% trans "Formats recommandés : PNG ou SVG sur fond transparent. Hauteur idéale : 48 px." %}</div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Couleur principale</label>
+            <label class="form-label">{% trans "Couleur principale" %}</label>
             <div class="d-flex align-items-center gap-2 flex-wrap">
               <input type="color" name="brand_color" id="brandColor"
                      value="{{ config.brand_color|default:'#dc3545' }}"
@@ -62,14 +63,14 @@
                      placeholder="#dc3545" style="max-width:100px"
                      pattern="^#[0-9a-fA-F]{6}$">
               <button type="button" class="btn btn-sm btn-outline-secondary"
-                      onclick="setColor('#dc3545')" title="Réinitialiser la couleur par défaut">
-                Défaut
+                      onclick="setColor('#dc3545')" title="{% trans 'Réinitialiser la couleur par défaut' %}">
+                {% trans "Défaut" %}
               </button>
             </div>
           </div>
 
           <button type="submit" name="action" value="save_branding" class="btn btn-outline-primary">
-            <i class="bi bi-save me-1"></i>Enregistrer
+            <i class="bi bi-save me-1"></i>{% trans "Enregistrer" %}
           </button>
         </form>
       </div>
@@ -78,30 +79,30 @@
     {# ── Server connection ── #}
     <div class="card shadow-sm mb-4">
       <div class="card-header fw-semibold">
-        <i class="bi bi-cloud me-1"></i>Serveur KoboToolBox
+        <i class="bi bi-cloud me-1"></i>{% trans "Serveur KoboToolBox" %}
       </div>
       <div class="card-body">
         <form method="post">
           {% csrf_token %}
           <div class="mb-3">
-            <label class="form-label">URL du serveur</label>
+            <label class="form-label">{% trans "URL du serveur" %}</label>
             <input type="url" name="server_url" class="form-control"
                    value="{{ config.server_url }}" placeholder="https://kobo.ifrc.org" required>
           </div>
           <div class="mb-3">
-            <label class="form-label">Token API</label>
+            <label class="form-label">{% trans "Token API" %}</label>
             <input type="password" name="api_token" class="form-control"
-                   placeholder="{% if config.api_token %}(token enregistré — laisser vide pour conserver){% else %}Entrer le token API{% endif %}">
+                   placeholder="{% if config.api_token %}{% trans '(token enregistré — laisser vide pour conserver)' %}{% else %}{% trans 'Entrer le token API' %}{% endif %}">
             <div class="form-text">
-              Obtenir votre token sur <code>{{ config.server_url }}/token/?format=json</code>
+              {% blocktranslate with url=config.server_url %}Obtenir votre token sur <code>{{ url }}/token/?format=json</code>{% endblocktranslate %}
             </div>
           </div>
           <div class="d-flex gap-2">
             <button type="submit" name="action" value="save_server" class="btn btn-outline-primary">
-              <i class="bi bi-save me-1"></i>Enregistrer
+              <i class="bi bi-save me-1"></i>{% trans "Enregistrer" %}
             </button>
             <button type="submit" name="action" value="load_assets" class="btn btn-outline-secondary">
-              <i class="bi bi-plug me-1"></i>Tester & charger les formulaires
+              <i class="bi bi-plug me-1"></i>{% trans "Tester & charger les formulaires" %}
             </button>
           </div>
         </form>
@@ -111,14 +112,14 @@
     {# ── Configured forms list ── #}
     <div class="card shadow-sm mb-4">
       <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
-        <span><i class="bi bi-collection me-1"></i>Formulaires configurés</span>
+        <span><i class="bi bi-collection me-1"></i>{% trans "Formulaires configurés" %}</span>
         <span class="badge bg-secondary">{{ configured_forms|length }}</span>
       </div>
       <div class="card-body p-0">
         {% if not configured_forms %}
           <p class="text-muted p-3 mb-0">
             <i class="bi bi-info-circle me-1"></i>
-            Aucun formulaire configuré. Chargez la liste ci-dessus pour en ajouter un.
+            {% trans "Aucun formulaire configuré. Chargez la liste ci-dessus pour en ajouter un." %}
           </p>
         {% else %}
           <div class="list-group list-group-flush">
@@ -134,13 +135,13 @@
                 {% if f.module_label %}
                   <span class="text-success small"><i class="bi bi-puzzle-fill me-1"></i>{{ f.module_label }}</span>
                 {% else %}
-                  <span class="text-muted small"><i class="bi bi-table me-1"></i>Vue générique</span>
+                  <span class="text-muted small"><i class="bi bi-table me-1"></i>{% trans "Vue générique" %}</span>
                 {% endif %}
 
                 {% if f.has_module_file %}
                 <a href="/dashboard/settings/module-download/{{ f.uid }}/"
                    class="btn btn-sm btn-outline-secondary">
-                  <i class="bi bi-download me-1"></i>Télécharger le module
+                  <i class="bi bi-download me-1"></i>{% trans "Télécharger le module" %}
                 </a>
                 {% endif %}
 
@@ -150,7 +151,7 @@
                   <input type="file" name="module_file" accept=".py" class="form-control form-control-sm"
                          style="max-width:220px" required>
                   <button type="submit" class="btn btn-sm btn-outline-primary">
-                    <i class="bi bi-upload me-1"></i>Charger un module
+                    <i class="bi bi-upload me-1"></i>{% trans "Charger un module" %}
                   </button>
                 </form>
               </div>
@@ -160,7 +161,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="action" value="update_ttl">
                 <input type="hidden" name="form_uid" value="{{ f.uid }}">
-                <label class="form-label mb-0 small text-muted">Cache (s) :</label>
+                <label class="form-label mb-0 small text-muted">{% trans "Cache (s) :" %}</label>
                 <input type="number" name="cache_ttl_seconds" value="{{ f.cache_ttl_seconds }}"
                        min="30" max="86400" class="form-control form-control-sm" style="width:90px">
                 <button type="submit" class="btn btn-sm btn-outline-secondary">
@@ -175,15 +176,15 @@
                   <input type="hidden" name="action" value="remove_form">
                   <input type="hidden" name="form_uid" value="{{ f.uid }}">
                   <button type="submit" class="btn btn-outline-danger"
-                          onclick="return confirm('Supprimer ce formulaire ?')">
-                    <i class="bi bi-trash me-1"></i>Supprimer le formulaire
+                          onclick="return confirm('{% trans "Supprimer ce formulaire ?" %}')">
+                    <i class="bi bi-trash me-1"></i>{% trans "Supprimer le formulaire" %}
                   </button>
                 </form>
                 <a href="/dashboard/{{ f.uid }}/editor/" class="btn btn-outline-primary">
-                  <i class="bi bi-pencil-square me-1"></i>Éditeur de dashboard
+                  <i class="bi bi-pencil-square me-1"></i>{% trans "Éditeur de dashboard" %}
                 </a>
                 <a href="/dashboard/{{ f.uid }}/" class="btn btn-danger">
-                  <i class="bi bi-bar-chart-line me-1"></i>Visionner le dashboard
+                  <i class="bi bi-bar-chart-line me-1"></i>{% trans "Visionner le dashboard" %}
                 </a>
               </div>
             </div>
@@ -197,52 +198,51 @@
     {% if show_add_form %}
     <div class="card shadow-sm mb-4">
       <div class="card-header fw-semibold">
-        <i class="bi bi-plus-circle me-1"></i>Ajouter un formulaire
+        <i class="bi bi-plus-circle me-1"></i>{% trans "Ajouter un formulaire" %}
       </div>
       <div class="card-body">
         {% if assets %}
         <form method="post">
           {% csrf_token %}
           <div class="mb-3">
-            <label class="form-label">Formulaire disponible sur le serveur</label>
+            <label class="form-label">{% trans "Formulaire disponible sur le serveur" %}</label>
             <select name="selected_form_uid" class="form-select"
                     id="formSelect" onchange="updateFormName(this)" required>
-              <option value="">— Choisir un formulaire —</option>
+              <option value="">— {% trans "Choisir un formulaire" %} —</option>
               {% for asset in assets %}
               <option value="{{ asset.uid }}" data-name="{{ asset.name }}">
                 {{ asset.name }}
-                ({{ asset.deployment__submission_count|default:"?" }} soumissions)
+                ({{ asset.deployment__submission_count|default:"?" }} {% trans "soumissions" %})
               </option>
               {% endfor %}
             </select>
             <input type="hidden" name="selected_form_name" id="formName" value="">
           </div>
           <div class="mb-3">
-            <label class="form-label">Durée du cache (secondes)</label>
+            <label class="form-label">{% trans "Durée du cache (secondes)" %}</label>
             <input type="number" name="cache_ttl_seconds" value="300"
                    min="30" max="86400" class="form-control" style="max-width:120px">
           </div>
           <button type="submit" name="action" value="add_form" class="btn btn-danger">
-            <i class="bi bi-plus-lg me-1"></i>Ajouter ce formulaire
+            <i class="bi bi-plus-lg me-1"></i>{% trans "Ajouter ce formulaire" %}
           </button>
         </form>
         {% else %}
-          <p class="text-muted mb-0">Aucun formulaire trouvé sur le serveur.</p>
+          <p class="text-muted mb-0">{% trans "Aucun formulaire trouvé sur le serveur." %}</p>
         {% endif %}
       </div>
     </div>
     {% else %}
     <p class="text-muted small">
       <i class="bi bi-info-circle me-1"></i>
-      Pour ajouter un nouveau formulaire, cliquez sur « Tester & charger les formulaires » ci-dessus,
-      puis sélectionnez-en un dans la liste.
+      {% trans "Pour ajouter un nouveau formulaire, cliquez sur « Tester & charger les formulaires » ci-dessus, puis sélectionnez-en un dans la liste." %}
     </p>
     {% endif %}
 
     {# ── Groups ── #}
     <div class="card shadow-sm mb-4">
       <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
-        <span><i class="bi bi-diagram-3 me-1"></i>Groupes d'utilisateurs</span>
+        <span><i class="bi bi-diagram-3 me-1"></i>{% trans "Groupes d'utilisateurs" %}</span>
         <span class="badge bg-secondary">{{ groups|length }}</span>
       </div>
       <div class="card-body">
@@ -253,9 +253,9 @@
             <div>
               <strong>{{ g.name }}</strong>
               <span class="text-muted small ms-2">
-                {{ g.members.count }} membre{{ g.members.count|pluralize }}
-                · {{ g.forms.count }} formulaire{{ g.forms.count|pluralize }}
-                · {{ g.admins.count }} admin{{ g.admins.count|pluralize }}
+                {% blocktranslate count n=g.members.count %}{{ n }} membre{% plural %}{{ n }} membres{% endblocktranslate %}
+                · {% blocktranslate count n=g.forms.count %}{{ n }} formulaire{% plural %}{{ n }} formulaires{% endblocktranslate %}
+                · {% blocktranslate count n=g.admins.count %}{{ n }} admin{% plural %}{{ n }} admins{% endblocktranslate %}
               </span>
             </div>
             <div class="d-flex gap-2">
@@ -267,7 +267,7 @@
                 <input type="hidden" name="action" value="delete_group">
                 <input type="hidden" name="group_id" value="{{ g.pk }}">
                 <button type="submit" class="btn btn-sm btn-outline-danger"
-                        onclick="return confirm('Supprimer le groupe « {{ g.name }} » ?')">
+                        onclick="return confirm('{% blocktranslate with name=g.name %}Supprimer le groupe « {{ name }} » ?{% endblocktranslate %}')">
                   <i class="bi bi-trash"></i>
                 </button>
               </form>
@@ -276,14 +276,14 @@
           {% endfor %}
         </div>
         {% else %}
-          <p class="text-muted small mb-3">Aucun groupe configuré.</p>
+          <p class="text-muted small mb-3">{% trans "Aucun groupe configuré." %}</p>
         {% endif %}
         <form method="post" class="d-flex gap-2">
           {% csrf_token %}
           <input type="text" name="group_name" class="form-control form-control-sm"
-                 placeholder="Nom du nouveau groupe" style="max-width:260px" required>
+                 placeholder="{% trans 'Nom du nouveau groupe' %}" style="max-width:260px" required>
           <button type="submit" name="action" value="create_group" class="btn btn-sm btn-outline-primary">
-            <i class="bi bi-plus-lg me-1"></i>Créer
+            <i class="bi bi-plus-lg me-1"></i>{% trans "Créer" %}
           </button>
         </form>
       </div>
@@ -292,12 +292,12 @@
     {# ── Recovery info ── #}
     <div class="card shadow-sm mb-4 border-warning">
       <div class="card-header fw-semibold text-warning-emphasis bg-warning-subtle">
-        <i class="bi bi-shield-lock me-1"></i>Récupération d'accès
+        <i class="bi bi-shield-lock me-1"></i>{% trans "Récupération d'accès" %}
       </div>
       <div class="card-body small">
-        <p class="mb-1">En cas de perte de mot de passe, connectez-vous au serveur via SSH et exécutez :</p>
+        <p class="mb-1">{% trans "En cas de perte de mot de passe, connectez-vous au serveur via SSH et exécutez :" %}</p>
         <pre class="bg-light rounded p-2 mb-1">python3 manage.py init_admin</pre>
-        <p class="mb-0 text-muted">Un lien de connexion à usage unique (valable 3 jours) sera affiché dans le terminal.</p>
+        <p class="mb-0 text-muted">{% trans "Un lien de connexion à usage unique (valable 3 jours) sera affiché dans le terminal." %}</p>
       </div>
     </div>
 

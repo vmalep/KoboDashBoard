@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="card h-100 shadow-sm">
   <div class="card-body p-0">
     {% if widget.title %}
@@ -21,13 +22,13 @@
             {% endfor %}
           </tr>
           {% empty %}
-          <tr><td colspan="{{ widget.data.headers|length }}" class="text-muted small">Aucune donnée.</td></tr>
+          <tr><td colspan="{{ widget.data.headers|length }}" class="text-muted small">{% trans "Aucune donnée." %}</td></tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
     {% else %}
-    <p class="text-muted small p-3 mb-0">Aucun champ sélectionné.</p>
+    <p class="text-muted small p-3 mb-0">{% trans "Aucun champ sélectionné." %}</p>
     {% endif %}
   </div>
 </div>

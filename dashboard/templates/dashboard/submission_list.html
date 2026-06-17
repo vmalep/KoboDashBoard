@@ -1,29 +1,30 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
-{% block title %}Soumissions — {{ activity_label|default:f_activity }}{% endblock %}
+{% block title %}{% trans "Soumissions" %} — {{ activity_label|default:f_activity }}{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
   <div>
     <a href="/dashboard/{{ uid }}/?country={{ f_country }}&activity={{ f_activity }}"
        class="text-decoration-none text-muted small">
-      <i class="bi bi-arrow-left me-1"></i>Matrice de couverture
+      <i class="bi bi-arrow-left me-1"></i>{% trans "Matrice de couverture" %}
     </a>
     <h2 class="h4 mb-0 mt-1">
-      {% if f_activity %}{{ f_activity }}{% else %}Toutes les activités{% endif %}
+      {% if f_activity %}{{ f_activity }}{% else %}{% trans "Toutes les activités" %}{% endif %}
       {% if f_country %}<span class="text-muted">— {{ country_label }}</span>{% endif %}
     </h2>
     {% if activity_label %}
       <p class="text-muted small mb-0">{{ activity_label }}</p>
     {% endif %}
-    <span class="text-muted small">{{ total }} soumission{{ total|pluralize }}</span>
+    <span class="text-muted small">{% blocktranslate count n=total %}{{ n }} soumission{% plural %}{{ n }} soumissions{% endblocktranslate %}</span>
   </div>
 </div>
 
 {% if error %}
   <div class="alert alert-danger"><i class="bi bi-x-circle-fill me-1"></i>{{ error }}</div>
 {% elif not page_obj %}
-  <p class="text-muted">Aucune soumission pour ces critères.</p>
+  <p class="text-muted">{% trans "Aucune soumission pour ces critères." %}</p>
 {% else %}
   <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
     {% for item in page_obj %}
@@ -53,14 +54,14 @@
             <p class="mb-0 mt-2">
               <span class="badge bg-light text-dark border">
                 <i class="bi bi-exclamation-triangle me-1"></i>
-                {{ item.risks|length }} risque{{ item.risks|length|pluralize }}
+                {% blocktranslate count n=item.risks|length %}{{ n }} risque{% plural %}{{ n }} risques{% endblocktranslate %}
               </span>
             </p>
           </div>
           <div class="card-footer bg-transparent py-2">
             <a href="/dashboard/{{ uid }}/submission/{{ act.submission_id }}/?back=/dashboard/{{ uid }}/submissions/?activity={{ f_activity }}&country={{ f_country }}"
                class="btn btn-sm btn-danger">
-              <i class="bi bi-eye me-1"></i>Voir le détail
+              <i class="bi bi-eye me-1"></i>{% trans "Voir le détail" %}
             </a>
           </div>
         </div>

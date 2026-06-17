@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-16 14:44+0000\n"
+"POT-Creation-Date: 2026-06-17 05:30+0000\n"
 "Language: es\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,12 +14,12 @@ msgstr "Iniciar sesión"
 
 #: accounts/templates/accounts/login.html:25
 msgid "Email ou mot de passe incorrect."
-msgstr "Email o contraseña incorrectos."
+msgstr "Correo electrónico o contraseña incorrectos."
 
 #: accounts/templates/accounts/login.html:32
 #: accounts/templates/accounts/register.html:46
 msgid "Adresse email"
-msgstr "Dirección de correo electrónico"
+msgstr "Correo electrónico"
 
 #: accounts/templates/accounts/login.html:37
 #: accounts/templates/accounts/register.html:56
@@ -29,7 +29,7 @@ msgstr "Contraseña"
 #: accounts/templates/accounts/login.html:42
 #: accounts/templates/accounts/register.html:80
 msgid "Se connecter"
-msgstr "Iniciar sesión"
+msgstr "Entrar"
 
 #: accounts/templates/accounts/login.html:44
 msgid "Mot de passe oublié ?"
@@ -37,7 +37,7 @@ msgstr "¿Olvidó su contraseña?"
 
 #: accounts/templates/accounts/login.html:50
 msgid "Pas encore de compte ?"
-msgstr "¿Aún no tiene cuenta?"
+msgstr "¿No tiene cuenta?"
 
 #: accounts/templates/accounts/login.html:51
 msgid "S'enregistrer"
@@ -50,7 +50,7 @@ msgstr "Solicitud de acceso"
 
 #: accounts/templates/accounts/register.html:23
 msgid "Votre compte sera activé après validation par un administrateur."
-msgstr "Su cuenta será activada tras la validación por un administrador."
+msgstr "Su cuenta será activada después de la validación por un administrador."
 
 #: accounts/templates/accounts/register.html:36
 msgid "Nom complet"
@@ -68,141 +68,20 @@ msgstr "Enviar solicitud"
 msgid "Déjà un compte ?"
 msgstr "¿Ya tiene una cuenta?"
 
-#: dashboard/templates/dashboard/amopah_dashboard.html:12
-#: dashboard/templates/dashboard/form_detail.html:47
-#: dashboard/templates/dashboard/form_list.html:4
-#: dashboard/templates/dashboard/form_list.html:8
-msgid "Formulaires"
-msgstr "Formularios"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:19
-#: dashboard/templates/dashboard/form_detail.html:55
-msgid "Rafraîchir"
-msgstr "Actualizar"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:22
-msgid "Export XLSX"
-msgstr "Exportar XLSX"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:25
-msgid "Export CSV"
-msgstr "Exportar CSV"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:39
-#: dashboard/templates/dashboard/amopah_dashboard.html:112
-#: dashboard/templates/dashboard/amopah_dashboard.html:140
-#: dashboard/templates/dashboard/coverage.html:51
-msgid "Pays"
-msgstr "País"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:41
-#: dashboard/templates/dashboard/coverage.html:54
-msgid "Tous les pays"
-msgstr "Todos los países"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:50
-msgid "Année"
-msgstr "Año"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:52
-msgid "Toutes"
-msgstr "Todos"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:59
-msgid "Trimestre"
-msgstr "Trimestre"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:61
-#: dashboard/templates/dashboard/coverage.html:78
-msgid "Tous"
-msgstr "Todos"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:68
-#: dashboard/templates/dashboard/amopah_dashboard.html:143
-#: dashboard/templates/dashboard/coverage.html:63
-msgid "Résultat"
-msgstr "Resultado"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:70
-#: dashboard/templates/dashboard/coverage.html:66
-msgid "Tous les résultats"
-msgstr "Todos los resultados"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:80
-msgid "Filtrer"
-msgstr "Filtrar"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:83
-#: dashboard/templates/dashboard/coverage.html:90
-msgid "Réinitialiser"
-msgstr "Restablecer"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:96
-msgid "Bénéficiaires rapportés"
-msgstr "Beneficiarios reportados"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:104
-msgid "Rapports"
-msgstr "Informes"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:120
-msgid "Résultats actifs"
-msgstr "Resultados activos"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:133
-msgid "Données détaillées"
-msgstr "Datos detallados"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:134
-msgid "lignes"
-msgstr "filas"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:141
-msgid "Période"
-msgstr "Período"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:142
-msgid "Rapporteur"
-msgstr "Informador"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:144
-msgid "Code"
-msgstr "Código"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:145
-msgid "Indicateur"
-msgstr "Indicador"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:146
-msgid "Total"
-msgstr "Total"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:147
-msgid "Hommes"
-msgstr "Hombres"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:148
-msgid "Femmes"
-msgstr "Mujeres"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:149
-msgid "Handicap"
-msgstr "Discapacidad"
-
-#: dashboard/templates/dashboard/amopah_dashboard.html:150
-msgid "PDI"
-msgstr "PDI"
-
 #: dashboard/templates/dashboard/base.html:79
 msgid "Comptes en attente de validation"
 msgstr "Cuentas pendientes de validación"
 
 #: dashboard/templates/dashboard/base.html:89
 #: dashboard/templates/dashboard/form_list.html:11
+#: dashboard/templates/dashboard/settings.html:3
+#: dashboard/templates/dashboard/settings.html:9
 msgid "Paramètres"
 msgstr "Configuración"
 
 #: dashboard/templates/dashboard/base.html:94
+#: dashboard/templates/dashboard/my_group.html:3
+#: dashboard/templates/dashboard/my_group.html:6
 msgid "Mon groupe"
 msgstr "Mi grupo"
 
@@ -219,6 +98,7 @@ msgid "Built with"
 msgstr "Creado con"
 
 #: dashboard/templates/dashboard/coverage.html:26
+#: dashboard/templates/dashboard/generic_dashboard.html:28
 msgid "Actualiser"
 msgstr "Actualizar"
 
@@ -226,45 +106,462 @@ msgstr "Actualizar"
 msgid "Filtres"
 msgstr "Filtros"
 
+#: dashboard/templates/dashboard/coverage.html:51
+#: dashboard/templates/dashboard/module_dashboard.html:39
+#: dashboard/templates/dashboard/module_dashboard.html:112
+#: dashboard/templates/dashboard/module_dashboard.html:140
+msgid "Pays"
+msgstr "País"
+
+#: dashboard/templates/dashboard/coverage.html:54
+#: dashboard/templates/dashboard/module_dashboard.html:41
+msgid "Tous les pays"
+msgstr "Todos los países"
+
+#: dashboard/templates/dashboard/coverage.html:63
+#: dashboard/templates/dashboard/module_dashboard.html:68
+#: dashboard/templates/dashboard/module_dashboard.html:143
+msgid "Résultat"
+msgstr "Resultado"
+
+#: dashboard/templates/dashboard/coverage.html:66
+#: dashboard/templates/dashboard/module_dashboard.html:70
+msgid "Tous les résultats"
+msgstr "Todos los resultados"
+
 #: dashboard/templates/dashboard/coverage.html:75
 msgid "Responsable"
 msgstr "Responsable"
 
+#: dashboard/templates/dashboard/coverage.html:78
+#: dashboard/templates/dashboard/generic_dashboard.html:46
+#: dashboard/templates/dashboard/module_dashboard.html:61
+msgid "Tous"
+msgstr "Todos"
+
+#: dashboard/templates/dashboard/coverage.html:90
+#: dashboard/templates/dashboard/generic_dashboard.html:61
+#: dashboard/templates/dashboard/module_dashboard.html:83
+msgid "Réinitialiser"
+msgstr "Restablecer"
+
+#: dashboard/templates/dashboard/coverage.html:98
+msgid "Liste des soumissions"
+msgstr "Lista de envíos"
+
+#: dashboard/templates/dashboard/coverage.html:108
+msgid "soumissions effectuées"
+msgstr "envíos realizados"
+
+#: dashboard/templates/dashboard/coverage.html:109
+msgid "activité applicable, non soumise"
+msgstr "actividad aplicable, no enviada"
+
+#: dashboard/templates/dashboard/coverage.html:110
+msgid "activité non applicable dans ce pays"
+msgstr "actividad no aplicable en este país"
+
+#: dashboard/templates/dashboard/coverage.html:118
+msgid "Activité principale"
+msgstr "Actividad principal"
+
+#: dashboard/templates/dashboard/editor.html:3
+msgid "Éditeur"
+msgstr "Editor"
+
+#: dashboard/templates/dashboard/editor.html:12
+msgid "Tous les dashboards"
+msgstr "Todos los paneles"
+
+#: dashboard/templates/dashboard/editor.html:16
+msgid "Aperçu"
+msgstr "Vista previa"
+
+#: dashboard/templates/dashboard/editor.html:21
+msgid "Supprimer ce dashboard ?"
+msgstr "¿Eliminar este panel?"
+
+#: dashboard/templates/dashboard/editor.html:22
+#: dashboard/templates/dashboard/editor.html:90
+#: dashboard/templates/dashboard/editor.html:228
+#: dashboard/templates/dashboard/editor_widget_form.html:171
+#: dashboard/templates/dashboard/editor_widget_form.html:333
+msgid "Supprimer"
+msgstr "Eliminar"
+
+#: dashboard/templates/dashboard/editor.html:33
+msgid "Nom :"
+msgstr "Nombre:"
+
+#: dashboard/templates/dashboard/editor.html:37
+msgid "Renommer"
+msgstr "Renombrar"
+
+#: dashboard/templates/dashboard/editor.html:46
+msgid ""
+"Impossible de charger le schéma du formulaire — le sélecteur de champs sera "
+"vide. Vérifiez la connexion KoboToolBox dans les paramètres."
+msgstr "No se puede cargar el esquema del formulario — el selector de campos estará vacío. Verifique la conexión de KoboToolBox en la configuración."
+
+#: dashboard/templates/dashboard/editor.html:53
+msgid "Filtres du dashboard"
+msgstr "Filtros del panel"
+
+#: dashboard/templates/dashboard/editor.html:54
+msgid "Champs affichés comme filtres en haut du dashboard"
+msgstr "Campos mostrados como filtros en la parte superior del panel"
+
+#: dashboard/templates/dashboard/editor.html:71
+#: dashboard/templates/dashboard/editor.html:163
+#: dashboard/templates/dashboard/editor_widget_form.html:154
+#: dashboard/templates/dashboard/editor_widget_form.html:324
+msgid "Monter"
+msgstr "Subir"
+
+#: dashboard/templates/dashboard/editor.html:81
+#: dashboard/templates/dashboard/editor.html:175
+#: dashboard/templates/dashboard/editor_widget_form.html:155
+#: dashboard/templates/dashboard/editor_widget_form.html:325
+msgid "Descendre"
+msgstr "Bajar"
+
+#: dashboard/templates/dashboard/editor.html:91
+msgid "Supprimer ce filtre ?"
+msgstr "¿Eliminar este filtro?"
+
+#: dashboard/templates/dashboard/editor.html:100
+msgid "Aucun filtre configuré."
+msgstr "Sin filtros configurados."
+
+#: dashboard/templates/dashboard/editor.html:110
+msgid "Champ"
+msgstr "Campo"
+
+#: dashboard/templates/dashboard/editor.html:112
+#: dashboard/templates/dashboard/editor_widget_form.html:64
+msgid "Choisir un champ"
+msgstr "Elegir un campo"
+
+#: dashboard/templates/dashboard/editor.html:119
+msgid "Étiquette (optionnelle)"
+msgstr "Etiqueta (opcional)"
+
+#: dashboard/templates/dashboard/editor.html:121
+msgid "ex. Pays"
+msgstr "p. ej. País"
+
+#: dashboard/templates/dashboard/editor.html:124
+#: dashboard/templates/dashboard/editor_widget_form.html:189
+#: dashboard/templates/dashboard/editor_widget_form.html:251
+#: dashboard/templates/dashboard/my_group.html:87
+msgid "Ajouter"
+msgstr "Agregar"
+
+#: dashboard/templates/dashboard/editor.html:130
+msgid "Ajouter un filtre"
+msgstr "Agregar un filtro"
+
+#: dashboard/templates/dashboard/editor.html:140
+#, python-format
+msgid "Ligne %(n)s"
+msgstr "Fila %(n)s"
+
+#: dashboard/templates/dashboard/editor.html:148
+msgid "Colonnes :"
+msgstr "Columnas:"
+
+#: dashboard/templates/dashboard/editor.html:186
+msgid "Supprimer la ligne"
+msgstr "Eliminar fila"
+
+#: dashboard/templates/dashboard/editor.html:187
+msgid "Supprimer cette ligne et ses widgets ?"
+msgstr "¿Eliminar esta fila y sus widgets?"
+
+#: dashboard/templates/dashboard/editor.html:209
+#: dashboard/templates/dashboard/editor_widget_form.html:20
+msgid "Chiffre résumé"
+msgstr "Cifra resumen"
+
+#: dashboard/templates/dashboard/editor.html:210
+msgid "Barres"
+msgstr "Barras"
+
+#: dashboard/templates/dashboard/editor.html:211
+msgid "Secteurs"
+msgstr "Sectores"
+
+#: dashboard/templates/dashboard/editor.html:212
+msgid "Tableau"
+msgstr "Tabla"
+
+#: dashboard/templates/dashboard/editor.html:219
+#: dashboard/templates/dashboard/editor_list.html:37
+#: dashboard/templates/dashboard/generic_dashboard.html:24
+msgid "Modifier"
+msgstr "Modificar"
+
+#: dashboard/templates/dashboard/editor.html:228
+msgid "Supprimer ce widget ?"
+msgstr "¿Eliminar este widget?"
+
+#: dashboard/templates/dashboard/editor.html:247
+msgid "Aucun widget dans cette ligne."
+msgstr "Sin widgets en esta fila."
+
+#: dashboard/templates/dashboard/editor.html:256
+#: dashboard/templates/dashboard/editor_widget_form.html:4
+msgid "Ajouter un widget"
+msgstr "Agregar un widget"
+
+#: dashboard/templates/dashboard/editor.html:265
+msgid "Aucune ligne. Commencez par en ajouter une."
+msgstr "Sin filas. Comience por agregar una."
+
+#: dashboard/templates/dashboard/editor.html:273
+msgid "Ajouter une ligne"
+msgstr "Agregar una fila"
+
+#: dashboard/templates/dashboard/editor_list.html:3
+#: dashboard/templates/dashboard/editor_list.html:11
+msgid "Dashboards"
+msgstr "Paneles"
+
+#: dashboard/templates/dashboard/editor_list.html:15
+#: dashboard/templates/dashboard/generic_dashboard.html:20
+#: dashboard/templates/dashboard/submission_detail.html:8
+msgid "Retour"
+msgstr "Volver"
+
+#: dashboard/templates/dashboard/editor_list.html:27
+#, python-format
+msgid "%(n)s ligne"
+msgid_plural "%(n)s lignes"
+msgstr[0] "%(n)s fila"
+msgstr[1] "%(n)s filas"
+
+#: dashboard/templates/dashboard/editor_list.html:29
+#, python-format
+msgid "%(n)s filtre"
+msgid_plural "%(n)s filtres"
+msgstr[0] "%(n)s filtro"
+msgstr[1] "%(n)s filtros"
+
+#: dashboard/templates/dashboard/editor_list.html:34
+msgid "Voir"
+msgstr "Ver"
+
+#: dashboard/templates/dashboard/editor_list.html:44
+msgid "Aucun dashboard créé pour ce formulaire."
+msgstr "No se ha creado ningún panel para este formulario."
+
+#: dashboard/templates/dashboard/editor_list.html:50
+msgid "Créer un nouveau dashboard"
+msgstr "Crear un nuevo panel"
+
+#: dashboard/templates/dashboard/editor_list.html:55
+msgid "Nom du dashboard"
+msgstr "Nombre del panel"
+
+#: dashboard/templates/dashboard/editor_list.html:58
+#: dashboard/templates/dashboard/settings.html:286
+msgid "Créer"
+msgstr "Crear"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:4
+msgid "Modifier le widget"
+msgstr "Modificar widget"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:17
+msgid "Type"
+msgstr "Tipo"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:21
+msgid "Graphique en secteurs"
+msgstr "Gráfico de sectores"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:22
+msgid "Graphique en colonnes / lignes"
+msgstr "Gráfico de barras / líneas"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:23
+msgid "Tableau de données"
+msgstr "Tabla de datos"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:27
+msgid "Titre"
+msgstr "Título"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:29
+msgid "Ex. Total bénéficiaires"
+msgstr "P. ej. Total beneficiarios"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:37
+msgid "Champ (optionnel)"
+msgstr "Campo (opcional)"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:39
+msgid "Compter toutes les soumissions"
+msgstr "Contar todos los envíos"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:48
+msgid "Agrégation"
+msgstr "Agregación"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:50
+msgid "Nombre de soumissions"
+msgstr "Número de envíos"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:51
+msgid "Somme"
+msgstr "Suma"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:52
+msgid "Moyenne"
+msgstr "Promedio"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:61
+msgid "Champ de regroupement"
+msgstr "Campo de agrupación"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:74
+msgid "Valeurs — couleur et libellé"
+msgstr "Valores — color y etiqueta"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:93
+#: dashboard/templates/dashboard/editor_widget_form.html:163
+#: dashboard/templates/dashboard/editor_widget_form.html:218
+#: dashboard/templates/dashboard/editor_widget_form.html:331
+msgid "Couleur"
+msgstr "Color"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:100
+msgid "Libellé affiché"
+msgstr "Etiqueta mostrada"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:108
+msgid "Ce champ n'a pas de valeurs fixes — libellés non modifiables."
+msgstr "Este campo no tiene valores fijos — las etiquetas no son modificables."
+
+#: dashboard/templates/dashboard/editor_widget_form.html:118
+msgid "Axe X"
+msgstr "Eje X"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:118
+msgid "optionnel"
+msgstr "opcional"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:121
+msgid "Aucun : comparaison absolue"
+msgstr "Ninguno: comparación absoluta"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:128
+msgid "Style"
+msgstr "Estilo"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:130
+msgid "Colonnes"
+msgstr "Columnas"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:131
+msgid "Lignes"
+msgstr "Líneas"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:135
+msgid "Mode"
+msgstr "Modo"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:141
+msgid "Empilé (cumulatif)"
+msgstr "Apilado (acumulativo)"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:147
+msgid "Séries"
+msgstr "Series"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:167
+#: dashboard/templates/dashboard/editor_widget_form.html:332
+msgid "Libellé affiché dans la légende"
+msgstr "Etiqueta mostrada en la leyenda"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:174
+#: dashboard/templates/dashboard/editor_widget_form.html:304
+msgid "Aucune série sélectionnée."
+msgstr "Sin series seleccionadas."
+
+#: dashboard/templates/dashboard/editor_widget_form.html:180
+msgid "Ajouter un champ de série"
+msgstr "Agregar un campo de serie"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:193
+#: dashboard/templates/dashboard/editor_widget_form.html:243
+msgid "Aucun champ disponible (schéma non chargé)."
+msgstr "Ningún campo disponible (esquema no cargado)."
+
+#: dashboard/templates/dashboard/editor_widget_form.html:200
+msgid "Couleurs par valeur —"
+msgstr "Colores por valor —"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:230
+msgid "Colonnes à afficher"
+msgstr "Columnas a mostrar"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:251
+#: dashboard/templates/dashboard/group_edit.html:85
+#: dashboard/templates/dashboard/settings.html:73
+#: dashboard/templates/dashboard/settings.html:102
+msgid "Enregistrer"
+msgstr "Guardar"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:253
+#: dashboard/templates/dashboard/group_edit.html:87
+msgid "Annuler"
+msgstr "Cancelar"
+
+#: dashboard/templates/dashboard/form_detail.html:47
+#: dashboard/templates/dashboard/form_list.html:4
+#: dashboard/templates/dashboard/form_list.html:8
+#: dashboard/templates/dashboard/module_dashboard.html:12
+#: dashboard/templates/dashboard/my_group.html:92
+msgid "Formulaires"
+msgstr "Formularios"
+
 #: dashboard/templates/dashboard/form_detail.html:50
-#, fuzzy
-#| msgid "soumissions en cache"
+#: dashboard/templates/dashboard/settings.html:215
 msgid "soumissions"
-msgstr "envíos en caché"
+msgstr "envíos"
+
+#: dashboard/templates/dashboard/form_detail.html:55
+#: dashboard/templates/dashboard/module_dashboard.html:19
+msgid "Rafraîchir"
+msgstr "Actualizar"
 
 #: dashboard/templates/dashboard/form_detail.html:69
 msgid "Aucune question trouvée dans le schéma de ce formulaire."
-msgstr ""
+msgstr "No se encontraron preguntas en el esquema de este formulario."
 
 #: dashboard/templates/dashboard/form_detail.html:95
 msgid "Page précédente"
-msgstr ""
+msgstr "Página anterior"
 
 #: dashboard/templates/dashboard/form_detail.html:106
 msgid "Page"
-msgstr ""
+msgstr "Página"
 
 #: dashboard/templates/dashboard/form_detail.html:125
 msgid "Page suivante"
-msgstr ""
+msgstr "Página siguiente"
 
 #: dashboard/templates/dashboard/form_detail.html:141
-#, fuzzy
-#| msgid "Aucun membre dans ce groupe."
 msgid "Aucune question dans ce groupe."
-msgstr "No hay miembros en este grupo."
+msgstr "No hay preguntas en este grupo."
 
 #: dashboard/templates/dashboard/form_detail.html:143
-#, fuzzy
-#| msgid "Aucune soumission pour ces critères."
 msgid "Aucune soumission."
-msgstr "No hay envíos para estos criterios."
+msgstr "Sin envíos."
 
 #: dashboard/templates/dashboard/form_list.html:28
+#: dashboard/templates/dashboard/settings.html:138
 msgid "Vue générique"
 msgstr "Vista genérica"
 
@@ -274,11 +571,37 @@ msgstr "envíos en caché"
 
 #: dashboard/templates/dashboard/form_list.html:50
 msgid "Éditeur dashboard"
-msgstr "Editor de tablero"
+msgstr "Editor de dashboard"
 
 #: dashboard/templates/dashboard/form_list.html:54
 msgid "Explorer les données brutes"
-msgstr "Explorar datos brutos"
+msgstr "Explorar datos sin procesar"
+
+#: dashboard/templates/dashboard/generic_dashboard.html:15
+#: dashboard/templates/dashboard/submission_list.html:20
+#, python-format
+msgid "%(n)s soumission"
+msgid_plural "%(n)s soumissions"
+msgstr[0] "%(n)s envío"
+msgstr[1] "%(n)s envíos"
+
+#: dashboard/templates/dashboard/generic_dashboard.html:57
+#: dashboard/templates/dashboard/module_dashboard.html:80
+msgid "Filtrer"
+msgstr "Filtrar"
+
+#: dashboard/templates/dashboard/generic_dashboard.html:69
+#, python-format
+msgid "%(filtered)s soumission sur %(total)s"
+msgstr "%(filtered)s envío de %(total)s"
+
+#: dashboard/templates/dashboard/generic_dashboard.html:78
+msgid "Ce tableau de bord est vide."
+msgstr "Este panel está vacío."
+
+#: dashboard/templates/dashboard/generic_dashboard.html:80
+msgid "Ajouter des widgets →"
+msgstr "Agregar widgets →"
 
 #: dashboard/templates/dashboard/group_edit.html:3
 #: dashboard/templates/dashboard/group_edit.html:9
@@ -295,16 +618,17 @@ msgstr "Formularios accesibles"
 
 #: dashboard/templates/dashboard/group_edit.html:37
 msgid "Aucun formulaire configuré."
-msgstr "No hay formularios configurados."
+msgstr "Sin formularios configurados."
 
 #: dashboard/templates/dashboard/group_edit.html:44
+#: dashboard/templates/dashboard/my_group.html:20
 msgid "Membres"
 msgstr "Miembros"
 
 #: dashboard/templates/dashboard/group_edit.html:57
 #: dashboard/templates/dashboard/group_edit.html:78
 msgid "Aucun utilisateur actif."
-msgstr "No hay usuarios activos."
+msgstr "Sin usuarios activos."
 
 #: dashboard/templates/dashboard/group_edit.html:64
 msgid "Administrateurs du groupe"
@@ -314,17 +638,450 @@ msgstr "Administradores del grupo"
 msgid ""
 "Les administrateurs peuvent charger des modules et gérer les membres de ce "
 "groupe."
-msgstr ""
-"Los administradores pueden cargar módulos y gestionar los miembros de este "
-"grupo."
+msgstr "Los administradores pueden cargar módulos y gestionar los miembros de este grupo."
 
-#: dashboard/templates/dashboard/group_edit.html:85
-msgid "Enregistrer"
-msgstr "Guardar"
+#: dashboard/templates/dashboard/module_dashboard.html:22
+msgid "Export XLSX"
+msgstr "Exportar XLSX"
 
-#: dashboard/templates/dashboard/group_edit.html:87
-msgid "Annuler"
-msgstr "Cancelar"
+#: dashboard/templates/dashboard/module_dashboard.html:25
+msgid "Export CSV"
+msgstr "Exportar CSV"
+
+#: dashboard/templates/dashboard/module_dashboard.html:50
+msgid "Année"
+msgstr "Año"
+
+#: dashboard/templates/dashboard/module_dashboard.html:52
+msgid "Toutes"
+msgstr "Todos"
+
+#: dashboard/templates/dashboard/module_dashboard.html:59
+msgid "Trimestre"
+msgstr "Trimestre"
+
+#: dashboard/templates/dashboard/module_dashboard.html:96
+msgid "Bénéficiaires rapportés"
+msgstr "Beneficiarios reportados"
+
+#: dashboard/templates/dashboard/module_dashboard.html:104
+msgid "Rapports"
+msgstr "Informes"
+
+#: dashboard/templates/dashboard/module_dashboard.html:120
+msgid "Résultats actifs"
+msgstr "Resultados activos"
+
+#: dashboard/templates/dashboard/module_dashboard.html:133
+msgid "Données détaillées"
+msgstr "Datos detallados"
+
+#: dashboard/templates/dashboard/module_dashboard.html:134
+msgid "lignes"
+msgstr "filas"
+
+#: dashboard/templates/dashboard/module_dashboard.html:141
+msgid "Période"
+msgstr "Período"
+
+#: dashboard/templates/dashboard/module_dashboard.html:142
+msgid "Rapporteur"
+msgstr "Informador"
+
+#: dashboard/templates/dashboard/module_dashboard.html:144
+msgid "Code"
+msgstr "Código"
+
+#: dashboard/templates/dashboard/module_dashboard.html:145
+msgid "Indicateur"
+msgstr "Indicador"
+
+#: dashboard/templates/dashboard/module_dashboard.html:146
+msgid "Total"
+msgstr "Total"
+
+#: dashboard/templates/dashboard/module_dashboard.html:147
+msgid "Hommes"
+msgstr "Hombres"
+
+#: dashboard/templates/dashboard/module_dashboard.html:148
+msgid "Femmes"
+msgstr "Mujeres"
+
+#: dashboard/templates/dashboard/module_dashboard.html:149
+msgid "Handicap"
+msgstr "Discapacidad"
+
+#: dashboard/templates/dashboard/module_dashboard.html:150
+msgid "PDI"
+msgstr "PDI"
+
+#: dashboard/templates/dashboard/module_uploaded.html:3
+msgid "Module chargé"
+msgstr "Módulo cargado"
+
+#: dashboard/templates/dashboard/module_uploaded.html:9
+msgid "Module chargé avec succès"
+msgstr "Módulo cargado con éxito"
+
+#: dashboard/templates/dashboard/module_uploaded.html:11
+#, python-format
+msgid ""
+"Le fichier <code>%(filename)s</code> a été installé. Redémarrez le serveur "
+"pour activer le nouveau module."
+msgstr "El archivo <code>%(filename)s</code> ha sido instalado. Reinicie el servidor para activar el nuevo módulo."
+
+#: dashboard/templates/dashboard/module_uploaded.html:14
+msgid "Retour aux paramètres"
+msgstr "Volver a la configuración"
+
+#: dashboard/templates/dashboard/module_uploaded.html:17
+msgid "Ouvrir le tableau de bord"
+msgstr "Abrir el panel"
+
+#: dashboard/templates/dashboard/my_group.html:9
+msgid "Vous n'administrez aucun groupe pour le moment."
+msgstr "No administra ningún grupo en este momento."
+
+#: dashboard/templates/dashboard/my_group.html:26
+#: dashboard/templates/dashboard/user_list.html:23
+#: dashboard/templates/dashboard/user_list.html:69
+msgid "Nom"
+msgstr "Nombre"
+
+#: dashboard/templates/dashboard/my_group.html:27
+msgid "Email"
+msgstr "Correo electrónico"
+
+#: dashboard/templates/dashboard/my_group.html:41
+#: dashboard/templates/dashboard/user_list.html:86
+msgid "Générer un lien de réinitialisation du mot de passe"
+msgstr "Generar enlace de restablecimiento de contraseña"
+
+#: dashboard/templates/dashboard/my_group.html:47
+#: dashboard/templates/dashboard/user_list.html:92
+msgid "Désactiver ce compte ?"
+msgstr "¿Desactivar esta cuenta?"
+
+#: dashboard/templates/dashboard/my_group.html:56
+#: dashboard/templates/dashboard/user_list.html:100
+msgid "Supprimer définitivement ce compte ?"
+msgstr "¿Eliminar permanentemente esta cuenta?"
+
+#: dashboard/templates/dashboard/my_group.html:70
+msgid "Aucun membre dans ce groupe."
+msgstr "Sin miembros en este grupo."
+
+#: dashboard/templates/dashboard/my_group.html:79
+msgid "Ajouter un membre"
+msgstr "Agregar un miembro"
+
+#: dashboard/templates/dashboard/my_group.html:105
+msgid "Module"
+msgstr "Módulo"
+
+#: dashboard/templates/dashboard/my_group.html:113
+msgid "Charger"
+msgstr "Cargar"
+
+#: dashboard/templates/dashboard/my_group.html:117
+msgid "Dashboard"
+msgstr "Panel"
+
+#: dashboard/templates/dashboard/my_group.html:125
+msgid "Aucun formulaire dans ce groupe."
+msgstr "Sin formularios en este grupo."
+
+#: dashboard/templates/dashboard/no_form.html:7
+msgid "Aucun formulaire configuré"
+msgstr "Sin formularios configurados"
+
+#: dashboard/templates/dashboard/no_form.html:8
+msgid "Contactez l'administrateur pour configurer l'accès à KoboToolBox."
+msgstr "Contacte al administrador para configurar el acceso a KoboToolBox."
+
+#: dashboard/templates/dashboard/settings.html:25
+msgid "Identité"
+msgstr "Identidad"
+
+#: dashboard/templates/dashboard/settings.html:31
+msgid "Nom de l'organisation"
+msgstr "Nombre de la organización"
+
+#: dashboard/templates/dashboard/settings.html:34
+msgid "ex. My Organization"
+msgstr "p. ej. My Organization"
+
+#: dashboard/templates/dashboard/settings.html:35
+msgid "Affiché dans la barre de navigation à la place de « KoboDashBoard »."
+msgstr "Se muestra en la barra de navegación en lugar de «KoboDashBoard»."
+
+#: dashboard/templates/dashboard/settings.html:38
+msgid "Logo"
+msgstr "Logotipo"
+
+#: dashboard/templates/dashboard/settings.html:41
+msgid "Logo actuel"
+msgstr "Logotipo actual"
+
+#: dashboard/templates/dashboard/settings.html:45
+msgid "Supprimer le logo"
+msgstr "Eliminar logotipo"
+
+#: dashboard/templates/dashboard/settings.html:49
+msgid "Aucun logo configuré."
+msgstr "Sin logotipo configurado."
+
+#: dashboard/templates/dashboard/settings.html:52
+msgid ""
+"Formats recommandés : PNG ou SVG sur fond transparent. Hauteur idéale : 48 "
+"px."
+msgstr "Formatos recomendados: PNG o SVG con fondo transparente. Altura ideal: 48 px."
+
+#: dashboard/templates/dashboard/settings.html:56
+msgid "Couleur principale"
+msgstr "Color principal"
+
+#: dashboard/templates/dashboard/settings.html:66
+msgid "Réinitialiser la couleur par défaut"
+msgstr "Restablecer el color predeterminado"
+
+#: dashboard/templates/dashboard/settings.html:67
+msgid "Défaut"
+msgstr "Predeterminado"
+
+#: dashboard/templates/dashboard/settings.html:82
+msgid "Serveur KoboToolBox"
+msgstr "Servidor KoboToolBox"
+
+#: dashboard/templates/dashboard/settings.html:88
+msgid "URL du serveur"
+msgstr "URL del servidor"
+
+#: dashboard/templates/dashboard/settings.html:93
+msgid "Token API"
+msgstr "Token API"
+
+#: dashboard/templates/dashboard/settings.html:95
+msgid "(token enregistré — laisser vide pour conserver)"
+msgstr "(token guardado — dejar en blanco para mantener)"
+
+#: dashboard/templates/dashboard/settings.html:95
+msgid "Entrer le token API"
+msgstr "Ingresar token API"
+
+#: dashboard/templates/dashboard/settings.html:97
+#, python-format
+msgid "Obtenir votre token sur <code>%(url)s/token/?format=json</code>"
+msgstr "Obtenga su token en <code>%(url)s/token/?format=json</code>"
+
+#: dashboard/templates/dashboard/settings.html:105
+msgid "Tester & charger les formulaires"
+msgstr "Probar y cargar formularios"
+
+#: dashboard/templates/dashboard/settings.html:115
+msgid "Formulaires configurés"
+msgstr "Formularios configurados"
+
+#: dashboard/templates/dashboard/settings.html:122
+msgid ""
+"Aucun formulaire configuré. Chargez la liste ci-dessus pour en ajouter un."
+msgstr "Sin formularios configurados. Cargue la lista de arriba para agregar uno."
+
+#: dashboard/templates/dashboard/settings.html:144
+msgid "Télécharger le module"
+msgstr "Descargar módulo"
+
+#: dashboard/templates/dashboard/settings.html:154
+msgid "Charger un module"
+msgstr "Cargar un módulo"
+
+#: dashboard/templates/dashboard/settings.html:164
+msgid "Cache (s) :"
+msgstr "Caché (s):"
+
+#: dashboard/templates/dashboard/settings.html:179
+msgid "Supprimer ce formulaire ?"
+msgstr "¿Eliminar este formulario?"
+
+#: dashboard/templates/dashboard/settings.html:180
+msgid "Supprimer le formulaire"
+msgstr "Eliminar formulario"
+
+#: dashboard/templates/dashboard/settings.html:184
+msgid "Éditeur de dashboard"
+msgstr "Editor de panel"
+
+#: dashboard/templates/dashboard/settings.html:187
+msgid "Visionner le dashboard"
+msgstr "Ver el panel"
+
+#: dashboard/templates/dashboard/settings.html:201
+msgid "Ajouter un formulaire"
+msgstr "Agregar un formulario"
+
+#: dashboard/templates/dashboard/settings.html:208
+msgid "Formulaire disponible sur le serveur"
+msgstr "Formulario disponible en el servidor"
+
+#: dashboard/templates/dashboard/settings.html:211
+msgid "Choisir un formulaire"
+msgstr "Elegir un formulario"
+
+#: dashboard/templates/dashboard/settings.html:222
+msgid "Durée du cache (secondes)"
+msgstr "Duración del caché (segundos)"
+
+#: dashboard/templates/dashboard/settings.html:227
+msgid "Ajouter ce formulaire"
+msgstr "Agregar este formulario"
+
+#: dashboard/templates/dashboard/settings.html:231
+msgid "Aucun formulaire trouvé sur le serveur."
+msgstr "Sin formularios encontrados en el servidor."
+
+#: dashboard/templates/dashboard/settings.html:238
+msgid ""
+"Pour ajouter un nouveau formulaire, cliquez sur « Tester & charger les "
+"formulaires » ci-dessus, puis sélectionnez-en un dans la liste."
+msgstr "Para agregar un nuevo formulario, haga clic en «Probar y cargar formularios» arriba y luego seleccione uno de la lista."
+
+#: dashboard/templates/dashboard/settings.html:245
+msgid "Groupes d'utilisateurs"
+msgstr "Grupos de usuarios"
+
+#: dashboard/templates/dashboard/settings.html:256
+#, python-format
+msgid "%(n)s membre"
+msgid_plural "%(n)s membres"
+msgstr[0] "%(n)s miembro"
+msgstr[1] "%(n)s miembros"
+
+#: dashboard/templates/dashboard/settings.html:257
+#, python-format
+msgid "%(n)s formulaire"
+msgid_plural "%(n)s formulaires"
+msgstr[0] "%(n)s formulario"
+msgstr[1] "%(n)s formularios"
+
+#: dashboard/templates/dashboard/settings.html:258
+#, python-format
+msgid "%(n)s admin"
+msgid_plural "%(n)s admins"
+msgstr[0] "%(n)s administrador"
+msgstr[1] "%(n)s administradores"
+
+#: dashboard/templates/dashboard/settings.html:270
+#, python-format
+msgid "Supprimer le groupe « %(name)s » ?"
+msgstr "¿Eliminar el grupo «%(name)s»?"
+
+#: dashboard/templates/dashboard/settings.html:279
+msgid "Aucun groupe configuré."
+msgstr "Sin grupos configurados."
+
+#: dashboard/templates/dashboard/settings.html:284
+msgid "Nom du nouveau groupe"
+msgstr "Nombre del nuevo grupo"
+
+#: dashboard/templates/dashboard/settings.html:295
+msgid "Récupération d'accès"
+msgstr "Recuperación de acceso"
+
+#: dashboard/templates/dashboard/settings.html:298
+msgid ""
+"En cas de perte de mot de passe, connectez-vous au serveur via SSH et "
+"exécutez :"
+msgstr "Si pierde su contraseña, conéctese al servidor vía SSH y ejecute:"
+
+#: dashboard/templates/dashboard/settings.html:300
+msgid ""
+"Un lien de connexion à usage unique (valable 3 jours) sera affiché dans le "
+"terminal."
+msgstr "Se mostrará un enlace de inicio de sesión de un solo uso (válido por 3 días) en el terminal."
+
+#: dashboard/templates/dashboard/submission_detail.html:3
+msgid "Détail soumission"
+msgstr "Detalle de envío"
+
+#: dashboard/templates/dashboard/submission_detail.html:24
+#, python-format
+msgid "Soumis le %(date)s"
+msgstr "Enviado el %(date)s"
+
+#: dashboard/templates/dashboard/submission_detail.html:30
+msgid "Lieu :"
+msgstr "Lugar:"
+
+#: dashboard/templates/dashboard/submission_detail.html:34
+msgid "Responsable :"
+msgstr "Responsable:"
+
+#: dashboard/templates/dashboard/submission_detail.html:38
+msgid "Date de début :"
+msgstr "Fecha de inicio:"
+
+#: dashboard/templates/dashboard/submission_detail.html:42
+msgid "Date de fin :"
+msgstr "Fecha de finalización:"
+
+#: dashboard/templates/dashboard/submission_detail.html:47
+msgid "Description :"
+msgstr "Descripción:"
+
+#: dashboard/templates/dashboard/submission_detail.html:54
+#, python-format
+msgid "%(n)s risque identifié"
+msgid_plural "%(n)s risques identifiés"
+msgstr[0] "%(n)s riesgo identificado"
+msgstr[1] "%(n)s riesgos identificados"
+
+#: dashboard/templates/dashboard/submission_detail.html:60
+msgid "Aucun risque enregistré pour cette soumission."
+msgstr "Sin riesgos registrados para este envío."
+
+#: dashboard/templates/dashboard/submission_detail.html:65
+#, python-format
+msgid "Risque %(n)s"
+msgstr "Riesgo %(n)s"
+
+#: dashboard/templates/dashboard/submission_detail.html:74
+#, python-format
+msgid "Mesure de mitigation (%(n)s)"
+msgid_plural "Mesures de mitigation (%(n)s)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: dashboard/templates/dashboard/submission_detail.html:86
+msgid "Aucune mesure de mitigation enregistrée."
+msgstr "Sin medidas de mitigación registradas."
+
+#: dashboard/templates/dashboard/submission_list.html:4
+msgid "Soumissions"
+msgstr "Envíos"
+
+#: dashboard/templates/dashboard/submission_list.html:11
+msgid "Matrice de couverture"
+msgstr "Matriz de cobertura"
+
+#: dashboard/templates/dashboard/submission_list.html:14
+msgid "Toutes les activités"
+msgstr "Todas las actividades"
+
+#: dashboard/templates/dashboard/submission_list.html:27
+msgid "Aucune soumission pour ces critères."
+msgstr "Sin envíos para estos criterios."
+
+#: dashboard/templates/dashboard/submission_list.html:57
+#, python-format
+msgid "%(n)s risque"
+msgid_plural "%(n)s risques"
+msgstr[0] "%(n)s riesgo"
+msgstr[1] "%(n)s riesgos"
+
+#: dashboard/templates/dashboard/submission_list.html:64
+msgid "Voir le détail"
+msgstr "Ver detalles"
 
 #: dashboard/templates/dashboard/user_list.html:3
 #: dashboard/templates/dashboard/user_list.html:6
@@ -337,12 +1094,7 @@ msgstr "Pendiente de validación"
 
 #: dashboard/templates/dashboard/user_list.html:17
 msgid "Aucun compte en attente."
-msgstr "No hay cuentas pendientes."
-
-#: dashboard/templates/dashboard/user_list.html:23
-#: dashboard/templates/dashboard/user_list.html:69
-msgid "Nom"
-msgstr "Nombre"
+msgstr "Sin cuentas pendientes."
 
 #: dashboard/templates/dashboard/user_list.html:25
 msgid "Demande le"
@@ -362,60 +1114,68 @@ msgstr "Usuarios activos"
 
 #: dashboard/templates/dashboard/user_list.html:63
 msgid "Aucun utilisateur actif (hors administrateurs)."
-msgstr "No hay usuarios activos (excepto administradores)."
+msgstr "Sin usuarios activos (excluidos los administradores)."
 
 #: dashboard/templates/dashboard/user_list.html:71
 msgid "Créé le"
 msgstr "Creado el"
 
-#: dashboard/templates/dashboard/user_list.html:86
-msgid "Générer un lien de réinitialisation du mot de passe"
-msgstr "Generar enlace de restablecimiento de contraseña"
-
-#: dashboard/templates/dashboard/user_list.html:92
-msgid "Désactiver ce compte ?"
-msgstr "¿Desactivar esta cuenta?"
-
 #: dashboard/templates/dashboard/user_list.html:95
 msgid "Désactiver"
 msgstr "Desactivar"
 
-#: dashboard/templates/dashboard/user_list.html:100
-msgid "Supprimer définitivement ce compte ?"
-msgstr "¿Eliminar permanentemente esta cuenta?"
+#: dashboard/templates/dashboard/widgets/bar_chart.html:19
+#: dashboard/templates/dashboard/widgets/data_table.html:25
+#: dashboard/templates/dashboard/widgets/pie_chart.html:18
+msgid "Aucune donnée."
+msgstr "Sin datos."
 
-#~ msgid "MIT Licence"
-#~ msgstr "Licencia MIT"
+#: dashboard/templates/dashboard/widgets/data_table.html:31
+msgid "Aucun champ sélectionné."
+msgstr "Ningún campo seleccionado."
 
-#~ msgid "Matrice de couverture"
-#~ msgstr "Matriz de cobertura"
+#: dashboard/templates/dashboard/widgets/grouped_chart.html:27
+msgid "Aucune donnée — vérifiez les champs sélectionnés."
+msgstr "Sin datos — verifique los campos seleccionados."
 
-#~ msgid "Toutes les activités"
-#~ msgstr "Todas las actividades"
+#: dashboard/views.py:191
+msgid "Connexion enregistrée."
+msgstr "Conexión guardada."
 
-#~ msgid "Voir le détail"
-#~ msgstr "Ver detalles"
+#: dashboard/views.py:219
+#, python-format
+msgid "Formulaire « %(name)s » ajouté."
+msgstr "Formulario «%(name)s» agregado."
 
-#~ msgid "Vous n'administrez aucun groupe pour le moment."
-#~ msgstr "No administra ningún grupo por el momento."
+#: dashboard/views.py:221
+msgid "Ce formulaire est déjà configuré."
+msgstr "Este formulario ya está configurado."
 
-#~ msgid "Aucun formulaire dans ce groupe."
-#~ msgstr "No hay formularios en este grupo."
+#: dashboard/views.py:230
+msgid "Formulaire supprimé."
+msgstr "Formulario eliminado."
 
-#~ msgid "Ajouter"
-#~ msgstr "Agregar"
+#: dashboard/views.py:238
+msgid "Durée du cache mise à jour."
+msgstr "Duración del caché actualizada."
 
-#~ msgid "Charger"
-#~ msgstr "Subir"
+#: dashboard/views.py:249
+msgid "Apparence enregistrée."
+msgstr "Apariencia guardada."
 
-#~ msgid "Dashboard"
-#~ msgstr "Dashboard"
+#: dashboard/views.py:255
+#, python-format
+msgid "Groupe « %(name)s » créé."
+msgstr "Grupo «%(name)s» creado."
 
-#~ msgid "Couleur principale"
-#~ msgstr "Color principal"
+#: dashboard/views.py:255
+msgid "Ce nom de groupe existe déjà."
+msgstr "Este nombre de grupo ya existe."
 
-#~ msgid "Défaut"
-#~ msgstr "Predeterminado"
+#: dashboard/views.py:260
+msgid "Groupe supprimé."
+msgstr "Grupo eliminado."
 
-#~ msgid "Serveur KoboToolBox"
-#~ msgstr "Servidor KoboToolBox"
+#: dashboard/views.py:312
+msgid "Nom de fichier invalide (doit être un identifiant Python valide)."
+msgstr "Nombre de archivo inválido (debe ser un identificador Python válido)."

@@ -8,6 +8,7 @@ from pathlib import Path
 from django.conf import settings as django_settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import gettext as _
 from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Q
 from django.utils.encoding import force_bytes
@@ -187,7 +188,7 @@ def settings_view(request):
                 config.api_token = api_token
             config.save()
             cache_helpers.invalidate(cache_helpers.asset_list_key())
-            success = 'Connexion enregistrée.'
+            success = _('Connexion enregistrée.')
 
         elif action == 'load_assets':
             server_url = request.POST.get('server_url', '').strip().rstrip('/')
@@ -215,9 +216,9 @@ def settings_view(request):
                     cache_ttl_seconds=int(ttl) if ttl.isdigit() else 300,
                     order=ConfiguredForm.objects.count(),
                 )
-                success = f'Formulaire « {name} » ajouté.'
+                success = _('Formulaire « %(name)s » ajouté.') % {'name': name}
             elif uid:
-                error = 'Ce formulaire est déjà configuré.'
+                error = _('Ce formulaire est déjà configuré.')
 
         elif action == 'remove_form':
             uid = request.POST.get('form_uid', '').strip()
@@ -226,7 +227,7 @@ def settings_view(request):
                         cache_helpers.submissions_key(uid),
                         f'kobo_structure_{uid}']:
                 cache_helpers.invalidate(key)
-            success = 'Formulaire supprimé.'
+            success = _('Formulaire supprimé.')
 
         elif action == 'update_ttl':
             uid = request.POST.get('form_uid', '').strip()
@@ -234,7 +235,7 @@ def settings_view(request):
             ConfiguredForm.objects.filter(uid=uid).update(
                 cache_ttl_seconds=int(ttl) if ttl.isdigit() else 300
             )
-            success = 'Durée du cache mise à jour.'
+            success = _('Durée du cache mise à jour.')
 
         elif action == 'save_branding':
             config.brand_color = request.POST.get('brand_color', '').strip()
@@ -245,18 +246,18 @@ def settings_view(request):
                 config.logo.delete(save=False)
                 config.logo = None
             config.save()
-            success = 'Apparence enregistrée.'
+            success = _('Apparence enregistrée.')
 
         elif action == 'create_group':
             gname = request.POST.get('group_name', '').strip()
             if gname:
                 _, created = DashboardGroup.objects.get_or_create(name=gname)
-                success = f'Groupe « {gname} » créé.' if created else 'Ce nom de groupe existe déjà.'
+                success = (_('Groupe « %(name)s » créé.') % {'name': gname}) if created else _('Ce nom de groupe existe déjà.')
 
         elif action == 'delete_group':
             gid = request.POST.get('group_id', '').strip()
             DashboardGroup.objects.filter(pk=gid).delete()
-            success = 'Groupe supprimé.'
+            success = _('Groupe supprimé.')
 
     configured_forms = []
     for f in ConfiguredForm.objects.all():
@@ -308,7 +309,7 @@ def module_upload(request, uid):
     stem = Path(uploaded.name).stem
     if not re.match(r'^[A-Za-z][A-Za-z0-9_]*$', stem):
         return render(request, 'dashboard/settings.html',
-                      {'error': 'Nom de fichier invalide (doit être un identifiant Python valide).',
+                      {'error': _('Nom de fichier invalide (doit être un identifiant Python valide).'),
                        'config': _config(), 'configured_forms': [], 'assets': [], 'show_add_form': False, 'success': None})
 
     dest = MODULES_DIR / f'{stem}.py'

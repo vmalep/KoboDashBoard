@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="card h-100">
   <div class="card-body">
     {% if widget.title %}<h6 class="card-title text-muted small text-uppercase">{{ widget.title }}</h6>{% endif %}
@@ -23,7 +24,7 @@
     })();
     </script>
     {% else %}
-    <p class="text-muted small mb-0">Aucune donnée — vérifiez les champs sélectionnés.</p>
+    <p class="text-muted small mb-0">{% trans "Aucune donnée — vérifiez les champs sélectionnés." %}</p>
     {% endif %}
   </div>
 </div>

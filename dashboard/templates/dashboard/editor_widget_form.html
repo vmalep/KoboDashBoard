@@ -1,6 +1,7 @@
+{% load i18n dashboard_extras %}
 <div class="card border-primary mt-3">
   <div class="card-header text-primary fw-semibold small">
-    {% if action == "edit_widget" %}Modifier le widget{% else %}Ajouter un widget{% endif %}
+    {% if action == "edit_widget" %}{% trans "Modifier le widget" %}{% else %}{% trans "Ajouter un widget" %}{% endif %}
   </div>
   <div class="card-body">
     <form method="post">
@@ -13,19 +14,19 @@
 
       <div class="row g-3 mb-3">
         <div class="col-md-4">
-          <label class="form-label small fw-semibold">Type</label>
+          <label class="form-label small fw-semibold">{% trans "Type" %}</label>
           <select name="type" id="widgetType_{{ row_idx }}_{{ widget_idx }}" class="form-select form-select-sm"
                   onchange="updateWidgetFields(this)">
-            <option value="summary_stat"  {% if widget.type == "summary_stat"  %}selected{% endif %}>Chiffre résumé</option>
-            <option value="pie_chart"     {% if widget.type == "pie_chart"     %}selected{% endif %}>Graphique en secteurs</option>
-            <option value="grouped_chart" {% if widget.type == "grouped_chart" or widget.type == "bar_chart" %}selected{% endif %}>Graphique en colonnes / lignes</option>
-            <option value="data_table"    {% if widget.type == "data_table"    %}selected{% endif %}>Tableau de données</option>
+            <option value="summary_stat"  {% if widget.type == "summary_stat"  %}selected{% endif %}>{% trans "Chiffre résumé" %}</option>
+            <option value="pie_chart"     {% if widget.type == "pie_chart"     %}selected{% endif %}>{% trans "Graphique en secteurs" %}</option>
+            <option value="grouped_chart" {% if widget.type == "grouped_chart" or widget.type == "bar_chart" %}selected{% endif %}>{% trans "Graphique en colonnes / lignes" %}</option>
+            <option value="data_table"    {% if widget.type == "data_table"    %}selected{% endif %}>{% trans "Tableau de données" %}</option>
           </select>
         </div>
         <div class="col-md-8">
-          <label class="form-label small fw-semibold">Titre</label>
+          <label class="form-label small fw-semibold">{% trans "Titre" %}</label>
           <input type="text" name="title" class="form-control form-control-sm"
-                 value="{{ widget.title|default:'' }}" placeholder="Ex. Total bénéficiaires">
+                 value="{{ widget.title|default:'' }}" placeholder="{% trans 'Ex. Total bénéficiaires' %}">
         </div>
       </div>
 
@@ -33,9 +34,9 @@
       <div class="wf-group" id="wf_summary_stat_{{ row_idx }}_{{ widget_idx }}">
         <div class="row g-3 mb-3">
           <div class="col-md-6">
-            <label class="form-label small fw-semibold">Champ (optionnel)</label>
+            <label class="form-label small fw-semibold">{% trans "Champ (optionnel)" %}</label>
             <select name="field" class="form-select form-select-sm">
-              <option value="">— Compter toutes les soumissions —</option>
+              <option value="">— {% trans "Compter toutes les soumissions" %} —</option>
               {% for path, label, ftype in field_choices %}
               {% if ftype == "integer" or ftype == "decimal" %}
               <option value="{{ path }}" {% if widget.field == path %}selected{% endif %}>{{ label }} ({{ path }})</option>
@@ -44,11 +45,11 @@
             </select>
           </div>
           <div class="col-md-6">
-            <label class="form-label small fw-semibold">Agrégation</label>
+            <label class="form-label small fw-semibold">{% trans "Agrégation" %}</label>
             <select name="aggregation" class="form-select form-select-sm">
-              <option value="count" {% if widget.aggregation != "sum" and widget.aggregation != "avg" %}selected{% endif %}>Nombre de soumissions</option>
-              <option value="sum"   {% if widget.aggregation == "sum" %}selected{% endif %}>Somme</option>
-              <option value="avg"   {% if widget.aggregation == "avg" %}selected{% endif %}>Moyenne</option>
+              <option value="count" {% if widget.aggregation != "sum" and widget.aggregation != "avg" %}selected{% endif %}>{% trans "Nombre de soumissions" %}</option>
+              <option value="sum"   {% if widget.aggregation == "sum" %}selected{% endif %}>{% trans "Somme" %}</option>
+              <option value="avg"   {% if widget.aggregation == "avg" %}selected{% endif %}>{% trans "Moyenne" %}</option>
             </select>
           </div>
         </div>
@@ -57,21 +58,20 @@
       {# pie_chart fields #}
       <div class="wf-group" id="wf_pie_chart_{{ row_idx }}_{{ widget_idx }}">
         <div class="mb-3">
-          <label class="form-label small fw-semibold">Champ de regroupement</label>
+          <label class="form-label small fw-semibold">{% trans "Champ de regroupement" %}</label>
           <select name="field" id="wf_pie_field_{{ row_idx }}_{{ widget_idx }}"
                   class="form-select form-select-sm">
-            <option value="">— Choisir un champ —</option>
+            <option value="">— {% trans "Choisir un champ" %} —</option>
             {% for path, label, ftype in field_choices %}
             <option value="{{ path }}" {% if widget.field == path %}selected{% endif %}>{{ label }} ({{ path }})</option>
             {% endfor %}
           </select>
         </div>
         {# Per-value colour + label — only for the currently selected field #}
-        {% load dashboard_extras %}
         {% with choices=pie_choices|pie_field_choices:widget %}
         {% if choices %}
         <div class="mb-0">
-          <label class="form-label small fw-semibold mb-1">Valeurs — couleur et libellé</label>
+          <label class="form-label small fw-semibold mb-1">{% trans "Valeurs — couleur et libellé" %}</label>
           <div style="max-height:200px;overflow-y:auto;border:1px solid #dee2e6;border-radius:.375rem;padding:.5rem">
             {% for val, val_label in choices %}
             {% with vmeta=widget.pie_meta|dict_get:val %}
@@ -90,14 +90,14 @@
                      value="{{ vmeta.color|default:'#888888' }}"
                      class="form-control form-control-color p-0 border-0 flex-shrink-0"
                      style="width:28px;height:28px;cursor:pointer"
-                     title="Couleur"
+                     title="{% trans 'Couleur' %}"
                      oninput="document.getElementById('pcol_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}').value=this.value">
               <input type="text"
                      value="{{ vmeta.label|default:'' }}"
                      class="form-control form-control-sm flex-shrink-0"
                      style="width:140px"
                      placeholder="{{ val_label }}"
-                     title="Libellé affiché"
+                     title="{% trans 'Libellé affiché' %}"
                      oninput="document.getElementById('plbl_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}').value=this.value">
             </div>
             {% endwith %}
@@ -105,7 +105,7 @@
           </div>
         </div>
         {% elif widget.field %}
-        <p class="text-muted small">Ce champ n'a pas de valeurs fixes — libellés non modifiables.</p>
+        <p class="text-muted small">{% trans "Ce champ n'a pas de valeurs fixes — libellés non modifiables." %}</p>
         {% endif %}
         {% endwith %}
       </div>
@@ -115,44 +115,44 @@
         <div class="row g-3 mb-3">
           <div class="col-md-6">
             <label class="form-label small fw-semibold">
-              Axe X <span class="text-muted fw-normal">(optionnel)</span>
+              {% trans "Axe X" %} <span class="text-muted fw-normal">({% trans "optionnel" %})</span>
             </label>
             <select name="field" class="form-select form-select-sm">
-              <option value="">— Aucun : comparaison absolue —</option>
+              <option value="">— {% trans "Aucun : comparaison absolue" %} —</option>
               {% for path, label, ftype in field_choices %}
               <option value="{{ path }}" {% if widget.field == path %}selected{% endif %}>{{ label }} ({{ path }})</option>
               {% endfor %}
             </select>
           </div>
           <div class="col-md-3">
-            <label class="form-label small fw-semibold">Style</label>
+            <label class="form-label small fw-semibold">{% trans "Style" %}</label>
             <select name="chart_style" class="form-select form-select-sm">
-              <option value="bar"  {% if widget.chart_style != "line" %}selected{% endif %}>Colonnes</option>
-              <option value="line" {% if widget.chart_style == "line" %}selected{% endif %}>Lignes</option>
+              <option value="bar"  {% if widget.chart_style != "line" %}selected{% endif %}>{% trans "Colonnes" %}</option>
+              <option value="line" {% if widget.chart_style == "line" %}selected{% endif %}>{% trans "Lignes" %}</option>
             </select>
           </div>
           <div class="col-md-3">
-            <label class="form-label small fw-semibold d-block">Mode</label>
+            <label class="form-label small fw-semibold d-block">{% trans "Mode" %}</label>
             <div class="form-check mt-1">
               <input class="form-check-input" type="checkbox" name="stacked" value="1"
                      id="stacked_{{ row_idx }}_{{ widget_idx }}"
                      {% if widget.stacked %}checked{% endif %}>
               <label class="form-check-label small" for="stacked_{{ row_idx }}_{{ widget_idx }}">
-                Empilé (cumulatif)
+                {% trans "Empilé (cumulatif)" %}
               </label>
             </div>
           </div>
         </div>
         <div class="mb-3">
-          <label class="form-label small fw-semibold">Séries</label>
+          <label class="form-label small fw-semibold">{% trans "Séries" %}</label>
           {# Selected series — ordered list #}
           <div id="series_list_{{ row_idx }}_{{ widget_idx }}"
                class="mb-2" style="border:1px solid #dee2e6;border-radius:.375rem;min-height:2.2rem;padding:.25rem .5rem">
             {% for sd in widget.series_display %}
             <div class="series-row d-flex align-items-center gap-2 py-1 {% if not forloop.last %}border-bottom border-light{% endif %}">
               <div class="d-flex flex-column" style="gap:0">
-                <button type="button" class="btn p-0 lh-1 text-muted" style="font-size:.6rem" onclick="seriesMove(this,-1)" title="Monter">▲</button>
-                <button type="button" class="btn p-0 lh-1 text-muted" style="font-size:.6rem" onclick="seriesMove(this,1)" title="Descendre">▼</button>
+                <button type="button" class="btn p-0 lh-1 text-muted" style="font-size:.6rem" onclick="seriesMove(this,-1)" title="{% trans 'Monter' %}">▲</button>
+                <button type="button" class="btn p-0 lh-1 text-muted" style="font-size:.6rem" onclick="seriesMove(this,1)" title="{% trans 'Descendre' %}">▼</button>
               </div>
               <input type="hidden" name="series_path" value="{{ sd.path }}">
               <input type="hidden" name="series_color" class="sc-color" value="{{ sd.color }}">
@@ -160,25 +160,24 @@
               <span class="small flex-grow-1">{{ sd.field_label }} <span class="text-muted">{{ sd.path }}</span></span>
               <input type="color" value="{{ sd.color|default:'#888888' }}"
                      class="form-control form-control-color p-0 border-0 flex-shrink-0"
-                     style="width:28px;height:28px;cursor:pointer" title="Couleur"
+                     style="width:28px;height:28px;cursor:pointer" title="{% trans 'Couleur' %}"
                      oninput="this.closest('.series-row').querySelector('.sc-color').value=this.value">
               <input type="text" class="form-control form-control-sm flex-shrink-0" style="width:120px"
                      value="{{ sd.label }}" placeholder="{{ sd.field_label }}"
-                     title="Libellé affiché dans la légende"
+                     title="{% trans 'Libellé affiché dans la légende' %}"
                      oninput="this.closest('.series-row').querySelector('.sc-label').value=this.value">
               <button type="button" class="btn btn-sm btn-outline-danger py-0 px-1"
                       onclick="seriesRemove(this,'series_add_{{ row_idx }}_{{ widget_idx }}')"
-                      data-path="{{ sd.path }}" data-label="{{ sd.field_label }}" title="Supprimer">×</button>
+                      data-path="{{ sd.path }}" data-label="{{ sd.field_label }}" title="{% trans 'Supprimer' %}">×</button>
             </div>
             {% empty %}
-            <p class="text-muted small mb-0 py-1 px-1">Aucune série sélectionnée.</p>
+            <p class="text-muted small mb-0 py-1 px-1 series-empty">{% trans "Aucune série sélectionnée." %}</p>
             {% endfor %}
           </div>
           {# Add series dropdown #}
           <div class="d-flex gap-2">
             <select id="series_add_{{ row_idx }}_{{ widget_idx }}" class="form-select form-select-sm flex-grow-1">
-              <option value="">— Ajouter un champ de série —</option>
-              {% load dashboard_extras %}
+              <option value="">— {% trans "Ajouter un champ de série" %} —</option>
               {% for path, label, ftype in field_choices %}
               {% if path not in widget.series_paths %}
               <option value="{{ path }}" data-label="{{ label }}">{{ label }} ({{ path }})</option>
@@ -187,18 +186,18 @@
             </select>
             <button type="button" class="btn btn-sm btn-outline-secondary flex-shrink-0"
                     onclick="seriesAdd('series_list_{{ row_idx }}_{{ widget_idx }}','series_add_{{ row_idx }}_{{ widget_idx }}')">
-              + Ajouter
+              + {% trans "Ajouter" %}
             </button>
           </div>
           {% if not field_choices %}
-          <p class="text-muted small mt-1 mb-0">Aucun champ disponible (schéma non chargé).</p>
+          <p class="text-muted small mt-1 mb-0">{% trans "Aucun champ disponible (schéma non chargé)." %}</p>
           {% endif %}
         </div>
         {# Per-value colours for selected select_one series fields #}
         {% for svc in widget.series_value_choices %}
         <div class="mb-3">
           <label class="form-label small fw-semibold mb-1">
-            Couleurs par valeur — <span class="fw-normal">{{ svc.field_label }}</span>
+            {% trans "Couleurs par valeur —" %} <span class="fw-normal">{{ svc.field_label }}</span>
             <span class="text-muted fw-normal">({{ svc.field }})</span>
           </label>
           <div style="max-height:180px;overflow-y:auto;border:1px solid #dee2e6;border-radius:.375rem;padding:.5rem">
@@ -216,7 +215,7 @@
                      value="{{ choice.color|default:'#888888' }}"
                      class="form-control form-control-color p-0 border-0 flex-shrink-0"
                      style="width:28px;height:28px;cursor:pointer"
-                     title="Couleur"
+                     title="{% trans 'Couleur' %}"
                      oninput="document.getElementById('svc_color_{{ row_idx }}_{{ widget_idx }}_{{ forloop.parentloop.counter }}_{{ forloop.counter }}').value=this.value">
             </div>
             {% endfor %}
@@ -228,7 +227,7 @@
       {# data_table fields #}
       <div class="wf-group" id="wf_data_table_{{ row_idx }}_{{ widget_idx }}">
         <div class="mb-3">
-          <label class="form-label small fw-semibold">Colonnes à afficher</label>
+          <label class="form-label small fw-semibold">{% trans "Colonnes à afficher" %}</label>
           <div style="max-height:200px;overflow-y:auto;border:1px solid #dee2e6;border-radius:.375rem;padding:.5rem">
             {% for path, label, ftype in field_choices %}
             <div class="form-check">
@@ -241,7 +240,7 @@
             </div>
             {% endfor %}
             {% if not field_choices %}
-            <span class="text-muted small">Aucun champ disponible (schéma non chargé).</span>
+            <span class="text-muted small">{% trans "Aucun champ disponible (schéma non chargé)." %}</span>
             {% endif %}
           </div>
         </div>
@@ -249,9 +248,9 @@
 
       <div class="d-flex gap-2">
         <button type="submit" class="btn btn-sm btn-primary">
-          <i class="bi bi-check-lg me-1"></i>{% if action == "edit_widget" %}Enregistrer{% else %}Ajouter{% endif %}
+          <i class="bi bi-check-lg me-1"></i>{% if action == "edit_widget" %}{% trans "Enregistrer" %}{% else %}{% trans "Ajouter" %}{% endif %}
         </button>
-        <a href="." class="btn btn-sm btn-outline-secondary">Annuler</a>
+        <a href="." class="btn btn-sm btn-outline-secondary">{% trans "Annuler" %}</a>
       </div>
     </form>
   </div>
@@ -302,7 +301,7 @@ function seriesRemove(btn, dropId) {
   if (!list.querySelector('.series-row')) {
     var empty = document.createElement('p');
     empty.className = 'text-muted small mb-0 py-1 px-1 series-empty';
-    empty.textContent = 'Aucune série sélectionnée.';
+    empty.textContent = '{% trans "Aucune série sélectionnée." %}';
     list.appendChild(empty);
   }
 }
@@ -322,16 +321,16 @@ function seriesAdd(listId, dropId) {
   row.className = 'series-row d-flex align-items-center gap-2 py-1';
   row.innerHTML =
     '<div class="d-flex flex-column" style="gap:0">' +
-      '<button type="button" class="btn p-0 lh-1 text-muted" style="font-size:.6rem" onclick="seriesMove(this,-1)" title="Monter">▲</button>' +
-      '<button type="button" class="btn p-0 lh-1 text-muted" style="font-size:.6rem" onclick="seriesMove(this,1)" title="Descendre">▼</button>' +
+      '<button type="button" class="btn p-0 lh-1 text-muted" style="font-size:.6rem" onclick="seriesMove(this,-1)" title="{% trans "Monter" %}">▲</button>' +
+      '<button type="button" class="btn p-0 lh-1 text-muted" style="font-size:.6rem" onclick="seriesMove(this,1)" title="{% trans "Descendre" %}">▼</button>' +
     '</div>' +
     '<input type="hidden" name="series_path" value="' + path + '">' +
     '<input type="hidden" name="series_color" class="sc-color" value="' + color + '">' +
     '<input type="hidden" name="series_label" class="sc-label" value="">' +
     '<span class="small flex-grow-1">' + label + ' <span class="text-muted">' + path + '</span></span>' +
-    '<input type="color" value="' + color + '" class="form-control form-control-color p-0 border-0 flex-shrink-0" style="width:28px;height:28px;cursor:pointer" title="Couleur" oninput="this.closest(\'.series-row\').querySelector(\'.sc-color\').value=this.value">' +
-    '<input type="text" class="form-control form-control-sm flex-shrink-0" style="width:120px" value="" placeholder="' + label + '" title="Libellé affiché dans la légende" oninput="this.closest(\'.series-row\').querySelector(\'.sc-label\').value=this.value">' +
-    '<button type="button" class="btn btn-sm btn-outline-danger py-0 px-1" onclick="seriesRemove(this,\'' + dropId + '\')" data-path="' + path + '" data-label="' + label + '" title="Supprimer">×</button>';
+    '<input type="color" value="' + color + '" class="form-control form-control-color p-0 border-0 flex-shrink-0" style="width:28px;height:28px;cursor:pointer" title="{% trans "Couleur" %}" oninput="this.closest(\'.series-row\').querySelector(\'.sc-color\').value=this.value">' +
+    '<input type="text" class="form-control form-control-sm flex-shrink-0" style="width:120px" value="" placeholder="' + label + '" title="{% trans "Libellé affiché dans la légende" %}" oninput="this.closest(\'.series-row\').querySelector(\'.sc-label\').value=this.value">' +
+    '<button type="button" class="btn btn-sm btn-outline-danger py-0 px-1" onclick="seriesRemove(this,\'' + dropId + '\')" data-path="' + path + '" data-label="' + label + '" title="{% trans "Supprimer" %}">×</button>';
   list.appendChild(row);
   opt.remove();
   drop.selectedIndex = 0;

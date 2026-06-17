@@ -95,7 +95,7 @@
 
       <a href="/dashboard/{{ uid }}/submissions/?country={{ f_country }}&responsible={{ f_responsible }}"
          class="btn btn-sm btn-outline-primary w-100">
-        <i class="bi bi-list-ul me-1"></i>Liste des soumissions
+        <i class="bi bi-list-ul me-1"></i>{% trans "Liste des soumissions" %}
       </a>
     </form>
   </div>
@@ -105,9 +105,9 @@
 
     {# Legend #}
     <div class="d-flex gap-3 mb-2 small">
-      <span><span class="badge bg-success">&nbsp;3&nbsp;</span> soumissions effectuées</span>
-      <span><span class="badge bg-secondary text-white">&nbsp;0&nbsp;</span> activité applicable, non soumise</span>
-      <span><span class="badge bg-light text-muted border">&nbsp;—&nbsp;</span> activité non applicable dans ce pays</span>
+      <span><span class="badge bg-success">&nbsp;3&nbsp;</span> {% trans "soumissions effectuées" %}</span>
+      <span><span class="badge bg-secondary text-white">&nbsp;0&nbsp;</span> {% trans "activité applicable, non soumise" %}</span>
+      <span><span class="badge bg-light text-muted border">&nbsp;—&nbsp;</span> {% trans "activité non applicable dans ce pays" %}</span>
     </div>
 
     <div class="table-responsive">
@@ -115,7 +115,7 @@
              style="font-size:.82rem; table-layout:auto">
         <thead class="table-dark">
           <tr>
-            <th style="min-width:200px">Activité principale</th>
+            <th style="min-width:200px">{% trans "Activité principale" %}</th>
             {% for c in display_countries %}
               <th class="text-center" style="min-width:80px">{{ c.label }}</th>
             {% endfor %}

@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="card h-100 shadow-sm">
   <div class="card-body">
     {% if widget.title %}<h6 class="card-title text-muted small mb-3">{{ widget.title }}</h6>{% endif %}
@@ -14,7 +15,7 @@
     })();
     </script>
     {% else %}
-    <p class="text-muted small mb-0">Aucune donnée.</p>
+    <p class="text-muted small mb-0">{% trans "Aucune donnée." %}</p>
     {% endif %}
   </div>
 </div>

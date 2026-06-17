@@ -1,10 +1,11 @@
 {% extends "dashboard/base.html" %}
-{% block title %}Détail soumission #{{ parsed.activity.submission_id }}{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Détail soumission" %} #{{ parsed.activity.submission_id }}{% endblock %}
 
 {% block content %}
 <div class="mb-3">
   <a href="{{ back_url }}" class="text-decoration-none text-muted small">
-    <i class="bi bi-arrow-left me-1"></i>Retour
+    <i class="bi bi-arrow-left me-1"></i>{% trans "Retour" %}
   </a>
 </div>
 
@@ -20,48 +21,48 @@
         <span class="badge bg-light text-dark me-2">{{ act.country_label }}</span>
         <strong>{{ act.activity_code }}</strong>
       </div>
-      <span class="small opacity-75">Soumis le {{ act.submission_time|slice:":10" }}</span>
+      <span class="small opacity-75">{% blocktranslate with date=act.submission_time|slice:":10" %}Soumis le {{ date }}{% endblocktranslate %}</span>
     </div>
     <div class="card-body">
       <h5 class="card-title mb-3">{{ act.activity_label }}</h5>
       <div class="row g-2 small">
         <div class="col-sm-6">
-          <span class="text-muted">Lieu :</span>
+          <span class="text-muted">{% trans "Lieu :" %}</span>
           {{ act.activity_location|default:"—" }}
         </div>
         <div class="col-sm-6">
-          <span class="text-muted">Responsable :</span>
+          <span class="text-muted">{% trans "Responsable :" %}</span>
           {{ act.activity_responsible|default:"—" }}
         </div>
         <div class="col-sm-6">
-          <span class="text-muted">Date de début :</span>
+          <span class="text-muted">{% trans "Date de début :" %}</span>
           {{ act.start_date|default:"—" }}
         </div>
         <div class="col-sm-6">
-          <span class="text-muted">Date de fin :</span>
+          <span class="text-muted">{% trans "Date de fin :" %}</span>
           {{ act.end_date|default:"—" }}
         </div>
         {% if act.activity_description %}
           <div class="col-12 mt-1">
-            <span class="text-muted">Description :</span>
+            <span class="text-muted">{% trans "Description :" %}</span>
             {{ act.activity_description }}
           </div>
         {% endif %}
       </div>
     </div>
     <div class="card-footer text-muted small bg-transparent">
-      {{ parsed.risks|length }} risque{{ parsed.risks|length|pluralize }} identifié{{ parsed.risks|length|pluralize }}
+      {% blocktranslate count n=parsed.risks|length %}{{ n }} risque identifié{% plural %}{{ n }} risques identifiés{% endblocktranslate %}
     </div>
   </div>
 
   {# ── Risks and measures ── #}
   {% if not parsed.risks %}
-    <p class="text-muted">Aucun risque enregistré pour cette soumission.</p>
+    <p class="text-muted">{% trans "Aucun risque enregistré pour cette soumission." %}</p>
   {% else %}
     {% for risk in parsed.risks %}
       <div class="card shadow-sm mb-3">
         <div class="card-header py-2 d-flex align-items-center gap-2">
-          <span class="badge bg-danger">Risque {{ forloop.counter }}</span>
+          <span class="badge bg-danger">{% blocktranslate with n=forloop.counter %}Risque {{ n }}{% endblocktranslate %}</span>
           <span class="fw-semibold">{{ risk.category_label }}</span>
         </div>
         <div class="card-body">
@@ -70,7 +71,7 @@
           {% if risk.measures %}
             <h6 class="small fw-semibold text-muted text-uppercase mb-2">
               <i class="bi bi-shield-check me-1"></i>
-              Mesures de mitigation ({{ risk.measures|length }})
+              {% blocktranslate count n=risk.measures|length %}Mesure de mitigation ({{ n }}){% plural %}Mesures de mitigation ({{ n }}){% endblocktranslate %}
             </h6>
             <ul class="list-group list-group-flush">
               {% for measure in risk.measures %}
@@ -82,7 +83,7 @@
           {% else %}
             <p class="text-muted small mb-0">
               <i class="bi bi-exclamation-circle me-1"></i>
-              Aucune mesure de mitigation enregistrée.
+              {% trans "Aucune mesure de mitigation enregistrée." %}
             </p>
           {% endif %}
         </div>

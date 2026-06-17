@@ -1,20 +1,20 @@
 {% extends "dashboard/base.html" %}
-{% block title %}Module chargé — KoboDashBoard{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Module chargé" %} — KoboDashBoard{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center mt-5">
   <div class="col-12 col-md-6 text-center">
     <i class="bi bi-check-circle-fill text-success" style="font-size:3rem"></i>
-    <h4 class="mt-3">Module chargé avec succès</h4>
+    <h4 class="mt-3">{% trans "Module chargé avec succès" %}</h4>
     <p class="text-muted">
-      Le fichier <code>{{ filename }}</code> a été installé.
-      Redémarrez le serveur pour activer le nouveau module.
+      {% blocktranslate with filename=filename %}Le fichier <code>{{ filename }}</code> a été installé. Redémarrez le serveur pour activer le nouveau module.{% endblocktranslate %}
     </p>
     <a href="/dashboard/settings/" class="btn btn-outline-secondary me-2">
-      <i class="bi bi-gear me-1"></i>Retour aux paramètres
+      <i class="bi bi-gear me-1"></i>{% trans "Retour aux paramètres" %}
     </a>
     <a href="/dashboard/{{ uid }}/" class="btn btn-danger">
-      <i class="bi bi-bar-chart-line me-1"></i>Ouvrir le tableau de bord
+      <i class="bi bi-bar-chart-line me-1"></i>{% trans "Ouvrir le tableau de bord" %}
     </a>
   </div>
 </div>

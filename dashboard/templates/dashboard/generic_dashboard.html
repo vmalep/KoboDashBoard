@@ -1,4 +1,5 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 {% block title %}{{ form_name }} — KoboDashBoard{% endblock %}
 
 {% block extra_head %}
@@ -11,20 +12,20 @@
     <h2 class="h4 mb-0">{{ dashboard_name }}</h2>
     <small class="text-muted">
       {{ form_name }}
-      {% if total_submissions %} · {{ total_submissions }} soumission{{ total_submissions|pluralize }}{% endif %}
+      {% if total_submissions %} · {% blocktranslate count n=total_submissions %}{{ n }} soumission{% plural %}{{ n }} soumissions{% endblocktranslate %}{% endif %}
     </small>
   </div>
   <div class="d-flex gap-2 flex-wrap">
     <a href="/dashboard/{{ uid }}/" class="btn btn-outline-secondary btn-sm">
-      <i class="bi bi-arrow-left me-1"></i>Retour
+      <i class="bi bi-arrow-left me-1"></i>{% trans "Retour" %}
     </a>
     {% if can_edit %}
     <a href="/dashboard/{{ uid }}/editor/{{ dashboard_pk }}/" class="btn btn-outline-secondary btn-sm">
-      <i class="bi bi-pencil-square me-1"></i>Modifier
+      <i class="bi bi-pencil-square me-1"></i>{% trans "Modifier" %}
     </a>
     {% endif %}
     <a href="/dashboard/{{ uid }}/refresh/?next=/dashboard/{{ uid }}/view/{{ dashboard_pk }}/" class="btn btn-outline-secondary btn-sm">
-      <i class="bi bi-arrow-clockwise me-1"></i>Actualiser
+      <i class="bi bi-arrow-clockwise me-1"></i>{% trans "Actualiser" %}
     </a>
   </div>
 </div>
@@ -42,7 +43,7 @@
         <label class="form-label small fw-semibold mb-1">{{ fb.label }}</label>
         <select name="{{ fb.field }}" class="form-select form-select-sm" style="min-width:140px"
                 onchange="this.form.submit()">
-          <option value="">— Tous —</option>
+          <option value="">— {% trans "Tous" %} —</option>
           {% for opt in fb.options %}
           <option value="{{ opt.value }}" {% if fb.active == opt.value %}selected{% endif %}>
             {{ opt.label }}
@@ -53,11 +54,11 @@
       {% endfor %}
       <div class="d-flex gap-2 align-items-end">
         <button type="submit" class="btn btn-sm btn-danger">
-          <i class="bi bi-funnel-fill me-1"></i>Filtrer
+          <i class="bi bi-funnel-fill me-1"></i>{% trans "Filtrer" %}
         </button>
         {% if request.GET %}
-        <a href="/dashboard/{{ uid }}/" class="btn btn-sm btn-outline-secondary">
-          <i class="bi bi-x-lg me-1"></i>Réinitialiser
+        <a href="/dashboard/{{ uid }}/view/{{ dashboard_pk }}/" class="btn btn-sm btn-outline-secondary">
+          <i class="bi bi-x-lg me-1"></i>{% trans "Réinitialiser" %}
         </a>
         {% endif %}
       </div>
@@ -65,7 +66,7 @@
   </div>
   {% if request.GET %}
   <div class="card-footer py-1 text-muted small">
-    {{ filtered_count }} soumission{{ filtered_count|pluralize }} sur {{ total_submissions }}
+    {% blocktranslate with filtered=filtered_count total=total_submissions %}{{ filtered }} soumission sur {{ total }}{% endblocktranslate %}
   </div>
   {% endif %}
 </div>
@@ -74,9 +75,9 @@
 {% if not rows %}
 <div class="text-center py-5 text-muted">
   <i class="bi bi-layout-wtf" style="font-size:3rem"></i>
-  <p class="mt-3">Ce tableau de bord est vide.
+  <p class="mt-3">{% trans "Ce tableau de bord est vide." %}
     {% if can_edit %}
-    <a href="/dashboard/{{ uid }}/editor/{{ dashboard_pk }}/">Ajouter des widgets →</a>
+    <a href="/dashboard/{{ uid }}/editor/{{ dashboard_pk }}/">{% trans "Ajouter des widgets →" %}</a>
     {% endif %}
   </p>
 </div>

@@ -1,5 +1,6 @@
 {% extends "dashboard/base.html" %}
-{% block title %}Éditeur — {{ form.name }} — KoboDashBoard{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Éditeur" %} — {{ form.name }} — KoboDashBoard{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -8,17 +9,17 @@
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
       <div>
         <h2 class="h4 mb-0"><i class="bi bi-pencil-square me-2"></i>{{ dash_config.name }}</h2>
-        <small class="text-muted">{{ form.name }} · <a href="/dashboard/{{ uid }}/editor/">Tous les dashboards</a></small>
+        <small class="text-muted">{{ form.name }} · <a href="/dashboard/{{ uid }}/editor/">{% trans "Tous les dashboards" %}</a></small>
       </div>
       <div class="d-flex gap-2 flex-wrap">
         <a href="/dashboard/{{ uid }}/view/{{ dash_config.pk }}/" class="btn btn-outline-secondary btn-sm">
-          <i class="bi bi-eye me-1"></i>Aperçu
+          <i class="bi bi-eye me-1"></i>{% trans "Aperçu" %}
         </a>
         <form method="post" class="m-0">
           {% csrf_token %}
           <button type="submit" name="action" value="delete_config" class="btn btn-sm btn-outline-danger"
-                  onclick="return confirm('Supprimer ce dashboard ?')">
-            <i class="bi bi-trash me-1"></i>Supprimer
+                  onclick="return confirm('{% trans "Supprimer ce dashboard ?" %}')">
+            <i class="bi bi-trash me-1"></i>{% trans "Supprimer" %}
           </button>
         </form>
       </div>
@@ -29,11 +30,11 @@
       <div class="card-body py-2">
         <form method="post" class="d-flex align-items-center gap-2">
           {% csrf_token %}
-          <label class="form-label small mb-0 fw-semibold text-nowrap">Nom :</label>
+          <label class="form-label small mb-0 fw-semibold text-nowrap">{% trans "Nom :" %}</label>
           <input type="text" name="name" class="form-control form-control-sm"
                  value="{{ dash_config.name }}" required style="max-width:300px">
           <button type="submit" name="action" value="rename" class="btn btn-sm btn-outline-secondary">
-            <i class="bi bi-save me-1"></i>Renommer
+            <i class="bi bi-save me-1"></i>{% trans "Renommer" %}
           </button>
         </form>
       </div>
@@ -42,16 +43,15 @@
     {% if not has_schema %}
     <div class="alert alert-warning">
       <i class="bi bi-exclamation-triangle me-1"></i>
-      Impossible de charger le schéma du formulaire — le sélecteur de champs sera vide.
-      Vérifiez la connexion KoboToolBox dans les paramètres.
+      {% trans "Impossible de charger le schéma du formulaire — le sélecteur de champs sera vide. Vérifiez la connexion KoboToolBox dans les paramètres." %}
     </div>
     {% endif %}
 
     {# ── Filtres ── #}
     <div class="card shadow-sm mb-4">
       <div class="card-header fw-semibold">
-        <i class="bi bi-funnel me-1"></i>Filtres du dashboard
-        <span class="text-muted fw-normal small ms-2">Champs affichés comme filtres en haut du dashboard</span>
+        <i class="bi bi-funnel me-1"></i>{% trans "Filtres du dashboard" %}
+        <span class="text-muted fw-normal small ms-2">{% trans "Champs affichés comme filtres en haut du dashboard" %}</span>
       </div>
       <div class="card-body">
         {% if filters %}
@@ -68,7 +68,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="action" value="move_filter_up">
                 <input type="hidden" name="filter_idx" value="{{ f.filter_idx }}">
-                <button type="submit" class="btn btn-sm btn-outline-secondary py-0 px-1" title="Monter">
+                <button type="submit" class="btn btn-sm btn-outline-secondary py-0 px-1" title="{% trans 'Monter' %}">
                   <i class="bi bi-arrow-up" style="font-size:.75rem"></i>
                 </button>
               </form>
@@ -78,7 +78,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="action" value="move_filter_down">
                 <input type="hidden" name="filter_idx" value="{{ f.filter_idx }}">
-                <button type="submit" class="btn btn-sm btn-outline-secondary py-0 px-1" title="Descendre">
+                <button type="submit" class="btn btn-sm btn-outline-secondary py-0 px-1" title="{% trans 'Descendre' %}">
                   <i class="bi bi-arrow-down" style="font-size:.75rem"></i>
                 </button>
               </form>
@@ -87,8 +87,8 @@
                 {% csrf_token %}
                 <input type="hidden" name="action" value="delete_filter">
                 <input type="hidden" name="filter_idx" value="{{ f.filter_idx }}">
-                <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-1" title="Supprimer"
-                        onclick="return confirm('Supprimer ce filtre ?')">
+                <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-1" title="{% trans 'Supprimer' %}"
+                        onclick="return confirm('{% trans "Supprimer ce filtre ?" %}')">
                   <i class="bi bi-trash" style="font-size:.75rem"></i>
                 </button>
               </form>
@@ -97,7 +97,7 @@
           {% endfor %}
         </div>
         {% else %}
-        <p class="text-muted small mb-3">Aucun filtre configuré.</p>
+        <p class="text-muted small mb-3">{% trans "Aucun filtre configuré." %}</p>
         {% endif %}
 
         {# Add filter form #}
@@ -107,27 +107,27 @@
           <input type="hidden" name="action" value="add_filter">
           <div class="row g-2 align-items-end">
             <div class="col-md-6">
-              <label class="form-label small fw-semibold">Champ</label>
+              <label class="form-label small fw-semibold">{% trans "Champ" %}</label>
               <select name="filter_field" class="form-select form-select-sm" required>
-                <option value="">— Choisir un champ —</option>
+                <option value="">— {% trans "Choisir un champ" %} —</option>
                 {% for path, label, ftype in field_choices %}
                 <option value="{{ path }}">{{ label }} ({{ path }})</option>
                 {% endfor %}
               </select>
             </div>
             <div class="col-md-4">
-              <label class="form-label small fw-semibold">Étiquette (optionnelle)</label>
+              <label class="form-label small fw-semibold">{% trans "Étiquette (optionnelle)" %}</label>
               <input type="text" name="filter_label" class="form-control form-control-sm"
-                     placeholder="ex. Pays">
+                     placeholder="{% trans 'ex. Pays' %}">
             </div>
             <div class="col-md-2">
-              <button type="submit" class="btn btn-sm btn-primary w-100">Ajouter</button>
+              <button type="submit" class="btn btn-sm btn-primary w-100">{% trans "Ajouter" %}</button>
             </div>
           </div>
         </form>
         {% else %}
         <a href="?add_filter=1" class="btn btn-sm btn-outline-primary">
-          <i class="bi bi-plus-lg me-1"></i>Ajouter un filtre
+          <i class="bi bi-plus-lg me-1"></i>{% trans "Ajouter un filtre" %}
         </a>
         {% endif %}
       </div>
@@ -137,7 +137,7 @@
     {% for row in rows %}
     <div class="card shadow-sm mb-4">
       <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <span class="fw-semibold">Ligne {{ forloop.counter }}</span>
+        <span class="fw-semibold">{% blocktranslate with n=forloop.counter %}Ligne {{ n }}{% endblocktranslate %}</span>
         <div class="d-flex gap-1 align-items-center flex-wrap">
 
           {# Column selector #}
@@ -145,7 +145,7 @@
             {% csrf_token %}
             <input type="hidden" name="action" value="set_columns">
             <input type="hidden" name="row_idx" value="{{ row.row_idx }}">
-            <span class="small text-muted me-1">Colonnes :</span>
+            <span class="small text-muted me-1">{% trans "Colonnes :" %}</span>
             {% for n in "123" %}
             <button type="submit" name="columns" value="{{ n }}"
                     class="btn btn-sm {% if row.columns == n|add:0 %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
@@ -160,7 +160,7 @@
             {% csrf_token %}
             <input type="hidden" name="action" value="move_row_up">
             <input type="hidden" name="row_idx" value="{{ row.row_idx }}">
-            <button type="submit" class="btn btn-sm btn-outline-secondary" title="Monter">
+            <button type="submit" class="btn btn-sm btn-outline-secondary" title="{% trans 'Monter' %}">
               <i class="bi bi-arrow-up"></i>
             </button>
           </form>
@@ -172,7 +172,7 @@
             {% csrf_token %}
             <input type="hidden" name="action" value="move_row_down">
             <input type="hidden" name="row_idx" value="{{ row.row_idx }}">
-            <button type="submit" class="btn btn-sm btn-outline-secondary" title="Descendre">
+            <button type="submit" class="btn btn-sm btn-outline-secondary" title="{% trans 'Descendre' %}">
               <i class="bi bi-arrow-down"></i>
             </button>
           </form>
@@ -183,8 +183,8 @@
             {% csrf_token %}
             <input type="hidden" name="action" value="delete_row">
             <input type="hidden" name="row_idx" value="{{ row.row_idx }}">
-            <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer la ligne"
-                    onclick="return confirm('Supprimer cette ligne et ses widgets ?')">
+            <button type="submit" class="btn btn-sm btn-outline-danger" title="{% trans 'Supprimer la ligne' %}"
+                    onclick="return confirm('{% trans "Supprimer cette ligne et ses widgets ?" %}')">
               <i class="bi bi-trash"></i>
             </button>
           </form>
@@ -206,17 +206,17 @@
                   <div style="min-width:0">
                     <div class="small fw-semibold text-truncate">{{ widget.title|default:"(sans titre)" }}</div>
                     <div class="text-muted" style="font-size:.75rem">
-                      {% if widget.type == "summary_stat" %}<i class="bi bi-123 me-1"></i>Chiffre résumé
-                      {% elif widget.type == "bar_chart" %}<i class="bi bi-bar-chart me-1"></i>Barres
-                      {% elif widget.type == "pie_chart" %}<i class="bi bi-pie-chart me-1"></i>Secteurs
-                      {% elif widget.type == "data_table" %}<i class="bi bi-table me-1"></i>Tableau
+                      {% if widget.type == "summary_stat" %}<i class="bi bi-123 me-1"></i>{% trans "Chiffre résumé" %}
+                      {% elif widget.type == "bar_chart" %}<i class="bi bi-bar-chart me-1"></i>{% trans "Barres" %}
+                      {% elif widget.type == "pie_chart" %}<i class="bi bi-pie-chart me-1"></i>{% trans "Secteurs" %}
+                      {% elif widget.type == "data_table" %}<i class="bi bi-table me-1"></i>{% trans "Tableau" %}
                       {% else %}{{ widget.type }}{% endif %}
                       {% if widget.field %} · <code style="font-size:.7rem">{{ widget.field }}</code>{% endif %}
                     </div>
                   </div>
                   <div class="d-flex gap-1 flex-shrink-0">
                     <a href="?edit={{ widget.edit_key }}#wedit-{{ widget.edit_key }}"
-                       class="btn btn-sm btn-outline-secondary py-0 px-1" title="Modifier">
+                       class="btn btn-sm btn-outline-secondary py-0 px-1" title="{% trans 'Modifier' %}">
                       <i class="bi bi-pencil" style="font-size:.75rem"></i>
                     </a>
                     <form method="post" class="m-0">
@@ -225,7 +225,7 @@
                       <input type="hidden" name="row_idx" value="{{ row.row_idx }}">
                       <input type="hidden" name="widget_idx" value="{{ widget.widget_idx }}">
                       <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-1"
-                              title="Supprimer" onclick="return confirm('Supprimer ce widget ?')">
+                              title="{% trans 'Supprimer' %}" onclick="return confirm('{% trans "Supprimer ce widget ?" %}')">
                         <i class="bi bi-trash" style="font-size:.75rem"></i>
                       </button>
                     </form>
@@ -244,7 +244,7 @@
           {% endfor %}
         </div>
         {% else %}
-          <p class="text-muted small mb-3">Aucun widget dans cette ligne.</p>
+          <p class="text-muted small mb-3">{% trans "Aucun widget dans cette ligne." %}</p>
         {% endif %}
 
         {# Add widget button / inline form #}
@@ -253,7 +253,7 @@
           {% include "dashboard/editor_widget_form.html" with action="add_widget" row_idx=row.row_idx widget_idx="" widget=empty_widget field_choices=field_choices uid=uid pie_choices=pie_choices %}
         {% else %}
           <a href="?add_to_row={{ row.row_idx }}" class="btn btn-sm btn-outline-primary">
-            <i class="bi bi-plus-lg me-1"></i>Ajouter un widget
+            <i class="bi bi-plus-lg me-1"></i>{% trans "Ajouter un widget" %}
           </a>
         {% endif %}
         {% endwith %}
@@ -262,7 +262,7 @@
     {% empty %}
     <div class="text-center py-4 text-muted border rounded mb-4">
       <i class="bi bi-layout-wtf" style="font-size:2rem"></i>
-      <p class="mt-2 mb-0">Aucune ligne. Commencez par en ajouter une.</p>
+      <p class="mt-2 mb-0">{% trans "Aucune ligne. Commencez par en ajouter une." %}</p>
     </div>
     {% endfor %}
 
@@ -270,7 +270,7 @@
     <form method="post">
       {% csrf_token %}
       <button type="submit" name="action" value="add_row" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-1"></i>Ajouter une ligne
+        <i class="bi bi-plus-lg me-1"></i>{% trans "Ajouter une ligne" %}
       </button>
     </form>
 
