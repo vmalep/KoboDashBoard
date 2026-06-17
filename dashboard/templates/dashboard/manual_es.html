@@ -1,0 +1,498 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Manual de uso — KoboDashBoard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-12 col-lg-9">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="h4 mb-0"><i class="bi bi-question-circle me-2"></i>Manual de uso</h2>
+</div>
+
+{# Table of contents #}
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h6 class="text-muted mb-2">Índice</h6>
+    <ol class="mb-0 ps-3">
+      <li><a href="#presentation" class="text-decoration-none">Presentación de la plataforma</a></li>
+      <li><a href="#acces" class="text-decoration-none">Acceso e inicio de sesión</a></li>
+      <li><a href="#dashboards" class="text-decoration-none">Consultar los dashboards</a></li>
+      <li><a href="#filtres" class="text-decoration-none">Usar los filtros</a></li>
+      <li><a href="#exports" class="text-decoration-none">Exportar datos</a></li>
+      <li><a href="#groupe-admin" class="text-decoration-none">Administradores de grupo</a></li>
+      <li><a href="#admin" class="text-decoration-none">Administrador principal</a></li>
+      <li><a href="#editeur" class="text-decoration-none">Editor de dashboard</a></li>
+      <li><a href="#modules" class="text-decoration-none">Dashboards avanzados con módulos Python</a></li>
+    </ol>
+  </div>
+</div>
+
+
+{# 1. Presentación #}
+<h4 id="presentation" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-info-circle me-2 text-danger"></i>1. Presentación de la plataforma
+</h4>
+<p>
+  <strong>KoboDashBoard</strong> es una aplicación web que se conecta a un servidor
+  <a href="https://www.kobotoolbox.org/" target="_blank" rel="noopener">KoboToolBox</a> y muestra
+  los datos de envío de formularios en forma de paneles de control interactivos.
+</p>
+<p>
+  La plataforma se organiza en <strong>grupos</strong>: cada grupo dispone de un conjunto de
+  formularios accesibles y una lista de miembros. Un usuario solo ve los formularios
+  pertenecientes a sus grupos.
+</p>
+<div class="table-responsive mb-3">
+  <table class="table table-sm table-bordered">
+    <thead class="table-light">
+      <tr><th>Rol</th><th>Acceso</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge bg-secondary">Usuario</span></td>
+        <td>Consulta los dashboards de sus grupos, usa filtros y exportaciones.</td>
+      </tr>
+      <tr>
+        <td><span class="badge bg-primary">Admin de grupo</span></td>
+        <td>Todo lo que puede hacer un usuario + gestionar los miembros de su grupo + cargar módulos de dashboard.</td>
+      </tr>
+      <tr>
+        <td><span class="badge bg-danger">Administrador principal</span></td>
+        <td>Acceso completo: configuración del servidor, gestión de todos los formularios, grupos y usuarios.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+{# 2. Acceso #}
+<h4 id="acces" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-box-arrow-in-right me-2 text-danger"></i>2. Acceso e inicio de sesión
+</h4>
+
+<h6>Solicitar acceso</h6>
+<p>
+  Si aún no tiene cuenta, haga clic en <strong>«Crear una cuenta»</strong> en la página de inicio
+  de sesión. Introduzca su nombre completo y dirección de correo electrónico, luego elija una
+  contraseña. Su solicitud se enviará a un administrador para su validación. Recibirá un mensaje
+  de confirmación una vez activada su cuenta.
+</p>
+
+<h6>Iniciar sesión</h6>
+<p>
+  Introduzca su dirección de correo electrónico y contraseña en la página de inicio de sesión
+  (<code>/accounts/login/</code>). La sesión permanece abierta hasta que haga clic en
+  <strong>«Cerrar sesión»</strong> en la parte superior derecha.
+</p>
+
+<h6>Contraseña olvidada</h6>
+<p>
+  Contacte a su administrador de grupo o al administrador principal. Este puede generar un enlace
+  de restablecimiento de contraseña y enviárselo directamente.
+</p>
+
+
+{# 3. Dashboards #}
+<h4 id="dashboards" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-bar-chart-line me-2 text-danger"></i>3. Consultar los dashboards
+</h4>
+<p>
+  La página de inicio (<strong>«Formularios»</strong>) lista todos los dashboards a los que tiene
+  acceso. Haga clic en <strong>«Ver dashboard»</strong> para abrir un formulario.
+</p>
+<p>
+  Existen tres tipos de vistas según el formulario:
+</p>
+<ul>
+  <li>
+    <strong>Dashboard configurado</strong> — construido mediante el editor de dashboard (ver sección 8).
+    Muestra los widgets definidos por el administrador: cifras resumen, gráficos de sectores o
+    de columnas, tablas de datos, con filtros personalizados.
+  </li>
+  <li>
+    <strong>Dashboard de indicadores</strong> — disponible si se ha cargado un módulo Python
+    específico para el formulario. Muestra tarjetas resumen, gráficos por país/período/resultado,
+    desagregación y una tabla de datos detallada.
+  </li>
+  <li>
+    <strong>Matriz de cobertura</strong> — disponible si se ha cargado un módulo Python específico.
+    Muestra una tabla cruzada actividades × países con el número de envíos por combinación.
+    Las celdas son clicables y dan acceso a la lista de envíos correspondientes.
+  </li>
+</ul>
+<p>
+  El botón <i class="bi bi-arrow-clockwise"></i> <strong>Actualizar</strong> (en la página del
+  dashboard) fuerza la recarga de datos desde el servidor KoboToolBox, ignorando la caché.
+</p>
+
+
+{# 4. Filtros #}
+<h4 id="filtres" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-funnel me-2 text-danger"></i>4. Usar los filtros
+</h4>
+<p>
+  Los dashboards ofrecen una barra de filtros en la parte superior de la página. Los filtros
+  disponibles varían según el tipo de formulario:
+</p>
+<ul>
+  <li><strong>País</strong> — restringe la visualización a un país o área geográfica.</li>
+  <li><strong>Año / Trimestre</strong> — filtra por período de informe.</li>
+  <li><strong>Resultado</strong> — muestra solo los indicadores de un resultado dado.</li>
+  <li><strong>Responsable</strong> — filtra por persona o entidad responsable de la actividad (matriz de cobertura).</li>
+</ul>
+<p>
+  Los filtros son acumulables. Para restablecerlos, haga clic en <strong>«Restablecer»</strong>
+  o elimine los parámetros de la URL.
+</p>
+
+
+{# 5. Exportaciones #}
+<h4 id="exports" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-download me-2 text-danger"></i>5. Exportar datos
+</h4>
+<p>
+  Desde la página del dashboard están disponibles dos formatos de exportación:
+</p>
+<ul>
+  <li>
+    <strong>CSV</strong> — archivo de texto separado por comas, compatible con la mayoría de
+    hojas de cálculo. Codificación UTF-8 con BOM para compatibilidad óptima con Excel.
+  </li>
+  <li>
+    <strong>XLSX</strong> — archivo Excel nativo con encabezados formateados y columnas
+    ajustadas automáticamente.
+  </li>
+</ul>
+<p class="text-muted small">
+  <i class="bi bi-info-circle me-1"></i>
+  La exportación abarca todos los datos del formulario, no solo las filas filtradas en pantalla.
+</p>
+
+
+{# 6. Admin de grupo #}
+<h4 id="groupe-admin" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-people-fill me-2 text-danger"></i>6. Administradores de grupo
+</h4>
+<p>
+  Si es administrador de un grupo, el icono <i class="bi bi-people-fill"></i> aparece en la barra
+  de navegación. Da acceso a la página <strong>«Mi grupo»</strong>.
+</p>
+
+<h6>Gestionar miembros</h6>
+<ul>
+  <li>
+    <strong>Añadir un miembro</strong> — seleccione un usuario activo en la lista desplegable
+    y haga clic en <strong>«Añadir»</strong>. Solo aparecen los usuarios ya creados y activados
+    por el administrador principal.
+  </li>
+  <li>
+    <strong>Desactivar una cuenta</strong> — el usuario ya no puede iniciar sesión, pero su cuenta
+    se conserva. Haga clic en <i class="bi bi-pause-circle"></i>.
+  </li>
+  <li>
+    <strong>Eliminar una cuenta</strong> — eliminación definitiva. Haga clic en
+    <i class="bi bi-trash"></i> y confirme.
+  </li>
+  <li>
+    <strong>Restablecer contraseña</strong> — haga clic en <i class="bi bi-key"></i> para generar
+    un enlace de restablecimiento de un solo uso (válido 3 días). Copie el enlace y envíeselo al
+    usuario por correo electrónico o mensajería.
+  </li>
+</ul>
+
+<h6>Editor de dashboard</h6>
+<p>
+  Como administrador de grupo, puede crear y modificar dashboards visuales para los formularios
+  de su grupo mediante el <strong>editor de dashboard</strong>. Acceda desde la página
+  Configuración o desde la lista de formularios. Ver <a href="#editeur">sección 8</a> para más detalles.
+</p>
+
+<h6>Gestionar módulos de dashboard</h6>
+<p>
+  Cada formulario puede tener un archivo de módulo Python (<code>.py</code>) que define cómo
+  se analizan y muestran los envíos. Como admin de grupo, puede:
+</p>
+<ul>
+  <li>
+    <strong>Descargar el módulo actual</strong> — haga clic en
+    <i class="bi bi-download"></i> <strong>Módulo</strong> para recuperar el archivo <code>.py</code>
+    en uso.
+  </li>
+  <li>
+    <strong>Cargar un nuevo módulo</strong> — seleccione un archivo <code>.py</code> y haga clic
+    en <i class="bi bi-upload"></i> <strong>Cargar</strong>. El nuevo módulo tiene efecto inmediato
+    (sin reinicio del servidor en modo desarrollo; se necesita reiniciar gunicorn en producción).
+  </li>
+</ul>
+<div class="alert alert-warning small">
+  <i class="bi bi-exclamation-triangle me-1"></i>
+  El archivo módulo debe ser un script Python válido con un identificador Python válido como nombre
+  de archivo (letras, dígitos, guiones bajos — sin espacios ni guiones).
+</div>
+
+
+{# 7. Administrador principal #}
+<h4 id="admin" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-gear me-2 text-danger"></i>7. Administrador principal
+</h4>
+<p>
+  El administrador principal accede a la página <strong>Configuración</strong>
+  (<i class="bi bi-gear"></i> en la barra de navegación).
+</p>
+
+<h6>Conexión al servidor KoboToolBox</h6>
+<p>
+  Introduzca la URL del servidor (ej. <code>https://kobo.ifrc.org</code>) y el token API.
+  El token está disponible en su perfil KoboToolBox en
+  <code>&lt;url-servidor&gt;/token/?format=json</code>.
+  Haga clic en <strong>«Probar y cargar formularios»</strong> para verificar la conexión y
+  obtener la lista de formularios disponibles.
+</p>
+
+<h6>Añadir un formulario</h6>
+<p>
+  Tras cargar la lista de formularios, seleccione uno en el menú desplegable y haga clic en
+  <strong>«Añadir este formulario»</strong>. Puede ajustar la duración de la caché (en segundos)
+  para controlar la frecuencia de sincronización con KoboToolBox.
+</p>
+
+<h6>Gestionar grupos</h6>
+<p>
+  Cree grupos con nombre para organizar el acceso a los formularios. Para cada grupo, puede:
+</p>
+<ul>
+  <li>Asignar formularios (los miembros del grupo solo verán esos formularios).</li>
+  <li>Asignar miembros (usuarios activos).</li>
+  <li>Designar administradores de grupo entre los miembros.</li>
+</ul>
+<p>
+  Los formularios no asignados a ningún grupo son visibles solo por el administrador principal.
+</p>
+
+<h6>Gestionar usuarios</h6>
+<p>
+  La página <strong>«Gestión de usuarios»</strong> (<i class="bi bi-person-fill-check"></i>)
+  lista las cuentas pendientes de validación y las cuentas activas. Puede:
+</p>
+<ul>
+  <li><strong>Activar</strong> una nueva cuenta tras verificar la identidad.</li>
+  <li><strong>Desactivar</strong> temporalmente una cuenta sin eliminarla.</li>
+  <li><strong>Eliminar</strong> definitivamente una cuenta.</li>
+  <li>
+    <strong>Generar un enlace de restablecimiento de contraseña</strong>
+    (<i class="bi bi-key"></i>) — envíeselo al usuario por el canal de su elección.
+    El enlace es válido 3 días y de un solo uso.
+  </li>
+</ul>
+
+<h6>Identidad y color</h6>
+<p>
+  Desde Configuración, en la tarjeta <strong>«Identidad»</strong>, puede:
+</p>
+<ul>
+  <li><strong>Nombre de la organización</strong> — se muestra en el centro de la barra de navegación en lugar de «KoboDashBoard».</li>
+  <li><strong>Logotipo</strong> — reemplaza el texto en el centro de la barra de navegación. Formatos recomendados: PNG o SVG transparente, altura 48 px.</li>
+  <li><strong>Color principal</strong> — use el selector de color o introduzca un código hexadecimal (ej. <code>#00833D</code>). El botón «Predeterminado» restaura el rojo Bootstrap. El cambio es instantáneo para todos los usuarios.</li>
+</ul>
+
+<h6>Idioma de la interfaz</h6>
+<p>
+  Un menú desplegable en la barra de navegación permite cambiar el idioma de la interfaz.
+  Hay cinco idiomas disponibles: <strong>Français</strong>, <strong>English</strong>,
+  <strong>Español</strong>, <strong>العربية</strong> (con diseño de derecha a izquierda automático),
+  <strong>Русский</strong>. La elección se recuerda para la sesión actual.
+  El mismo selector está disponible en las páginas de inicio de sesión e inscripción.
+</p>
+
+<h6>Recuperación de acceso</h6>
+<p>
+  En caso de pérdida de contraseña, conéctese al servidor por SSH y ejecute:
+</p>
+<pre class="bg-light rounded p-2">python3 manage.py init_admin</pre>
+<p>
+  Un enlace de inicio de sesión de un solo uso (válido 3 días) se muestra en el terminal.
+</p>
+
+{# 8. Editor de dashboard #}
+<h4 id="editeur" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-pencil-square me-2 text-danger"></i>8. Editor de dashboard
+</h4>
+<p>
+  El editor de dashboard permite a los administradores crear paneles de control visuales para
+  cualquier formulario sin escribir código. Pueden coexistir varios dashboards para un mismo
+  formulario.
+</p>
+<p>
+  El editor es accesible desde la página <strong>Configuración</strong>, haciendo clic en
+  <strong>«Editor de dashboard»</strong> junto al formulario correspondiente. Está disponible
+  para el administrador principal y los administradores de grupo cuyo grupo incluye ese formulario.
+</p>
+
+<h6>Lista de dashboards</h6>
+<p>
+  La lista muestra todos los dashboards creados para el formulario. Puede crear uno nuevo
+  dándole un nombre. Para cada dashboard existente, hay dos acciones disponibles:
+  <strong>Ver</strong> (visualización de solo lectura) y <strong>Editar</strong> (apertura en el editor).
+</p>
+
+<h6>Estructura de un dashboard</h6>
+<p>
+  Un dashboard está compuesto de <strong>filas</strong> apiladas verticalmente. Cada fila puede
+  contener 1, 2 o 3 columnas. Las filas se pueden reordenar (flechas ▲▼) o eliminar.
+</p>
+<p>
+  En la parte superior del editor, puede:
+</p>
+<ul>
+  <li><strong>Renombrar</strong> el dashboard.</li>
+  <li>
+    <strong>Configurar filtros</strong> — seleccione los campos del formulario que aparecerán
+    como filtros en la parte superior del dashboard (ej. país, período). Los filtros se pueden
+    reordenar y eliminar. Se puede introducir una etiqueta personalizada para cada uno.
+  </li>
+</ul>
+
+<h6>Añadir y editar widgets</h6>
+<p>
+  Cada fila puede contener <strong>widgets</strong>. Haga clic en
+  <strong>«Añadir un widget»</strong> en una fila para abrir el formulario de adición.
+  Hay cuatro tipos de widgets disponibles:
+</p>
+<div class="table-responsive mb-3">
+  <table class="table table-sm table-bordered">
+    <thead class="table-light">
+      <tr><th>Tipo</th><th>Descripción</th><th>Opciones principales</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><i class="bi bi-123 me-1"></i><strong>Cifra resumen</strong></td>
+        <td>Muestra un valor único en caracteres grandes.</td>
+        <td>Número de envíos, suma o promedio de un campo numérico.</td>
+      </tr>
+      <tr>
+        <td><i class="bi bi-pie-chart me-1"></i><strong>Gráfico de sectores</strong></td>
+        <td>Gráfico de tarta agrupado por los valores de un campo.</td>
+        <td>Color y etiqueta personalizables por valor.</td>
+      </tr>
+      <tr>
+        <td><i class="bi bi-bar-chart me-1"></i><strong>Gráfico de columnas / líneas</strong></td>
+        <td>Barras o líneas con uno o varios campos de serie.</td>
+        <td>Eje X (opcional), estilo (barras / líneas), modo apilado, series ordenadas con color y etiqueta.</td>
+      </tr>
+      <tr>
+        <td><i class="bi bi-table me-1"></i><strong>Tabla de datos</strong></td>
+        <td>Muestra los envíos en forma de tabla.</td>
+        <td>Selección de las columnas a mostrar.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  Para editar un widget existente, haga clic en el icono <i class="bi bi-pencil"></i> en su tarjeta.
+  El formulario de edición se muestra en línea. Para eliminar un widget, haga clic en
+  <i class="bi bi-trash"></i> y confirme.
+</p>
+
+<h6>Configurar las series (gráfico de columnas / líneas)</h6>
+<p>
+  El widget «Gráfico de columnas / líneas» permite mostrar varios campos como series en un mismo
+  gráfico. En la sección <strong>Series</strong>:
+</p>
+<ul>
+  <li>Seleccione un campo en la lista desplegable y haga clic en <strong>«+ Añadir»</strong>.</li>
+  <li>Cada serie aparece en la lista con un <strong>selector de color</strong> y un campo
+      <strong>etiqueta</strong> (mostrado en la leyenda).</li>
+  <li>Reordene las series con las flechas <strong>▲▼</strong>.</li>
+  <li>Elimine una serie con el botón <strong>×</strong>.</li>
+</ul>
+<p>
+  Para los campos de elección fija (<em>select_one</em>), una sección adicional
+  <strong>«Colores por valor»</strong> permite asignar un color específico a cada
+  categoría (ej. Hombre / Mujer / Otro).
+</p>
+
+<div class="alert alert-info small mt-3">
+  <i class="bi bi-info-circle me-1"></i>
+  Los cambios en el editor se guardan inmediatamente con cada acción (añadir, eliminar,
+  reordenar). El botón <strong>Vista previa</strong> en la parte superior del editor permite
+  visualizar el dashboard tal como aparecerá a los usuarios.
+</div>
+
+{# 9. Módulos Python #}
+<h4 id="modules" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-code-slash me-2 text-danger"></i>9. Dashboards avanzados con módulos Python
+</h4>
+<p>
+  El editor de dashboard cubre los casos habituales. Para análisis más complejos — lógica de
+  negocio específica, agregaciones personalizadas, matrices de cobertura — es posible crear un
+  <strong>módulo Python</strong> con la ayuda de Claude Code.
+</p>
+
+<h6>Cómo funciona un módulo</h6>
+<p>
+  Un módulo es un archivo <code>.py</code> ubicado en el directorio <code>form_modules/</code>
+  del servidor. Está vinculado a un formulario a través de su UID de KoboToolBox y define cómo
+  se analizan y muestran los envíos. Son posibles dos estilos:
+</p>
+<ul>
+  <li>
+    <strong>Dashboard de indicadores</strong> — el módulo implementa <code>parse_submissions()</code>.
+    Muestra tarjetas resumen y gráficos por país, período y resultado.
+  </li>
+  <li>
+    <strong>Matriz de cobertura</strong> — el módulo implementa <code>parse_structure()</code>.
+    Muestra una tabla cruzada actividades × países con el número de envíos por combinación.
+  </li>
+</ul>
+
+<h6>Crear un módulo con Claude Code</h6>
+<ol>
+  <li>Abra Claude Code en el directorio del proyecto KoboDashBoard.</li>
+  <li>Describa el formulario, su UID de KoboToolBox y la lógica deseada.</li>
+  <li>Claude Code crea <code>form_modules/&lt;nombre&gt;.py</code> basado en la clase <code>FormModule</code>.</li>
+  <li>Reinicie el servidor de desarrollo — el módulo se registra automáticamente.</li>
+  <li>Pruebe el dashboard localmente antes de desplegarlo.</li>
+</ol>
+
+<h6>Exportar e importar un módulo</h6>
+<p>
+  Los archivos de módulo no están incluidos en el repositorio Git (para no exponer datos
+  específicos de la organización). Para desplegar un módulo en producción:
+</p>
+<ol>
+  <li>
+    <strong>Descargar desde el servidor de desarrollo</strong> — en Configuración, haga clic en
+    <i class="bi bi-download"></i> <strong>Descargar módulo</strong> junto al formulario.
+  </li>
+  <li>
+    <strong>Importar en producción</strong> — en el servidor de producción, en Configuración,
+    haga clic en <i class="bi bi-upload"></i> <strong>Cargar módulo</strong> y seleccione el
+    archivo descargado.
+  </li>
+  <li>
+    Reinicie gunicorn: <code>sudo systemctl restart kobodashboard</code>
+    (o use el script de despliegue).
+  </li>
+</ol>
+
+<h6>Varios dashboards para el mismo formulario</h6>
+<p>
+  Un formulario puede tener tanto dashboards creados mediante el editor como un módulo Python.
+  Cuando hay varias opciones disponibles, se muestra una página de selección al abrir el
+  formulario, listando todos los dashboards por nombre.
+</p>
+<div class="alert alert-info small">
+  <i class="bi bi-info-circle me-1"></i>
+  Los módulos Python nunca se publican en GitHub — permanecen en el servidor y se transfieren
+  solo mediante el botón de descarga/carga en Configuración.
+</div>
+
+<div class="mt-5 mb-2 text-center text-muted small">
+  <a href="/dashboard/" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-arrow-left me-1"></i>Volver al panel
+  </a>
+</div>
+
+</div>
+</div>
+{% endblock %}

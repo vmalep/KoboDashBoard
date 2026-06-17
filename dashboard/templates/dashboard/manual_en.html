@@ -1,0 +1,486 @@
+{% extends "dashboard/base.html" %}
+{% block title %}User Guide — KoboDashBoard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-12 col-lg-9">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="h4 mb-0"><i class="bi bi-question-circle me-2"></i>User Guide</h2>
+</div>
+
+{# Table of contents #}
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h6 class="text-muted mb-2">Contents</h6>
+    <ol class="mb-0 ps-3">
+      <li><a href="#presentation" class="text-decoration-none">Platform overview</a></li>
+      <li><a href="#acces" class="text-decoration-none">Access and login</a></li>
+      <li><a href="#dashboards" class="text-decoration-none">Viewing dashboards</a></li>
+      <li><a href="#filtres" class="text-decoration-none">Using filters</a></li>
+      <li><a href="#exports" class="text-decoration-none">Exporting data</a></li>
+      <li><a href="#groupe-admin" class="text-decoration-none">Group administrators</a></li>
+      <li><a href="#admin" class="text-decoration-none">Main administrator</a></li>
+      <li><a href="#editeur" class="text-decoration-none">Dashboard editor</a></li>
+      <li><a href="#modules" class="text-decoration-none">Advanced dashboards with Python modules</a></li>
+    </ol>
+  </div>
+</div>
+
+
+{# 1. Overview #}
+<h4 id="presentation" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-info-circle me-2 text-danger"></i>1. Platform overview
+</h4>
+<p>
+  <strong>KoboDashBoard</strong> is a web application that connects to a
+  <a href="https://www.kobotoolbox.org/" target="_blank" rel="noopener">KoboToolBox</a> server
+  and displays form submission data as interactive dashboards.
+</p>
+<p>
+  The platform is organised into <strong>groups</strong>: each group has a set of accessible
+  forms and a member list. A user only sees the forms belonging to their groups.
+</p>
+<div class="table-responsive mb-3">
+  <table class="table table-sm table-bordered">
+    <thead class="table-light">
+      <tr><th>Role</th><th>Access</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge bg-secondary">User</span></td>
+        <td>View dashboards for their groups, use filters and exports.</td>
+      </tr>
+      <tr>
+        <td><span class="badge bg-primary">Group admin</span></td>
+        <td>Everything a user can do + manage their group's members + upload dashboard modules.</td>
+      </tr>
+      <tr>
+        <td><span class="badge bg-danger">Main administrator</span></td>
+        <td>Full access: server configuration, all forms, groups and users.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+{# 2. Access and login #}
+<h4 id="acces" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-box-arrow-in-right me-2 text-danger"></i>2. Access and login
+</h4>
+
+<h6>Requesting access</h6>
+<p>
+  If you don't have an account yet, click <strong>"Create an account"</strong> on the login page.
+  Enter your full name and email address, then choose a password. Your request will be sent to an
+  administrator for approval. You will receive a confirmation message once your account is activated.
+</p>
+
+<h6>Logging in</h6>
+<p>
+  Enter your email address and password on the login page (<code>/accounts/login/</code>).
+  The session stays open until you click <strong>"Log out"</strong> in the top right.
+</p>
+
+<h6>Forgotten password</h6>
+<p>
+  Contact your group administrator or the main administrator. They can generate a password reset
+  link and send it to you directly.
+</p>
+
+
+{# 3. Dashboards #}
+<h4 id="dashboards" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-bar-chart-line me-2 text-danger"></i>3. Viewing dashboards
+</h4>
+<p>
+  The home page (<strong>"Forms"</strong>) lists all dashboards you have access to.
+  Click <strong>"View dashboard"</strong> to open a form.
+</p>
+<p>
+  Three types of views exist depending on the form:
+</p>
+<ul>
+  <li>
+    <strong>Configured dashboard</strong> — built via the dashboard editor (see section 8).
+    Displays widgets defined by the administrator: summary numbers, pie charts, bar/line charts,
+    data tables, with custom filters.
+  </li>
+  <li>
+    <strong>Indicator dashboard</strong> — available if a specific Python module has been loaded
+    for the form. Displays summary cards, charts by country/period/result, disaggregation and a
+    detailed data table.
+  </li>
+  <li>
+    <strong>Coverage matrix</strong> — available if a specific Python module has been loaded.
+    Displays a cross-table of activities × countries with the number of submissions per combination.
+    Clickable cells give access to the corresponding submission list.
+  </li>
+</ul>
+<p>
+  The <i class="bi bi-arrow-clockwise"></i> <strong>Refresh</strong> button (on the dashboard page)
+  forces a reload of data from the KoboToolBox server, bypassing the cache.
+</p>
+
+
+{# 4. Filters #}
+<h4 id="filtres" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-funnel me-2 text-danger"></i>4. Using filters
+</h4>
+<p>
+  Dashboards offer a filter bar at the top of the page. Available filters vary by form type:
+</p>
+<ul>
+  <li><strong>Country</strong> — restrict display to a country or geographic area.</li>
+  <li><strong>Year / Quarter</strong> — filter by reporting period.</li>
+  <li><strong>Result</strong> — show only the indicators for a given result.</li>
+  <li><strong>Responsible</strong> — filter by the person or entity responsible for the activity (coverage matrix).</li>
+</ul>
+<p>
+  Filters are cumulative. To reset them, click <strong>"Reset"</strong> or remove the parameters from the URL.
+</p>
+
+
+{# 5. Exports #}
+<h4 id="exports" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-download me-2 text-danger"></i>5. Exporting data
+</h4>
+<p>
+  Two export formats are available from the dashboard page:
+</p>
+<ul>
+  <li>
+    <strong>CSV</strong> — comma-separated text file, compatible with most spreadsheet applications.
+    UTF-8 with BOM encoding for optimal Excel compatibility.
+  </li>
+  <li>
+    <strong>XLSX</strong> — native Excel file with formatted headers and auto-adjusted columns.
+  </li>
+</ul>
+<p class="text-muted small">
+  <i class="bi bi-info-circle me-1"></i>
+  The export covers all form data, not just the rows filtered on screen.
+</p>
+
+
+{# 6. Group admins #}
+<h4 id="groupe-admin" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-people-fill me-2 text-danger"></i>6. Group administrators
+</h4>
+<p>
+  If you are a group administrator, the <i class="bi bi-people-fill"></i> icon appears in the
+  navigation bar. It gives access to the <strong>"My group"</strong> page.
+</p>
+
+<h6>Managing members</h6>
+<ul>
+  <li>
+    <strong>Add a member</strong> — select an active user from the dropdown and click
+    <strong>"Add"</strong>. Only users already created and activated by the main administrator
+    appear in the list.
+  </li>
+  <li>
+    <strong>Deactivate an account</strong> — the user can no longer log in but their account
+    is kept. Click <i class="bi bi-pause-circle"></i>.
+  </li>
+  <li>
+    <strong>Delete an account</strong> — permanent deletion. Click <i class="bi bi-trash"></i>
+    and confirm.
+  </li>
+  <li>
+    <strong>Reset password</strong> — click <i class="bi bi-key"></i> to generate a one-time
+    reset link (valid 3 days). Copy this link and send it to the user by email or messaging.
+  </li>
+</ul>
+
+<h6>Dashboard editor</h6>
+<p>
+  As a group administrator, you can create and edit visual dashboards for your group's forms via
+  the <strong>dashboard editor</strong>. Access it from the Settings page or the form list.
+  See <a href="#editeur">section 8</a> for details.
+</p>
+
+<h6>Managing dashboard modules</h6>
+<p>
+  Each form can have a Python module file (<code>.py</code>) that defines how submissions are
+  analysed and displayed. As a group admin, you can:
+</p>
+<ul>
+  <li>
+    <strong>Download the current module</strong> — click
+    <i class="bi bi-download"></i> <strong>Module</strong> to retrieve the <code>.py</code> file
+    currently in use.
+  </li>
+  <li>
+    <strong>Upload a new module</strong> — select a <code>.py</code> file and click
+    <i class="bi bi-upload"></i> <strong>Upload</strong>. The new module takes effect immediately
+    (no server restart in development; a gunicorn restart is required in production).
+  </li>
+</ul>
+<div class="alert alert-warning small">
+  <i class="bi bi-exclamation-triangle me-1"></i>
+  The module file must be a valid Python script with a valid Python identifier as its filename
+  (letters, digits, underscores — no spaces or hyphens).
+</div>
+
+
+{# 7. Main administrator #}
+<h4 id="admin" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-gear me-2 text-danger"></i>7. Main administrator
+</h4>
+<p>
+  The main administrator accesses the <strong>Settings</strong> page
+  (<i class="bi bi-gear"></i> in the navigation bar).
+</p>
+
+<h6>KoboToolBox server connection</h6>
+<p>
+  Enter the server URL (e.g. <code>https://kobo.ifrc.org</code>) and the API token.
+  The token is available on your KoboToolBox profile at
+  <code>&lt;server-url&gt;/token/?format=json</code>.
+  Click <strong>"Test &amp; load forms"</strong> to verify the connection and get the list of
+  available forms.
+</p>
+
+<h6>Adding a form</h6>
+<p>
+  After loading the form list, select one from the dropdown and click
+  <strong>"Add this form"</strong>. You can adjust the cache duration (in seconds) to control
+  how often data is synchronised with KoboToolBox.
+</p>
+
+<h6>Managing groups</h6>
+<p>
+  Create named groups to organise access to forms. For each group, you can:
+</p>
+<ul>
+  <li>Assign forms (group members will only see those forms).</li>
+  <li>Assign members (active users).</li>
+  <li>Designate group administrators from among the members.</li>
+</ul>
+<p>
+  Forms not assigned to any group are visible only to the main administrator.
+</p>
+
+<h6>Managing users</h6>
+<p>
+  The <strong>"User management"</strong> page (<i class="bi bi-person-fill-check"></i>) lists
+  accounts awaiting approval and active accounts. You can:
+</p>
+<ul>
+  <li><strong>Activate</strong> a new account after verifying identity.</li>
+  <li><strong>Deactivate</strong> an account temporarily without deleting it.</li>
+  <li><strong>Delete</strong> an account permanently.</li>
+  <li>
+    <strong>Generate a password reset link</strong>
+    (<i class="bi bi-key"></i>) — send it to the user via the channel of your choice.
+    The link is valid for 3 days and is single-use.
+  </li>
+</ul>
+
+<h6>Identity and colour</h6>
+<p>
+  From Settings, in the <strong>"Identity"</strong> card, you can:
+</p>
+<ul>
+  <li><strong>Organisation name</strong> — displayed in the centre of the navigation bar instead of "KoboDashBoard".</li>
+  <li><strong>Logo</strong> — replaces the text in the centre of the navigation bar. Recommended formats: transparent PNG or SVG, 48 px height.</li>
+  <li><strong>Main colour</strong> — use the colour picker or enter a hex code (e.g. <code>#00833D</code>). The "Default" button restores Bootstrap red. The change applies instantly to all users.</li>
+</ul>
+
+<h6>Interface language</h6>
+<p>
+  A dropdown in the navigation bar lets you change the interface language.
+  Five languages are available: <strong>Français</strong>, <strong>English</strong>,
+  <strong>Español</strong>, <strong>العربية</strong> (with automatic right-to-left layout),
+  <strong>Русский</strong>. The choice is remembered for the current session.
+  The same selector is available on the login and registration pages.
+</p>
+
+<h6>Access recovery</h6>
+<p>
+  In case of a lost password, connect to the server via SSH and run:
+</p>
+<pre class="bg-light rounded p-2">python3 manage.py init_admin</pre>
+<p>
+  A one-time login link (valid 3 days) is displayed in the terminal.
+</p>
+
+{# 8. Dashboard editor #}
+<h4 id="editeur" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-pencil-square me-2 text-danger"></i>8. Dashboard editor
+</h4>
+<p>
+  The dashboard editor lets administrators create visual dashboards for any form without writing
+  code. Multiple dashboards can coexist for the same form.
+</p>
+<p>
+  The editor is accessible from the <strong>Settings</strong> page by clicking
+  <strong>"Dashboard editor"</strong> next to the relevant form. It is available to the main
+  administrator and group administrators whose group includes that form.
+</p>
+
+<h6>Dashboard list</h6>
+<p>
+  The list shows all dashboards created for the form. You can create a new one by giving it a name.
+  For each existing dashboard, two actions are available:
+  <strong>View</strong> (read-only display) and <strong>Edit</strong> (open in the editor).
+</p>
+
+<h6>Dashboard structure</h6>
+<p>
+  A dashboard is made up of <strong>rows</strong> stacked vertically. Each row can contain 1, 2
+  or 3 columns. Rows can be reordered (▲▼ arrows) or deleted.
+</p>
+<p>
+  At the top of the editor, you can:
+</p>
+<ul>
+  <li><strong>Rename</strong> the dashboard.</li>
+  <li>
+    <strong>Configure filters</strong> — select form fields that will appear as filters at the top
+    of the dashboard (e.g. country, period). Filters can be reordered and deleted. A custom label
+    can be entered for each one.
+  </li>
+</ul>
+
+<h6>Adding and editing widgets</h6>
+<p>
+  Each row can contain <strong>widgets</strong>. Click <strong>"Add a widget"</strong> in a row
+  to open the add form. Four widget types are available:
+</p>
+<div class="table-responsive mb-3">
+  <table class="table table-sm table-bordered">
+    <thead class="table-light">
+      <tr><th>Type</th><th>Description</th><th>Main options</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><i class="bi bi-123 me-1"></i><strong>Summary number</strong></td>
+        <td>Displays a single value in large characters.</td>
+        <td>Submission count, sum or average of a numeric field.</td>
+      </tr>
+      <tr>
+        <td><i class="bi bi-pie-chart me-1"></i><strong>Pie chart</strong></td>
+        <td>Pie chart grouped by values of a field.</td>
+        <td>Customisable colour and label per value.</td>
+      </tr>
+      <tr>
+        <td><i class="bi bi-bar-chart me-1"></i><strong>Bar / line chart</strong></td>
+        <td>Bars or lines with one or more series fields.</td>
+        <td>X axis (optional), style (bars / lines), stacked mode, ordered series with colour and label.</td>
+      </tr>
+      <tr>
+        <td><i class="bi bi-table me-1"></i><strong>Data table</strong></td>
+        <td>Displays submissions as a table.</td>
+        <td>Select which columns to display.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  To edit an existing widget, click the <i class="bi bi-pencil"></i> icon on its card.
+  The edit form appears inline. To delete a widget, click <i class="bi bi-trash"></i> and confirm.
+</p>
+
+<h6>Configuring series (bar / line chart)</h6>
+<p>
+  The bar / line chart widget can display multiple fields as series on the same chart.
+  In the <strong>Series</strong> section:
+</p>
+<ul>
+  <li>Select a field from the dropdown and click <strong>"+ Add"</strong>.</li>
+  <li>Each series appears in the list with a <strong>colour picker</strong> and a
+      <strong>label</strong> field (displayed in the legend).</li>
+  <li>Reorder series with the <strong>▲▼</strong> arrows.</li>
+  <li>Delete a series with the <strong>×</strong> button.</li>
+</ul>
+<p>
+  For fixed-choice fields (<em>select_one</em>), an additional <strong>"Colours by value"</strong>
+  section lets you assign a specific colour to each category (e.g. Male / Female / Other).
+</p>
+
+<div class="alert alert-info small mt-3">
+  <i class="bi bi-info-circle me-1"></i>
+  Changes in the editor are saved immediately with each action (add, delete, reorder).
+  The <strong>Preview</strong> button at the top of the editor lets you see the dashboard as
+  users will see it.
+</div>
+
+{# 9. Python modules #}
+<h4 id="modules" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-code-slash me-2 text-danger"></i>9. Advanced dashboards with Python modules
+</h4>
+<p>
+  The dashboard editor covers common use cases. For more complex analyses — specific business
+  logic, custom aggregations, coverage matrices — it is possible to create a <strong>Python
+  module</strong> with the help of Claude Code.
+</p>
+
+<h6>How a module works</h6>
+<p>
+  A module is a <code>.py</code> file placed in the <code>form_modules/</code> directory on the
+  server. It is linked to a form via its KoboToolBox UID and defines how submissions are analysed
+  and displayed. Two styles are possible:
+</p>
+<ul>
+  <li>
+    <strong>Indicator dashboard</strong> — the module implements <code>parse_submissions()</code>.
+    Displays summary cards and charts by country, period and result.
+  </li>
+  <li>
+    <strong>Coverage matrix</strong> — the module implements <code>parse_structure()</code>.
+    Displays a cross-table of activities × countries with the number of submissions per combination.
+  </li>
+</ul>
+
+<h6>Creating a module with Claude Code</h6>
+<ol>
+  <li>Open Claude Code in the KoboDashBoard project directory.</li>
+  <li>Describe the form, its KoboToolBox UID and the desired logic.</li>
+  <li>Claude Code creates <code>form_modules/&lt;name&gt;.py</code> based on the <code>FormModule</code> class.</li>
+  <li>Restart the development server — the module registers automatically.</li>
+  <li>Test the dashboard locally before deploying.</li>
+</ol>
+
+<h6>Exporting and importing a module</h6>
+<p>
+  Module files are not included in the Git repository (to avoid exposing organisation-specific
+  data). To deploy a module to production:
+</p>
+<ol>
+  <li>
+    <strong>Download from the development server</strong> — in Settings, click
+    <i class="bi bi-download"></i> <strong>Download module</strong> next to the form.
+  </li>
+  <li>
+    <strong>Import to production</strong> — on the production server, in Settings, click
+    <i class="bi bi-upload"></i> <strong>Upload module</strong> and select the downloaded file.
+  </li>
+  <li>
+    Restart gunicorn: <code>sudo systemctl restart kobodashboard</code>
+    (or use the deploy script).
+  </li>
+</ol>
+
+<h6>Multiple dashboards for the same form</h6>
+<p>
+  A form can have both dashboards created via the editor and a Python module. When multiple
+  options are available, a selection page is displayed when opening the form, listing all
+  dashboards by name.
+</p>
+<div class="alert alert-info small">
+  <i class="bi bi-info-circle me-1"></i>
+  Python modules are never published to GitHub — they remain on the server and are transferred
+  only via the download/upload button in Settings.
+</div>
+
+<div class="mt-5 mb-2 text-center text-muted small">
+  <a href="/dashboard/" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-arrow-left me-1"></i>Back to dashboard
+  </a>
+</div>
+
+</div>
+</div>
+{% endblock %}

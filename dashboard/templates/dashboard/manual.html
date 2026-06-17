@@ -22,6 +22,7 @@
       <li><a href="#groupe-admin" class="text-decoration-none">Administrateurs de groupe</a></li>
       <li><a href="#admin" class="text-decoration-none">Administrateur principal</a></li>
       <li><a href="#editeur" class="text-decoration-none">Éditeur de dashboard</a></li>
+      <li><a href="#modules" class="text-decoration-none">Dashboards avancés avec modules Python</a></li>
     </ol>
   </div>
 </div>
@@ -418,6 +419,74 @@
   Les modifications dans l'éditeur sont enregistrées immédiatement à chaque action (ajout,
   suppression, réordonnancement). Le bouton <strong>Aperçu</strong> en haut de l'éditeur permet
   de visualiser le dashboard tel qu'il apparaîtra aux utilisateurs.
+</div>
+
+{# 9. Modules Python #}
+<h4 id="modules" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-code-slash me-2 text-danger"></i>9. Dashboards avancés avec modules Python
+</h4>
+<p>
+  L'éditeur de dashboard couvre les cas courants. Pour des analyses plus complexes — logique métier
+  spécifique, agrégations personnalisées, matrices de couverture — il est possible de créer un
+  <strong>module Python</strong> avec l'aide de Claude Code.
+</p>
+
+<h6>Comment fonctionne un module</h6>
+<p>
+  Un module est un fichier <code>.py</code> placé dans le répertoire <code>form_modules/</code>
+  du serveur. Il est lié à un formulaire via son UID KoboToolBox et définit comment les soumissions
+  sont analysées et affichées. Deux styles sont possibles :
+</p>
+<ul>
+  <li>
+    <strong>Dashboard indicateurs</strong> — le module implémente <code>parse_submissions()</code>.
+    Affiche des cartes de synthèse et des graphiques par pays, période et résultat.
+  </li>
+  <li>
+    <strong>Matrice de couverture</strong> — le module implémente <code>parse_structure()</code>.
+    Affiche un tableau croisé activités × pays avec le nombre de soumissions par combinaison.
+  </li>
+</ul>
+
+<h6>Créer un module avec Claude Code</h6>
+<ol>
+  <li>Ouvrez Claude Code dans le répertoire du projet KoboDashBoard.</li>
+  <li>Décrivez le formulaire, son UID KoboToolBox et la logique souhaitée.</li>
+  <li>Claude Code crée <code>form_modules/&lt;nom&gt;.py</code> basé sur la classe <code>FormModule</code>.</li>
+  <li>Redémarrez le serveur de développement — le module s'enregistre automatiquement.</li>
+  <li>Testez le dashboard localement avant de le déployer.</li>
+</ol>
+
+<h6>Exporter et importer un module</h6>
+<p>
+  Les fichiers de module ne sont pas inclus dans le dépôt Git (pour ne pas exposer de données
+  propres à l'organisation). Pour déployer un module en production :
+</p>
+<ol>
+  <li>
+    <strong>Télécharger depuis le serveur de développement</strong> — dans Paramètres, cliquez sur
+    <i class="bi bi-download"></i> <strong>Télécharger le module</strong> à côté du formulaire.
+  </li>
+  <li>
+    <strong>Importer en production</strong> — sur le serveur de production, dans Paramètres, cliquez
+    sur <i class="bi bi-upload"></i> <strong>Charger un module</strong> et sélectionnez le fichier.
+  </li>
+  <li>
+    Redémarrez gunicorn : <code>sudo systemctl restart kobodashboard</code>
+    (ou utilisez le script de déploiement).
+  </li>
+</ol>
+
+<h6>Plusieurs dashboards pour un même formulaire</h6>
+<p>
+  Un formulaire peut avoir à la fois des dashboards créés via l'éditeur et un module Python.
+  Lorsque plusieurs options sont disponibles, une page de sélection s'affiche à l'ouverture du
+  formulaire, listant tous les dashboards par nom.
+</p>
+<div class="alert alert-info small">
+  <i class="bi bi-info-circle me-1"></i>
+  Les modules Python ne sont jamais publiés sur GitHub — ils restent sur le serveur et se transfèrent
+  uniquement via le bouton de téléchargement/chargement dans les Paramètres.
 </div>
 
 <div class="mt-5 mb-2 text-center text-muted small">

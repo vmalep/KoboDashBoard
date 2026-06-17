@@ -1414,7 +1414,14 @@ def submission_detail(request, uid, sub_id):
 
 @login_required
 def manual(request):
-    return render(request, 'dashboard/manual.html', {})
+    lang = getattr(request, 'LANGUAGE_CODE', 'fr')[:2]
+    templates = {
+        'en': 'dashboard/manual_en.html',
+        'es': 'dashboard/manual_es.html',
+        'ar': 'dashboard/manual_ar.html',
+        'ru': 'dashboard/manual_ru.html',
+    }
+    return render(request, templates.get(lang, 'dashboard/manual.html'), {})
 
 
 # ── Refresh ────────────────────────────────────────────────────────────────────
