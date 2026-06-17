@@ -21,6 +21,7 @@
       <li><a href="#exports" class="text-decoration-none">Exporter les données</a></li>
       <li><a href="#groupe-admin" class="text-decoration-none">Administrateurs de groupe</a></li>
       <li><a href="#admin" class="text-decoration-none">Administrateur principal</a></li>
+      <li><a href="#editeur" class="text-decoration-none">Éditeur de dashboard</a></li>
     </ol>
   </div>
 </div>
@@ -99,18 +100,23 @@
   avez accès. Cliquez sur <strong>« Visionner le dashboard »</strong> pour ouvrir un formulaire.
 </p>
 <p>
-  Deux types de vues existent selon le formulaire :
+  Trois types de vues existent selon le formulaire :
 </p>
 <ul>
   <li>
-    <strong>Dashboard indicateurs</strong> — affiche des cartes de synthèse (bénéficiaires totaux,
-    rapports soumis), des graphiques par pays, par période et par résultat, une carte de
-    désagrégation (âge/sexe, handicap, statut) et un tableau de données détaillé.
+    <strong>Dashboard configuré</strong> — construit via l'éditeur de dashboard (voir section 8).
+    Affiche les widgets définis par l'administrateur : chiffres résumés, graphiques en secteurs ou
+    en colonnes, tableaux de données, avec filtres personnalisés.
   </li>
   <li>
-    <strong>Matrice de couverture</strong> — affiche un tableau croisé activités × pays indiquant
-    le nombre de soumissions pour chaque combinaison. Les cellules cliquables donnent accès à la
-    liste des soumissions correspondantes.
+    <strong>Dashboard indicateurs</strong> — disponible si un module Python spécifique a été chargé
+    pour le formulaire. Affiche des cartes de synthèse, des graphiques par pays/période/résultat,
+    une désagrégation et un tableau de données détaillé.
+  </li>
+  <li>
+    <strong>Matrice de couverture</strong> — disponible si un module Python spécifique a été chargé.
+    Affiche un tableau croisé activités × pays avec le nombre de soumissions par combinaison.
+    Les cellules cliquables donnent accès à la liste des soumissions correspondantes.
   </li>
 </ul>
 <p>
@@ -193,6 +199,14 @@
     transmettez-le à l'utilisateur par email ou messagerie.
   </li>
 </ul>
+
+<h6>Éditeur de dashboard</h6>
+<p>
+  En tant qu'administrateur de groupe, vous pouvez créer et modifier des dashboards visuels pour
+  les formulaires de votre groupe via l'<strong>éditeur de dashboard</strong>. Accédez-y depuis
+  la page Paramètres ou depuis la liste des formulaires. Voir la <a href="#editeur">section 8</a>
+  pour le détail des fonctionnalités.
+</p>
 
 <h6>Gérer les modules de dashboard</h6>
 <p>
@@ -300,6 +314,111 @@
 <p>
   Un lien de connexion à usage unique (valable 3 jours) s'affiche dans le terminal.
 </p>
+
+{# 8. Éditeur de dashboard #}
+<h4 id="editeur" class="mt-4 mb-3 border-bottom pb-2">
+  <i class="bi bi-pencil-square me-2 text-danger"></i>8. Éditeur de dashboard
+</h4>
+<p>
+  L'éditeur de dashboard permet aux administrateurs de créer des tableaux de bord visuels pour
+  n'importe quel formulaire, sans écrire de code. Plusieurs dashboards peuvent coexister pour
+  un même formulaire.
+</p>
+<p>
+  L'éditeur est accessible depuis la page <strong>Paramètres</strong>, en cliquant sur
+  <strong>« Éditeur de dashboard »</strong> à côté du formulaire concerné. Il est disponible
+  pour l'administrateur principal et les administrateurs de groupe dont le groupe inclut ce formulaire.
+</p>
+
+<h6>Liste des dashboards</h6>
+<p>
+  La liste affiche tous les dashboards créés pour le formulaire. Vous pouvez en créer un nouveau
+  en lui donnant un nom. Pour chaque dashboard existant, deux actions sont disponibles :
+  <strong>Voir</strong> (affichage en lecture seule) et <strong>Modifier</strong> (ouverture dans l'éditeur).
+</p>
+
+<h6>Structure d'un dashboard</h6>
+<p>
+  Un dashboard est composé de <strong>lignes</strong> empilées verticalement. Chaque ligne peut
+  contenir 1, 2 ou 3 colonnes. Les lignes peuvent être réordonnées (flèches ▲▼) ou supprimées.
+</p>
+<p>
+  En haut de l'éditeur, vous pouvez :
+</p>
+<ul>
+  <li><strong>Renommer</strong> le dashboard.</li>
+  <li>
+    <strong>Configurer les filtres</strong> — sélectionnez les champs du formulaire qui apparaîtront
+    comme filtres en haut du dashboard (ex. pays, période). Les filtres peuvent être réordonnés et
+    supprimés. Un libellé personnalisé peut être saisi pour chacun.
+  </li>
+</ul>
+
+<h6>Ajouter et modifier des widgets</h6>
+<p>
+  Chaque ligne peut contenir des <strong>widgets</strong>. Cliquez sur
+  <strong>« Ajouter un widget »</strong> dans une ligne pour ouvrir le formulaire d'ajout.
+  Quatre types de widgets sont disponibles :
+</p>
+<div class="table-responsive mb-3">
+  <table class="table table-sm table-bordered">
+    <thead class="table-light">
+      <tr><th>Type</th><th>Description</th><th>Options principales</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><i class="bi bi-123 me-1"></i><strong>Chiffre résumé</strong></td>
+        <td>Affiche une valeur unique en gros caractères.</td>
+        <td>Nombre de soumissions, somme ou moyenne d'un champ numérique.</td>
+      </tr>
+      <tr>
+        <td><i class="bi bi-pie-chart me-1"></i><strong>Graphique en secteurs</strong></td>
+        <td>Camembert groupé par les valeurs d'un champ.</td>
+        <td>Couleur et libellé personnalisables par valeur.</td>
+      </tr>
+      <tr>
+        <td><i class="bi bi-bar-chart me-1"></i><strong>Graphique en colonnes / lignes</strong></td>
+        <td>Barres ou lignes avec un ou plusieurs champs de série.</td>
+        <td>Axe X (optionnel), style (barres / lignes), mode empilé, séries ordonnées avec couleur et libellé.</td>
+      </tr>
+      <tr>
+        <td><i class="bi bi-table me-1"></i><strong>Tableau de données</strong></td>
+        <td>Affiche les soumissions sous forme de tableau.</td>
+        <td>Sélection des colonnes à afficher.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  Pour modifier un widget existant, cliquez sur l'icône <i class="bi bi-pencil"></i> dans sa carte.
+  Le formulaire d'édition s'affiche en ligne. Pour supprimer un widget, cliquez sur
+  <i class="bi bi-trash"></i> et confirmez.
+</p>
+
+<h6>Configurer les séries (graphique en colonnes / lignes)</h6>
+<p>
+  Le widget « Graphique en colonnes / lignes » permet d'afficher plusieurs champs comme séries
+  sur un même graphique. Dans la section <strong>Séries</strong> :
+</p>
+<ul>
+  <li>Sélectionnez un champ dans la liste déroulante et cliquez sur <strong>« + Ajouter »</strong>.</li>
+  <li>Chaque série apparaît dans la liste avec un <strong>sélecteur de couleur</strong> et un
+      champ <strong>libellé</strong> (affiché dans la légende).</li>
+  <li>Réordonnez les séries avec les flèches <strong>▲▼</strong>.</li>
+  <li>Supprimez une série avec le bouton <strong>×</strong>.</li>
+</ul>
+<p>
+  Pour les champs à choix fixe (<em>select_one</em>), une section supplémentaire
+  <strong>« Couleurs par valeur »</strong> permet d'assigner une couleur spécifique à chaque
+  catégorie (ex. Homme / Femme / Autre).
+</p>
+
+<div class="alert alert-info small mt-3">
+  <i class="bi bi-info-circle me-1"></i>
+  Les modifications dans l'éditeur sont enregistrées immédiatement à chaque action (ajout,
+  suppression, réordonnancement). Le bouton <strong>Aperçu</strong> en haut de l'éditeur permet
+  de visualiser le dashboard tel qu'il apparaîtra aux utilisateurs.
+</div>
 
 <div class="mt-5 mb-2 text-center text-muted small">
   <a href="/dashboard/" class="btn btn-outline-secondary btn-sm">
