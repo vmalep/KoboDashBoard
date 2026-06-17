@@ -24,9 +24,9 @@
         <div>
           <div class="fw-semibold">{{ dc.name }}</div>
           <div class="text-muted small">
-            {% blocktranslate with n=dc.config.rows|length %}{{ n }} ligne{% plural %}{{ n }} lignes{% endblocktranslate %}
+            {% blocktranslate count n=dc.config.rows|length %}{{ n }} ligne{% plural %}{{ n }} lignes{% endblocktranslate %}
             ·
-            {% blocktranslate with n=dc.config.filters|length %}{{ n }} filtre{% plural %}{{ n }} filtres{% endblocktranslate %}
+            {% blocktranslate count n=dc.config.filters|length %}{{ n }} filtre{% plural %}{{ n }} filtres{% endblocktranslate %}
           </div>
         </div>
         <div class="d-flex gap-2">
