@@ -224,15 +224,6 @@ python3 manage.py init_admin
 
 ---
 
-## Modules included
-
-| Module | Form type | Description |
-|---|---|---|
-| `form_modules/dnh.py` | Coverage matrix | Do Not Harm checklist — activity × country matrix with risk drill-down |
-| `form_modules/amopah3.py` | Indicator monitoring | AMOPAH III program — charts by country/result/period, disaggregation, data table, CSV/XLSX export |
-
----
-
 ## Licence
 
 [GNU General Public Licence v3.0](LICENSE) — you may use, modify, and redistribute this software freely, but any derivative work must also be released under the GPL v3. You may not relicence it as proprietary software.
