@@ -529,6 +529,62 @@ def module_dashboard(request, uid):
     })
 
 
+def _repeat_chain_for(active_group, groups):
+    """Return [(name, group_info), ...] from outermost repeat down to active_group."""
+    fk_to_name = {v.get('full_key'): k for k, v in groups.items() if v.get('full_key')}
+    chain = []
+    name = active_group
+    while name and name in groups:
+        g = groups[name]
+        chain.insert(0, (name, g))
+        prk = g.get('parent_repeat_key')
+        if not prk:
+            break
+        name = fk_to_name.get(prk)
+    return chain
+
+
+def _extract_nested_children(item, chain, depth):
+    """Recursively extract repeat children for levels depth..end of chain."""
+    if depth >= len(chain):
+        return []
+    _name, g = chain[depth]
+    sub_items = item.get(g['full_key'], [])
+    if not isinstance(sub_items, list):
+        return []
+    return [
+        {
+            'v': [str(sub.get(q, '') or '') for q in g['questions']],
+            'c': _extract_nested_children(sub, chain, depth + 1),
+        }
+        for sub in sub_items
+    ]
+
+
+def _build_repeat_table_data(chain, submissions):
+    """Build nested [{id, d, c:[{v, c:[...]}, ...]}, ...] for master-detail JS."""
+    if not chain:
+        return []
+    _n0, g0 = chain[0]
+    rows = []
+    for sub in submissions:
+        top_items = sub.get(g0['full_key'], [])
+        if not isinstance(top_items, list):
+            top_items = []
+        rows.append({
+            'id': sub.get('_id', ''),
+            'd': (sub.get('_submission_time', '') or '')[:10],
+            'c': [
+                {
+                    'v': [str(item.get(q, '') or '') for q in g0['questions']],
+                    'c': _extract_nested_children(item, chain, 1),
+                }
+                for item in top_items
+            ],
+        })
+    return rows
+
+
 @login_required
 def form_detail(request, uid):
     if not _user_can_access_form(request.user, uid):
@@ -541,6 +597,10 @@ def form_detail(request, uid):
     form_name = uid
     total_submissions = 0
     active_group = ''
+    is_master_detail = False
+    chain_levels = []
+    repeat_data_json = '[]'
+    chain_levels_json = '[]'
 
     try:
         config = _config()
@@ -566,43 +626,34 @@ def form_detail(request, uid):
 
         if active_group and active_group in groups:
             group_info = groups[active_group]
-            questions = group_info['questions']
-            columns = [{'label': question_labels.get(q, q)} for q in questions]
+            is_in_repeat = (
+                group_info.get('is_repeat', False)
+                or bool(group_info.get('parent_repeat_key'))
+            )
 
-            is_repeat = group_info.get('is_repeat', False)
-            parent_rpt_key = group_info.get('parent_repeat_key')  # full_key of enclosing repeat
-            full_key = group_info.get('full_key') or active_group
-
-            rows = []
-            if is_repeat:
-                if parent_rpt_key:
-                    # Nested repeat: iterate parent repeat items, then nested items
-                    for sub in submissions:
-                        for parent_item in sub.get(parent_rpt_key, []):
-                            for item in parent_item.get(full_key, []):
-                                rows.append({'id': sub.get('_id', ''),
-                                             'values': [item.get(q, '') for q in questions]})
-                else:
-                    # Top-level repeat: iterate repeat items
-                    for sub in submissions:
-                        for item in sub.get(full_key, []):
-                            rows.append({'id': sub.get('_id', ''),
-                                         'values': [item.get(q, '') for q in questions]})
-            elif parent_rpt_key:
-                # Regular group inside a repeat: questions live in repeat items
-                for sub in submissions:
-                    for parent_item in sub.get(parent_rpt_key, []):
-                        rows.append({'id': sub.get('_id', ''),
-                                     'values': [parent_item.get(q, '') for q in questions]})
+            if is_in_repeat:
+                # Master-detail cascading tables for repeat groups
+                is_master_detail = True
+                chain = _repeat_chain_for(active_group, groups)
+                chain_levels = [
+                    {
+                        'label': g['label'],
+                        'cols': [question_labels.get(q, q) for q in g['questions']],
+                    }
+                    for _name, g in chain
+                ]
+                repeat_data_json = json.dumps(_build_repeat_table_data(chain, submissions))
+                chain_levels_json = json.dumps(chain_levels)
             else:
-                # Regular top-level group: flat submission lookup
+                # Regular group: flat paginated table
+                questions = group_info['questions']
+                columns = [{'label': question_labels.get(q, q)} for q in questions]
                 rows = [
                     {'id': sub.get('_id', ''), 'values': [sub.get(q, '') for q in questions]}
                     for sub in submissions
                 ]
-
-            paginator = Paginator(rows, PAGE_SIZE)
-            page_obj = paginator.get_page(request.GET.get('page'))
+                paginator = Paginator(rows, PAGE_SIZE)
+                page_obj = paginator.get_page(request.GET.get('page'))
 
     except api_client.KoboAPIError as exc:
         error = str(exc)
@@ -617,6 +668,10 @@ def form_detail(request, uid):
         'columns': columns,
         'page_obj': page_obj,
         'page_range': _page_range(page_obj) if page_obj else [],
+        'is_master_detail': is_master_detail,
+        'chain_levels': chain_levels,
+        'repeat_data_json': repeat_data_json,
+        'chain_levels_json': chain_levels_json,
         'error': error,
     })
 

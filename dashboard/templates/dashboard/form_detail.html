@@ -5,7 +5,7 @@
 
 {% block extra_head %}
 <style>
-  /* Sidebar: sticky below navbar, independent scroll */
+  /* Sidebar: sticky below navbar */
   #fd-sidebar {
     position: sticky;
     top: 56px;
@@ -27,9 +27,7 @@
     color: var(--brand-color, #dc3545);
     font-weight: 600;
   }
-  #fd-sidebar .nav-link:not(.active):hover {
-    background: #f8f9fa;
-  }
+  #fd-sidebar .nav-link:not(.active):hover { background: #f8f9fa; }
   #fd-sidebar .fd-section-header {
     font-size: 0.7rem;
     font-weight: 700;
@@ -40,10 +38,7 @@
     padding-bottom: 0.1rem;
   }
 
-  /* Table column: sticky pagination bar */
-  #fd-table-col {
-    min-width: 0;
-  }
+  /* Flat table: sticky pagination bar */
   #fd-pagination-bar {
     position: sticky;
     top: 56px;
@@ -51,8 +46,6 @@
     background: #fff;
     border-bottom: 1px solid #dee2e6;
   }
-
-  /* Table scrolls both axes; thead sticks within the scroll container */
   .fd-table-wrap {
     overflow: auto;
     max-height: calc(100vh - 115px);
@@ -65,12 +58,38 @@
     box-shadow: inset 0 -1px 0 #dee2e6;
     white-space: nowrap;
   }
+
+  /* Master-detail: each sub-table is scrollable, smaller max-height */
+  .fd-md-table-wrap {
+    overflow: auto;
+    max-height: 260px;
+    border: 1px solid #dee2e6;
+    border-radius: 0 0 .375rem .375rem;
+    border-top: 0;
+  }
+  .fd-md-table-wrap thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f8f9fa;
+    box-shadow: inset 0 -1px 0 #dee2e6;
+    white-space: nowrap;
+  }
+  .fd-repeat-level + .fd-repeat-level { margin-top: 1.25rem; }
+  .fd-repeat-connector {
+    border-left: 2px solid #dee2e6;
+    margin-left: 0.6rem;
+    padding-left: 0.75rem;
+  }
+  tr.fd-selected { background-color: var(--bs-table-active-bg, #dce8f5) !important; }
+  tr[data-clickable] { cursor: pointer; }
+  tr[data-clickable]:hover { filter: brightness(0.96); }
 </style>
 {% endblock %}
 
 {% block content %}
 
-{# Title row — scrolls away #}
+{# Title row #}
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
   <div>
     <a href="/dashboard/" class="text-decoration-none text-muted small">
@@ -95,11 +114,11 @@
 
 {% if error %}
   <div class="alert alert-danger"><i class="bi bi-x-circle-fill me-1"></i>{{ error }}</div>
-{% elif not tabs %}
+{% elif not group_tree %}
   <p class="text-muted">{% trans "Aucune question trouvée dans le schéma de ce formulaire." %}</p>
 {% else %}
 
-{# Mobile: collapsed nav toggled by button #}
+{# Mobile: collapsed nav #}
 <div class="d-md-none mb-2">
   <button class="btn btn-sm btn-outline-secondary w-100 text-start"
           type="button" data-bs-toggle="collapse" data-bs-target="#fd-mobile-nav"
@@ -119,16 +138,14 @@
           {{ node.label }}
         </a>
         {% else %}
-        <span class="fd-section-header" style="padding-left: {{ node.indent }};">
-          {{ node.label }}
-        </span>
+        <span class="fd-section-header" style="padding-left: {{ node.indent }};">{{ node.label }}</span>
         {% endif %}
       {% endfor %}
     </nav>
   </div>
 </div>
 
-{# Desktop: 2-column layout — sidebar + table #}
+{# Desktop: 2-column layout #}
 <div class="d-flex gap-0" style="align-items: flex-start;">
 
   {# Sidebar #}
@@ -144,84 +161,221 @@
           {{ node.label }}
         </a>
         {% else %}
-        <span class="fd-section-header" style="padding-left: {{ node.indent }};">
-          {{ node.label }}
-        </span>
+        <span class="fd-section-header" style="padding-left: {{ node.indent }};">{{ node.label }}</span>
         {% endif %}
       {% endfor %}
     </nav>
   </div>
 
-  {# Table column #}
-  <div id="fd-table-col" class="flex-grow-1" style="min-width:0;">
+  {# Main content #}
+  <div class="flex-grow-1" style="min-width:0;">
 
-    {# Sticky pagination bar #}
-    {% if page_obj and page_obj.has_other_pages %}
-    <div id="fd-pagination-bar" class="d-flex align-items-center gap-1 px-1 py-1 mb-0">
-      {% if page_obj.has_previous %}
-      <a class="btn btn-sm btn-outline-secondary px-2"
-         href="?group={{ active_group }}&page={{ page_obj.previous_page_number }}"
-         title="{% trans 'Page précédente' %}"><i class="bi bi-chevron-left"></i></a>
-      {% else %}
-      <button class="btn btn-sm btn-outline-secondary px-2" disabled><i class="bi bi-chevron-left"></i></button>
-      {% endif %}
+  {% if is_master_detail %}
+  {# ── Master-detail cascading tables for repeat groups ── #}
 
-      <span class="text-muted small px-1 text-nowrap">
-        {% trans "Page" %} {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}
+  {# Level 0: Submissions #}
+  <div class="fd-repeat-level" id="fd-section-0">
+    <div class="d-flex align-items-center gap-2 mb-0">
+      <span class="small fw-semibold text-uppercase text-muted">{% trans "Soumissions" %}</span>
+      <span class="badge bg-secondary rounded-pill" id="fd-count-0"></span>
+      <span class="small text-muted ms-2 fst-italic" id="fd-hint-0">
+        ← {% trans "Cliquez une ligne pour voir les données associées" %}
       </span>
-
-      {% for p in page_range %}
-        {% if p == '...' %}
-          <span class="text-muted small px-1">…</span>
-        {% elif p == page_obj.number %}
-          <span class="btn btn-sm btn-danger px-2 disabled" style="pointer-events:none">{{ p }}</span>
-        {% else %}
-          <a class="btn btn-sm btn-outline-secondary px-2"
-             href="?group={{ active_group }}&page={{ p }}">{{ p }}</a>
-        {% endif %}
-      {% endfor %}
-
-      {% if page_obj.has_next %}
-      <a class="btn btn-sm btn-outline-secondary px-2"
-         href="?group={{ active_group }}&page={{ page_obj.next_page_number }}"
-         title="{% trans 'Page suivante' %}"><i class="bi bi-chevron-right"></i></a>
-      {% else %}
-      <button class="btn btn-sm btn-outline-secondary px-2" disabled><i class="bi bi-chevron-right"></i></button>
-      {% endif %}
     </div>
-    {% endif %}
-
-    {# Table #}
-    {% if not columns %}
-      <p class="text-muted mt-3">{% trans "Aucune question dans ce groupe." %}</p>
-    {% elif not page_obj %}
-      <p class="text-muted mt-3">{% trans "Aucune soumission." %}</p>
-    {% else %}
-    <div class="fd-table-wrap border rounded">
-      <table class="table table-sm table-striped table-hover align-middle mb-0">
-        <thead class="table-light">
-          <tr>
-            <th class="text-muted" style="width:3rem">#</th>
-            {% for col in columns %}
-              <th>{{ col.label }}</th>
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in page_obj %}
-            <tr>
-              <td class="text-muted small">{{ row.id }}</td>
-              {% for val in row.values %}
-                <td>{% if val %}{{ val }}{% else %}<span class="text-muted">—</span>{% endif %}</td>
-              {% endfor %}
-            </tr>
-          {% endfor %}
-        </tbody>
+    <div class="border rounded-top border-bottom-0 mt-1">
+      <table class="table table-sm table-hover align-middle mb-0">
+        <thead class="table-light" id="fd-thead-0"></thead>
       </table>
     </div>
-    {% endif %}
+    <div class="fd-md-table-wrap">
+      <table class="table table-sm table-hover align-middle mb-0">
+        <tbody id="fd-tbody-0"></tbody>
+      </table>
+    </div>
+  </div>
 
-  </div>{# /fd-table-col #}
+  {# Levels 1..N: repeat group tables (hidden until parent row selected) #}
+  {% for level in chain_levels %}
+  <div class="fd-repeat-level fd-repeat-connector d-none" id="fd-section-{{ forloop.counter }}">
+    <div class="d-flex align-items-center gap-2 mb-0">
+      <span class="small fw-semibold text-uppercase text-muted fd-section-title"></span>
+      <span class="badge bg-secondary rounded-pill" id="fd-count-{{ forloop.counter }}"></span>
+      {% if not forloop.last %}
+      <span class="small text-muted ms-2 fst-italic" id="fd-hint-{{ forloop.counter }}">
+        ← {% trans "Cliquez une ligne pour voir les données associées" %}
+      </span>
+      {% endif %}
+    </div>
+    <div class="border rounded-top border-bottom-0 mt-1">
+      <table class="table table-sm table-hover align-middle mb-0">
+        <thead class="table-light" id="fd-thead-{{ forloop.counter }}"></thead>
+      </table>
+    </div>
+    <div class="fd-md-table-wrap">
+      <table class="table table-sm table-hover align-middle mb-0">
+        <tbody id="fd-tbody-{{ forloop.counter }}"></tbody>
+      </table>
+    </div>
+  </div>
+  {% endfor %}
+
+  <script>
+  (function() {
+    const DATA = {{ repeat_data_json|safe }};
+    const LEVELS = {{ chain_levels_json|safe }};
+    const N = LEVELS.length;
+    const sel = new Array(N + 1).fill(null);
+
+    function getItems(level) {
+      if (level === 0) return DATA;
+      let items = DATA;
+      for (let l = 0; l < level; l++) {
+        if (sel[l] === null || !items[sel[l]]) return [];
+        items = items[sel[l]].c;
+      }
+      return items;
+    }
+
+    function getCols(level) {
+      return level === 0 ? ['#', 'Date'] : LEVELS[level - 1].cols;
+    }
+
+    function getVals(level, item) {
+      return level === 0 ? [item.id, item.d] : item.v;
+    }
+
+    function buildHeader(level) {
+      const thead = document.getElementById('fd-thead-' + level);
+      if (!thead || thead.children.length) return;
+      const tr = document.createElement('tr');
+      getCols(level).forEach(c => {
+        const th = document.createElement('th');
+        th.textContent = c || '—';
+        tr.appendChild(th);
+      });
+      thead.appendChild(tr);
+    }
+
+    function render(level) {
+      const tbody = document.getElementById('fd-tbody-' + level);
+      if (!tbody) return;
+      const items = getItems(level);
+      tbody.innerHTML = '';
+
+      const counter = document.getElementById('fd-count-' + level);
+      if (counter) counter.textContent = items.length;
+
+      const hasNext = level < N;
+
+      items.forEach((item, idx) => {
+        const tr = document.createElement('tr');
+        if (hasNext) tr.dataset.clickable = '1';
+        if (sel[level] === idx) tr.classList.add('fd-selected');
+
+        getVals(level, item).forEach(val => {
+          const td = document.createElement('td');
+          td.textContent = (val !== null && val !== undefined && val !== '') ? val : '—';
+          tr.appendChild(td);
+        });
+
+        if (hasNext) {
+          tr.addEventListener('click', () => {
+            tbody.querySelectorAll('tr').forEach(r => r.classList.remove('fd-selected'));
+            tr.classList.add('fd-selected');
+            sel[level] = idx;
+            for (let l = level + 1; l <= N; l++) sel[l] = null;
+
+            const nextSec = document.getElementById('fd-section-' + (level + 1));
+            if (nextSec) {
+              nextSec.classList.remove('d-none');
+              const titleEl = nextSec.querySelector('.fd-section-title');
+              if (titleEl) {
+                const lbl = LEVELS[level].label;
+                const parentRef = level === 0 ? item.id : ('#' + (idx + 1));
+                titleEl.textContent = lbl + ' › ' + parentRef;
+              }
+              buildHeader(level + 1);
+              render(level + 1);
+            }
+            for (let l = level + 2; l <= N + 1; l++) {
+              const s = document.getElementById('fd-section-' + l);
+              if (s) s.classList.add('d-none');
+            }
+          });
+        }
+        tbody.appendChild(tr);
+      });
+    }
+
+    buildHeader(0);
+    render(0);
+  })();
+  </script>
+
+  {% else %}
+  {# ── Flat paginated table for regular groups ── #}
+
+  {% if page_obj and page_obj.has_other_pages %}
+  <div id="fd-pagination-bar" class="d-flex align-items-center gap-1 px-1 py-1 mb-0">
+    {% if page_obj.has_previous %}
+    <a class="btn btn-sm btn-outline-secondary px-2"
+       href="?group={{ active_group }}&page={{ page_obj.previous_page_number }}"
+       title="{% trans 'Page précédente' %}"><i class="bi bi-chevron-left"></i></a>
+    {% else %}
+    <button class="btn btn-sm btn-outline-secondary px-2" disabled><i class="bi bi-chevron-left"></i></button>
+    {% endif %}
+    <span class="text-muted small px-1 text-nowrap">
+      {% trans "Page" %} {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}
+    </span>
+    {% for p in page_range %}
+      {% if p == '...' %}
+        <span class="text-muted small px-1">…</span>
+      {% elif p == page_obj.number %}
+        <span class="btn btn-sm btn-danger px-2 disabled" style="pointer-events:none">{{ p }}</span>
+      {% else %}
+        <a class="btn btn-sm btn-outline-secondary px-2"
+           href="?group={{ active_group }}&page={{ p }}">{{ p }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+    <a class="btn btn-sm btn-outline-secondary px-2"
+       href="?group={{ active_group }}&page={{ page_obj.next_page_number }}"
+       title="{% trans 'Page suivante' %}"><i class="bi bi-chevron-right"></i></a>
+    {% else %}
+    <button class="btn btn-sm btn-outline-secondary px-2" disabled><i class="bi bi-chevron-right"></i></button>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {% if not columns %}
+    <p class="text-muted mt-3">{% trans "Aucune question dans ce groupe." %}</p>
+  {% elif not page_obj %}
+    <p class="text-muted mt-3">{% trans "Aucune soumission." %}</p>
+  {% else %}
+  <div class="fd-table-wrap border rounded">
+    <table class="table table-sm table-striped table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="text-muted" style="width:3rem">#</th>
+          {% for col in columns %}<th>{{ col.label }}</th>{% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in page_obj %}
+          <tr>
+            <td class="text-muted small">{{ row.id }}</td>
+            {% for val in row.values %}
+              <td>{% if val %}{{ val }}{% else %}<span class="text-muted">—</span>{% endif %}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+  {% endif %}{# is_master_detail #}
+
+  </div>{# /main content #}
 </div>{# /d-flex #}
 
 {% endif %}
