@@ -561,6 +561,8 @@ def form_detail(request, uid):
         tabs = [{'key': k, 'label': groups[k]['label']} for k in group_order]
         group_tree = api_client.parse_group_tree(schema, set(group_order))
         active_group = request.GET.get('group', group_order[0] if group_order else '')
+        if active_group not in groups and group_order:
+            active_group = group_order[0]
 
         if active_group and active_group in groups:
             questions = groups[active_group]['questions']
