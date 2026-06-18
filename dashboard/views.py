@@ -1423,15 +1423,16 @@ def submission_list(request, uid):
 
     try:
         schema, submissions, structure, module = _load(uid)
-        if module is None:
-            return redirect(f'/dashboard/{uid}/')
+        if module is None or hasattr(module, 'parse_submissions') \
+                or 'activity_code' not in module.FIELD_PATHS:
+            return form_detail(request, uid)
 
         fp = module.FIELD_PATHS
         for sub in submissions:
-            act_code = sub.get(fp['activity_code'], '')
-            country = sub.get(fp['country'], '')
+            act_code = sub.get(fp.get('activity_code', ''), '')
+            country = sub.get(fp.get('country', ''), '')
             main = module.extract_main_activity(act_code)
-            responsible = sub.get(fp['activity_responsible'], '').strip()
+            responsible = sub.get(fp.get('activity_responsible', ''), '').strip()
 
             if f_activity and main != f_activity:
                 continue
@@ -1476,8 +1477,9 @@ def submission_detail(request, uid, sub_id):
 
     try:
         schema, submissions, structure, module = _load(uid)
-        if module is None:
-            return redirect(f'/dashboard/{uid}/')
+        if module is None or hasattr(module, 'parse_submissions') \
+                or 'activity_code' not in module.FIELD_PATHS:
+            return form_detail(request, uid)
 
         raw = next((s for s in submissions if s.get('_id') == sub_id), None)
         if raw is None:
