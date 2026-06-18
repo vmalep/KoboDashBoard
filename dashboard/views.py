@@ -45,7 +45,14 @@ def _page_range(page_obj):
     return result
 
 def _is_power_user(user):
-    return user.is_authenticated and user.email in django_settings.POWER_USER_EMAILS
+    if not user.is_authenticated:
+        return False
+    if user.email in django_settings.POWER_USER_EMAILS:
+        return True
+    try:
+        return user.profile.is_power_user
+    except Exception:
+        return False
 
 
 def _is_group_admin(user):
@@ -1666,6 +1673,7 @@ def user_list(request):
     return render(request, 'dashboard/user_list.html', {
         'pending': pending,
         'active': active,
+        'power_user_emails': django_settings.POWER_USER_EMAILS,
     })
 
 
@@ -1697,6 +1705,19 @@ def user_delete(request, user_id):
         user = get_object_or_404(User, pk=user_id)
         if user != request.user:
             user.delete()
+    return redirect('/dashboard/users/')
+
+
+@login_required
+def user_toggle_power(request, user_id):
+    if request.method != 'POST' or not _is_power_user(request.user):
+        return redirect('/dashboard/')
+    User = get_user_model()
+    user = get_object_or_404(User, pk=user_id)
+    if user != request.user and user.email not in django_settings.POWER_USER_EMAILS:
+        profile = user.profile
+        profile.is_power_user = not profile.is_power_user
+        profile.save()
     return redirect('/dashboard/users/')
 
 

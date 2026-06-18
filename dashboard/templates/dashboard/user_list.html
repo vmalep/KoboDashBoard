@@ -68,6 +68,7 @@
         <tr>
           <th>{% trans "Nom" %}</th>
           <th>Email</th>
+          <th>{% trans "Rôle" %}</th>
           <th>{% trans "Créé le" %}</th>
           <th></th>
         </tr>
@@ -77,8 +78,25 @@
           <tr>
             <td>{{ user.profile.full_name|default:"—" }}</td>
             <td>{{ user.email }}</td>
+            <td>
+              {% if user.email in power_user_emails or user.profile.is_power_user %}
+                <span class="badge bg-danger">{% trans "Super-utilisateur" %}</span>
+              {% endif %}
+            </td>
             <td class="text-muted small">{{ user.date_joined|date:"d/m/Y H:i" }}</td>
             <td class="text-end">
+              {% if is_power_user and user.email not in power_user_emails %}
+                <form method="post" action="/dashboard/users/{{ user.pk }}/toggle-power/"
+                      class="d-inline me-1"
+                      onsubmit="return confirm('{% if user.profile.is_power_user %}{% trans "Révoquer les droits super-utilisateur ?" %}{% else %}{% trans "Accorder les droits super-utilisateur ?" %}{% endif %}')">
+                  {% csrf_token %}
+                  <button type="submit"
+                          class="btn btn-sm {% if user.profile.is_power_user %}btn-danger{% else %}btn-outline-danger{% endif %}"
+                          title="{% if user.profile.is_power_user %}{% trans "Révoquer super-utilisateur" %}{% else %}{% trans "Accorder super-utilisateur" %}{% endif %}">
+                    <i class="bi bi-shield{% if user.profile.is_power_user %}-fill{% endif %}"></i>
+                  </button>
+                </form>
+              {% endif %}
               <form method="post" action="/dashboard/users/{{ user.pk }}/reset-link/"
                     class="d-inline">
                 {% csrf_token %}

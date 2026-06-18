@@ -12,6 +12,7 @@ urlpatterns = [
     path('users/<int:user_id>/deactivate/', views.user_deactivate, name='user_deactivate'),
     path('users/<int:user_id>/delete/', views.user_delete, name='user_delete'),
     path('users/<int:user_id>/reset-link/', views.generate_reset_link, name='generate_reset_link'),
+    path('users/<int:user_id>/toggle-power/', views.user_toggle_power, name='user_toggle_power'),
     path('groups/<int:group_id>/', views.group_edit, name='group_edit'),
     path('my-group/', views.my_group, name='my_group'),
     path('my-group/<int:user_id>/', views.my_group, name='my_group_action'),

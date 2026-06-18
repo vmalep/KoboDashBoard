@@ -12,8 +12,19 @@ _LANG_NAMES = [
 _LANG_NAME_MAP = dict(_LANG_NAMES)
 
 
+def _check_power_user(user):
+    if not user.is_authenticated:
+        return False
+    if user.email in settings.POWER_USER_EMAILS:
+        return True
+    try:
+        return user.profile.is_power_user
+    except Exception:
+        return False
+
+
 def pending_users(request):
-    if request.user.is_authenticated and request.user.email in settings.POWER_USER_EMAILS:
+    if _check_power_user(request.user):
         count = get_user_model().objects.filter(is_active=False).count()
         return {'pending_users_count': count}
     return {'pending_users_count': 0}
@@ -31,7 +42,7 @@ def user_roles(request):
     if not request.user.is_authenticated:
         return {'is_power_user': False, 'is_group_admin': False, 'app_version': APP_VERSION, **lang_ctx}
     from kobo.models import DashboardGroup
-    is_power = request.user.email in settings.POWER_USER_EMAILS
+    is_power = _check_power_user(request.user)
     is_gadmin = not is_power and DashboardGroup.objects.filter(admins=request.user).exists()
     return {'is_power_user': is_power, 'is_group_admin': is_gadmin, 'app_version': APP_VERSION, **lang_ctx}
 

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-17 05:30+0000\n"
+"POT-Creation-Date: 2026-06-17 21:11+0000\n"
 "Language: ru\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -166,6 +166,41 @@ msgstr "действие неприменимо в данной стране"
 msgid "Activité principale"
 msgstr "Основная деятельность"
 
+#: dashboard/templates/dashboard/dashboard_select.html:11
+#, fuzzy
+#| msgid "Ouvrir le tableau de bord"
+msgid "Choisir un tableau de bord"
+msgstr "Открыть панель"
+
+#: dashboard/templates/dashboard/dashboard_select.html:21
+#, fuzzy
+#| msgid "Tableau de données"
+msgid "Tableau de bord (éditeur)"
+msgstr "Таблица данных"
+
+#: dashboard/templates/dashboard/dashboard_select.html:31
+msgid "Dashboard indicateurs (module Python)"
+msgstr ""
+
+#: dashboard/templates/dashboard/dashboard_select.html:41
+#, fuzzy
+#| msgid "Matrice de couverture"
+msgid "Matrice de couverture (module Python)"
+msgstr "Матрица охвата"
+
+#: dashboard/templates/dashboard/dashboard_select.html:51
+#: dashboard/templates/dashboard/form_list.html:54
+#: dashboard/templates/dashboard/settings.html:187
+msgid "Explorer les données brutes"
+msgstr "Просмотр исходных данных"
+
+#: dashboard/templates/dashboard/dashboard_select.html:54
+#: dashboard/templates/dashboard/editor_list.html:15
+#: dashboard/templates/dashboard/generic_dashboard.html:20
+#: dashboard/templates/dashboard/submission_detail.html:8
+msgid "Retour"
+msgstr "Назад"
+
 #: dashboard/templates/dashboard/editor.html:3
 msgid "Éditeur"
 msgstr "Редактор"
@@ -202,7 +237,9 @@ msgstr "Переименовать"
 msgid ""
 "Impossible de charger le schéma du formulaire — le sélecteur de champs sera "
 "vide. Vérifiez la connexion KoboToolBox dans les paramètres."
-msgstr "Не удалось загрузить схему формы — выбор поля будет пустым. Проверьте подключение KoboToolBox в настройках."
+msgstr ""
+"Не удалось загрузить схему формы — выбор поля будет пустым. Проверьте "
+"подключение KoboToolBox в настройках."
 
 #: dashboard/templates/dashboard/editor.html:53
 msgid "Filtres du dashboard"
@@ -327,12 +364,6 @@ msgstr "Добавить строку"
 #: dashboard/templates/dashboard/editor_list.html:11
 msgid "Dashboards"
 msgstr "Панели"
-
-#: dashboard/templates/dashboard/editor_list.html:15
-#: dashboard/templates/dashboard/generic_dashboard.html:20
-#: dashboard/templates/dashboard/submission_detail.html:8
-msgid "Retour"
-msgstr "Назад"
 
 #: dashboard/templates/dashboard/editor_list.html:27
 #, python-format
@@ -576,10 +607,6 @@ msgstr "кэшированных отправок"
 msgid "Éditeur dashboard"
 msgstr "Редактор панели"
 
-#: dashboard/templates/dashboard/form_list.html:54
-msgid "Explorer les données brutes"
-msgstr "Просмотр исходных данных"
-
 #: dashboard/templates/dashboard/generic_dashboard.html:15
 #: dashboard/templates/dashboard/submission_list.html:20
 #, python-format
@@ -642,7 +669,8 @@ msgstr "Администраторы группы"
 msgid ""
 "Les administrateurs peuvent charger des modules et gérer les membres de ce "
 "groupe."
-msgstr "Администраторы могут загружать модули и управлять участниками этой группы."
+msgstr ""
+"Администраторы могут загружать модули и управлять участниками этой группы."
 
 #: dashboard/templates/dashboard/module_dashboard.html:22
 msgid "Export XLSX"
@@ -733,7 +761,9 @@ msgstr "Модуль успешно загружен"
 msgid ""
 "Le fichier <code>%(filename)s</code> a été installé. Redémarrez le serveur "
 "pour activer le nouveau module."
-msgstr "Файл <code>%(filename)s</code> установлен. Перезапустите сервер для активации нового модуля."
+msgstr ""
+"Файл <code>%(filename)s</code> установлен. Перезапустите сервер для "
+"активации нового модуля."
 
 #: dashboard/templates/dashboard/module_uploaded.html:14
 msgid "Retour aux paramètres"
@@ -758,17 +788,17 @@ msgid "Email"
 msgstr "Эл. почта"
 
 #: dashboard/templates/dashboard/my_group.html:41
-#: dashboard/templates/dashboard/user_list.html:86
+#: dashboard/templates/dashboard/user_list.html:104
 msgid "Générer un lien de réinitialisation du mot de passe"
 msgstr "Создать ссылку для сброса пароля"
 
 #: dashboard/templates/dashboard/my_group.html:47
-#: dashboard/templates/dashboard/user_list.html:92
+#: dashboard/templates/dashboard/user_list.html:110
 msgid "Désactiver ce compte ?"
 msgstr "Деактивировать этот аккаунт?"
 
 #: dashboard/templates/dashboard/my_group.html:56
-#: dashboard/templates/dashboard/user_list.html:100
+#: dashboard/templates/dashboard/user_list.html:118
 msgid "Supprimer définitivement ce compte ?"
 msgstr "Навсегда удалить этот аккаунт?"
 
@@ -840,7 +870,9 @@ msgstr "Логотип не настроен."
 msgid ""
 "Formats recommandés : PNG ou SVG sur fond transparent. Hauteur idéale : 48 "
 "px."
-msgstr "Рекомендуемые форматы: PNG или SVG с прозрачным фоном. Идеальная высота: 48 пикс."
+msgstr ""
+"Рекомендуемые форматы: PNG или SVG с прозрачным фоном. Идеальная высота: 48 "
+"пикс."
 
 #: dashboard/templates/dashboard/settings.html:56
 msgid "Couleur principale"
@@ -916,10 +948,6 @@ msgstr "Удалить форму"
 msgid "Éditeur de dashboard"
 msgstr "Редактор панели"
 
-#: dashboard/templates/dashboard/settings.html:187
-msgid "Visionner le dashboard"
-msgstr "Просмотр панели"
-
 #: dashboard/templates/dashboard/settings.html:201
 msgid "Ajouter un formulaire"
 msgstr "Добавить форму"
@@ -948,7 +976,9 @@ msgstr "На сервере форм не найдено."
 msgid ""
 "Pour ajouter un nouveau formulaire, cliquez sur « Tester & charger les "
 "formulaires » ci-dessus, puis sélectionnez-en un dans la liste."
-msgstr "Чтобы добавить новую форму, нажмите «Тест и загрузка форм» выше, затем выберите одну из списка."
+msgstr ""
+"Чтобы добавить новую форму, нажмите «Тест и загрузка форм» выше, затем "
+"выберите одну из списка."
 
 #: dashboard/templates/dashboard/settings.html:245
 msgid "Groupes d'utilisateurs"
@@ -1005,7 +1035,8 @@ msgstr "Если вы потеряли пароль, подключитесь к
 msgid ""
 "Un lien de connexion à usage unique (valable 3 jours) sera affiché dans le "
 "terminal."
-msgstr "В терминале отобразится одноразовая ссылка для входа (действительна 3 дня)."
+msgstr ""
+"В терминале отобразится одноразовая ссылка для входа (действительна 3 дня)."
 
 #: dashboard/templates/dashboard/submission_detail.html:3
 msgid "Détail soumission"
@@ -1127,10 +1158,34 @@ msgid "Aucun utilisateur actif (hors administrateurs)."
 msgstr "Нет активных пользователей (кроме администраторов)."
 
 #: dashboard/templates/dashboard/user_list.html:71
+msgid "Rôle"
+msgstr "Роль"
+
+#: dashboard/templates/dashboard/user_list.html:72
 msgid "Créé le"
 msgstr "Создано"
 
+#: dashboard/templates/dashboard/user_list.html:83
+msgid "Super-utilisateur"
+msgstr "Суперпользователь"
+
+#: dashboard/templates/dashboard/user_list.html:91
+msgid "Révoquer les droits super-utilisateur ?"
+msgstr "Отозвать права суперпользователя?"
+
+#: dashboard/templates/dashboard/user_list.html:91
+msgid "Accorder les droits super-utilisateur ?"
+msgstr "Предоставить права суперпользователя?"
+
 #: dashboard/templates/dashboard/user_list.html:95
+msgid "Révoquer super-utilisateur"
+msgstr "Отозвать права"
+
+#: dashboard/templates/dashboard/user_list.html:95
+msgid "Accorder super-utilisateur"
+msgstr "Предоставить права"
+
+#: dashboard/templates/dashboard/user_list.html:113
 msgid "Désactiver"
 msgstr "Деактивировать"
 
@@ -1148,44 +1203,48 @@ msgstr "Поле не выбрано."
 msgid "Aucune donnée — vérifiez les champs sélectionnés."
 msgstr "Нет данных — проверьте выбранные поля."
 
-#: dashboard/views.py:191
+#: dashboard/views.py:198
 msgid "Connexion enregistrée."
 msgstr "Подключение сохранено."
 
-#: dashboard/views.py:219
+#: dashboard/views.py:226
 #, python-format
 msgid "Formulaire « %(name)s » ajouté."
 msgstr "Форма «%(name)s» добавлена."
 
-#: dashboard/views.py:221
+#: dashboard/views.py:228
 msgid "Ce formulaire est déjà configuré."
 msgstr "Эта форма уже настроена."
 
-#: dashboard/views.py:230
+#: dashboard/views.py:237
 msgid "Formulaire supprimé."
 msgstr "Форма удалена."
 
-#: dashboard/views.py:238
+#: dashboard/views.py:245
 msgid "Durée du cache mise à jour."
 msgstr "Продолжительность кэша обновлена."
 
-#: dashboard/views.py:249
+#: dashboard/views.py:256
 msgid "Apparence enregistrée."
 msgstr "Внешний вид сохранён."
 
-#: dashboard/views.py:255
+#: dashboard/views.py:262
 #, python-format
 msgid "Groupe « %(name)s » créé."
 msgstr "Группа «%(name)s» создана."
 
-#: dashboard/views.py:255
+#: dashboard/views.py:262
 msgid "Ce nom de groupe existe déjà."
 msgstr "Это название группы уже существует."
 
-#: dashboard/views.py:260
+#: dashboard/views.py:267
 msgid "Groupe supprimé."
 msgstr "Группа удалена."
 
-#: dashboard/views.py:312
+#: dashboard/views.py:319
 msgid "Nom de fichier invalide (doit être un identifiant Python valide)."
-msgstr "Недопустимое имя файла (должно быть допустимым идентификатором Python)."
+msgstr ""
+"Недопустимое имя файла (должно быть допустимым идентификатором Python)."
+
+#~ msgid "Visionner le dashboard"
+#~ msgstr "Просмотр панели"
