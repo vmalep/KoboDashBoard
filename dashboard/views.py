@@ -258,7 +258,7 @@ def settings_view(request):
         elif action == 'create_group':
             gname = request.POST.get('group_name', '').strip()
             if gname:
-                _, created = DashboardGroup.objects.get_or_create(name=gname)
+                _group, created = DashboardGroup.objects.get_or_create(name=gname)
                 success = (_('Groupe « %(name)s » créé.') % {'name': gname}) if created else _('Ce nom de groupe existe déjà.')
 
         elif action == 'delete_group':
