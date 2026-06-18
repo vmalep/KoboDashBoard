@@ -922,9 +922,13 @@ def coverage(request, uid):
     if not _user_can_access_form(request.user, uid):
         return redirect('/dashboard/')
 
+    # ?group= means the user is navigating raw-data tabs — go straight to form_detail.
+    if request.GET.get('group'):
+        return form_detail(request, uid)
+
     # Build list of all available dashboard options (JSON dashboards + Python module).
-    # Skip selection when ?view=module or ?group= is present (?group= comes from form_detail tabs).
-    if request.GET.get('view') != 'module' and not request.GET.get('group'):
+    # Skip selection when ?view=module is present (direct module link).
+    if request.GET.get('view') != 'module':
         _module = get_module(uid)
         try:
             _cf = ConfiguredForm.objects.get(uid=uid)
