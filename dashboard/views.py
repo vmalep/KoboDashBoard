@@ -923,8 +923,8 @@ def coverage(request, uid):
         return redirect('/dashboard/')
 
     # Build list of all available dashboard options (JSON dashboards + Python module).
-    # Skip selection when ?view=module is present (direct module link from selection page).
-    if request.GET.get('view') != 'module':
+    # Skip selection when ?view=module or ?group= is present (?group= comes from form_detail tabs).
+    if request.GET.get('view') != 'module' and not request.GET.get('group'):
         _module = get_module(uid)
         try:
             _cf = ConfiguredForm.objects.get(uid=uid)
