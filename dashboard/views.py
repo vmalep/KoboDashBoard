@@ -565,12 +565,42 @@ def form_detail(request, uid):
             active_group = group_order[0]
 
         if active_group and active_group in groups:
-            questions = groups[active_group]['questions']
+            group_info = groups[active_group]
+            questions = group_info['questions']
             columns = [{'label': question_labels.get(q, q)} for q in questions]
-            rows = [
-                {'id': sub.get('_id', ''), 'values': [sub.get(q, '') for q in questions]}
-                for sub in submissions
-            ]
+
+            is_repeat = group_info.get('is_repeat', False)
+            parent_rpt_key = group_info.get('parent_repeat_key')  # full_key of enclosing repeat
+            full_key = group_info.get('full_key') or active_group
+
+            rows = []
+            if is_repeat:
+                if parent_rpt_key:
+                    # Nested repeat: iterate parent repeat items, then nested items
+                    for sub in submissions:
+                        for parent_item in sub.get(parent_rpt_key, []):
+                            for item in parent_item.get(full_key, []):
+                                rows.append({'id': sub.get('_id', ''),
+                                             'values': [item.get(q, '') for q in questions]})
+                else:
+                    # Top-level repeat: iterate repeat items
+                    for sub in submissions:
+                        for item in sub.get(full_key, []):
+                            rows.append({'id': sub.get('_id', ''),
+                                         'values': [item.get(q, '') for q in questions]})
+            elif parent_rpt_key:
+                # Regular group inside a repeat: questions live in repeat items
+                for sub in submissions:
+                    for parent_item in sub.get(parent_rpt_key, []):
+                        rows.append({'id': sub.get('_id', ''),
+                                     'values': [parent_item.get(q, '') for q in questions]})
+            else:
+                # Regular top-level group: flat submission lookup
+                rows = [
+                    {'id': sub.get('_id', ''), 'values': [sub.get(q, '') for q in questions]}
+                    for sub in submissions
+                ]
+
             paginator = Paginator(rows, PAGE_SIZE)
             page_obj = paginator.get_page(request.GET.get('page'))
 

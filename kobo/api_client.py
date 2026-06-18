@@ -70,55 +70,86 @@ def get_submissions(uid, config=None):
 
 def parse_groups(schema):
     """
-    Parse the form schema's survey array and return a dict of:
-      { group_name: {'label': str, 'questions': [full_path, ...]} }
-    full_path is 'group_name/question_name' for grouped questions, or just
-    'question_name' for questions outside any group ('_general').
-    These paths match the keys KoboToolBox uses in submission data.
+    Parse the form schema and return (group_order, groups).
+
+    groups maps key -> {
+      'label': str,
+      'questions': [full_path, ...],
+      'is_repeat': bool,
+      'full_key': str,           # slash-path from submission root for this group
+      'parent_repeat_key': str,  # full_key of innermost enclosing repeat, or None
+    }
+
+    full_path for questions is the slash-path KoboToolBox uses in submission data.
+    Repeat group data is stored as arrays in submissions; parent_repeat_key and
+    full_key are needed to traverse the nesting when building table rows.
     """
     survey = schema.get('content', {}).get('survey', [])
-    groups = {'_general': {'label': 'General', 'questions': []}}
+    groups = {'_general': {
+        'label': 'General', 'questions': [],
+        'is_repeat': False, 'full_key': None, 'parent_repeat_key': None,
+    }}
     group_order = ['_general']
-    current_group = '_general'
-    current_group_name = None  # actual group name used for path prefix
+    name_stack = []    # schema names of currently open groups/repeats
+    is_rpt_stack = []  # parallel: True when that level is a begin_repeat
 
     for row in survey:
         row_type = row.get('type', '')
         name = row.get('name') or row.get('$autoname', '')
 
-        if row_type == 'begin_group':
+        if row_type in ('begin_group', 'begin_repeat'):
             label = _extract_label(row)
-            groups[name] = {'label': label or name, 'questions': []}
-            group_order.append(name)
-            current_group = name
-            current_group_name = name
-        elif row_type == 'end_group':
-            current_group = '_general'
-            current_group_name = None
-        elif row_type not in ('note', 'begin_repeat', 'end_repeat') and name:
-            full_path = f'{current_group_name}/{name}' if current_group_name else name
-            groups[current_group]['questions'].append(full_path)
+            is_rpt = row_type == 'begin_repeat'
+            full_key = '/'.join(name_stack + [name])
 
-    # Remove empty groups
+            # Full key of the innermost enclosing repeat (for data traversal)
+            parent_rpt_key = None
+            for i in range(len(is_rpt_stack) - 1, -1, -1):
+                if is_rpt_stack[i]:
+                    parent_rpt_key = '/'.join(name_stack[:i + 1])
+                    break
+
+            groups[name] = {
+                'label': label or name,
+                'questions': [],
+                'is_repeat': is_rpt,
+                'full_key': full_key,
+                'parent_repeat_key': parent_rpt_key,
+            }
+            group_order.append(name)
+            name_stack.append(name)
+            is_rpt_stack.append(is_rpt)
+
+        elif row_type in ('end_group', 'end_repeat'):
+            if name_stack:
+                name_stack.pop()
+                is_rpt_stack.pop()
+
+        elif row_type not in ('note',) and name:
+            current = name_stack[-1] if name_stack else '_general'
+            full_path = '/'.join(name_stack + [name]) if name_stack else name
+            groups[current]['questions'].append(full_path)
+
     group_order = [g for g in group_order if groups[g]['questions']]
     return group_order, {k: groups[k] for k in group_order if k in groups}
 
 
 def get_question_labels(schema):
-    """Return {full_path: label_string} for all questions in the schema.
-    full_path matches the keys used in parse_groups and in submission data."""
+    """Return {full_path: label_string} for all questions.
+    Paths match parse_groups: full slash-path from submission root."""
     survey = schema.get('content', {}).get('survey', [])
     labels = {}
-    current_group_name = None
+    name_stack = []
     for row in survey:
         row_type = row.get('type', '')
         name = row.get('name') or row.get('$autoname', '')
-        if row_type == 'begin_group':
-            current_group_name = name
-        elif row_type == 'end_group':
-            current_group_name = None
+        if row_type in ('begin_group', 'begin_repeat'):
+            name_stack.append(name)
+        elif row_type in ('end_group', 'end_repeat'):
+            if name_stack:
+                name_stack.pop()
         elif name:
-            full_path = f'{current_group_name}/{name}' if current_group_name else name
+            full_path = '/'.join(name_stack + [name]) if name_stack else name
             labels[full_path] = _extract_label(row) or name
     return labels
 
