@@ -529,60 +529,50 @@ def module_dashboard(request, uid):
     })
 
 
-def _repeat_chain_for(active_group, groups):
-    """Return [(name, group_info), ...] from outermost repeat down to active_group."""
-    fk_to_name = {v.get('full_key'): k for k, v in groups.items() if v.get('full_key')}
-    chain = []
-    name = active_group
-    while name and name in groups:
-        g = groups[name]
-        chain.insert(0, (name, g))
-        prk = g.get('parent_repeat_key')
-        if not prk:
-            break
-        name = fk_to_name.get(prk)
-    return chain
-
-
-def _extract_nested_children(item, chain, depth):
-    """Recursively extract repeat children for levels depth..end of chain."""
-    if depth >= len(chain):
-        return []
-    _name, g = chain[depth]
-    sub_items = item.get(g['full_key'], [])
-    if not isinstance(sub_items, list):
-        return []
-    return [
-        {
-            'v': [str(sub.get(q, '') or '') for q in g['questions']],
-            'c': _extract_nested_children(sub, chain, depth + 1),
-        }
-        for sub in sub_items
+def _build_repeat_subtree(key, groups, group_order, question_labels):
+    """Return a recursive dict for one repeat group (used to build JS REPEAT_TREE)."""
+    g = groups[key]
+    fk = g['full_key']
+    children = [
+        _build_repeat_subtree(k, groups, group_order, question_labels)
+        for k in group_order
+        if groups[k].get('is_repeat') and groups[k].get('parent_repeat_key') == fk
     ]
+    return {
+        'key': key,
+        'label': g['label'],
+        'full_key': fk,
+        'cols': [question_labels.get(q, q) for q in g['questions']],
+        'questions': g['questions'],
+        'children': children,
+    }
 
 
-def _build_repeat_table_data(chain, submissions):
-    """Build nested [{id, d, c:[{v, c:[...]}, ...]}, ...] for master-detail JS."""
-    if not chain:
-        return []
-    _n0, g0 = chain[0]
-    rows = []
-    for sub in submissions:
-        top_items = sub.get(g0['full_key'], [])
-        if not isinstance(top_items, list):
-            top_items = []
-        rows.append({
-            'id': sub.get('_id', ''),
-            'd': (sub.get('_submission_time', '') or '')[:10],
-            'c': [
-                {
-                    'v': [str(item.get(q, '') or '') for q in g0['questions']],
-                    'c': _extract_nested_children(item, chain, 1),
-                }
-                for item in top_items
-            ],
+def _extract_repeat_items_nested(obj, subtree):
+    """Recursively extract repeat items from a submission or repeat item dict."""
+    items = obj.get(subtree['full_key'], [])
+    if not isinstance(items, list):
+        items = []
+    result = []
+    for item in items:
+        result.append({
+            'v': [str(item.get(q, '') or '') for q in subtree['questions']],
+            'c': {
+                child['key']: _extract_repeat_items_nested(item, child)
+                for child in subtree['children']
+            },
         })
-    return rows
+    return result
+
+
+def _subtree_for_js(subtree):
+    """Strip internal-only keys before JSON serialisation."""
+    return {
+        'key': subtree['key'],
+        'label': subtree['label'],
+        'cols': subtree['cols'],
+        'children': [_subtree_for_js(c) for c in subtree['children']],
+    }
 
 
 @login_required
@@ -590,17 +580,13 @@ def form_detail(request, uid):
     if not _user_can_access_form(request.user, uid):
         return redirect('/dashboard/')
     error = None
-    tabs = []
-    group_tree = []
-    columns = []
-    page_obj = None
     form_name = uid
     total_submissions = 0
-    active_group = ''
-    is_master_detail = False
-    chain_levels = []
-    repeat_data_json = '[]'
-    chain_levels_json = '[]'
+    flat_cols = []
+    flat_rows = []
+    has_repeats = False
+    repeat_tree_json = '[]'
+    sub_repeats_json = '[]'
 
     try:
         config = _config()
@@ -618,42 +604,45 @@ def form_detail(request, uid):
         group_order, groups = api_client.parse_groups(schema)
         question_labels = api_client.get_question_labels(schema)
 
-        tabs = [{'key': k, 'label': groups[k]['label']} for k in group_order]
-        group_tree = api_client.parse_group_tree(schema, set(group_order))
-        active_group = request.GET.get('group', group_order[0] if group_order else '')
-        if active_group not in groups and group_order:
-            active_group = group_order[0]
+        # Non-repeat fields: all groups that are neither repeat nor inside a repeat
+        flat_questions = []
+        for k in group_order:
+            g_info = groups[k]
+            if not g_info.get('is_repeat') and not g_info.get('parent_repeat_key'):
+                for q in g_info['questions']:
+                    flat_questions.append(q)
+                    flat_cols.append(question_labels.get(q, q))
 
-        if active_group and active_group in groups:
-            group_info = groups[active_group]
-            is_in_repeat = (
-                group_info.get('is_repeat', False)
-                or bool(group_info.get('parent_repeat_key'))
-            )
+        # Top-level repeat groups
+        top_repeat_keys = [
+            k for k in group_order
+            if groups[k].get('is_repeat') and not groups[k].get('parent_repeat_key')
+        ]
+        repeat_subtrees = [
+            _build_repeat_subtree(k, groups, group_order, question_labels)
+            for k in top_repeat_keys
+        ]
+        has_repeats = bool(repeat_subtrees)
 
-            if is_in_repeat:
-                # Master-detail cascading tables for repeat groups
-                is_master_detail = True
-                chain = _repeat_chain_for(active_group, groups)
-                chain_levels = [
-                    {
-                        'label': g['label'],
-                        'cols': [question_labels.get(q, q) for q in g['questions']],
-                    }
-                    for _name, g in chain
-                ]
-                repeat_data_json = json.dumps(_build_repeat_table_data(chain, submissions))
-                chain_levels_json = json.dumps(chain_levels)
-            else:
-                # Regular group: flat paginated table
-                questions = group_info['questions']
-                columns = [{'label': question_labels.get(q, q)} for q in questions]
-                rows = [
-                    {'id': sub.get('_id', ''), 'values': [sub.get(q, '') for q in questions]}
-                    for sub in submissions
-                ]
-                paginator = Paginator(rows, PAGE_SIZE)
-                page_obj = paginator.get_page(request.GET.get('page'))
+        # Build submission rows
+        flat_rows = []
+        sub_repeats = []
+        for sub in submissions:
+            sub_id = str(sub.get('_id', ''))
+            date = (sub.get('_submission_time', '') or '')[:10]
+            flat_rows.append({
+                'id': sub_id,
+                'date': date,
+                'v': [str(sub.get(q, '') or '') for q in flat_questions],
+            })
+            if has_repeats:
+                sub_repeats.append({
+                    st['key']: _extract_repeat_items_nested(sub, st)
+                    for st in repeat_subtrees
+                })
+
+        repeat_tree_json = json.dumps([_subtree_for_js(st) for st in repeat_subtrees])
+        sub_repeats_json = json.dumps(sub_repeats) if has_repeats else '[]'
 
     except api_client.KoboAPIError as exc:
         error = str(exc)
@@ -662,16 +651,11 @@ def form_detail(request, uid):
         'uid': uid,
         'form_name': form_name,
         'total_submissions': total_submissions,
-        'tabs': tabs,
-        'group_tree': group_tree,
-        'active_group': active_group,
-        'columns': columns,
-        'page_obj': page_obj,
-        'page_range': _page_range(page_obj) if page_obj else [],
-        'is_master_detail': is_master_detail,
-        'chain_levels': chain_levels,
-        'repeat_data_json': repeat_data_json,
-        'chain_levels_json': chain_levels_json,
+        'flat_cols': flat_cols,
+        'flat_rows': flat_rows,
+        'has_repeats': has_repeats,
+        'repeat_tree_json': repeat_tree_json,
+        'sub_repeats_json': sub_repeats_json,
         'error': error,
     })
 
@@ -1012,8 +996,8 @@ def coverage(request, uid):
     if not _user_can_access_form(request.user, uid):
         return redirect('/dashboard/')
 
-    # ?group= means the user is navigating raw-data tabs — go straight to form_detail.
-    if request.GET.get('group'):
+    # ?raw=1 or legacy ?group= means "show raw submissions table"
+    if request.GET.get('raw') or request.GET.get('group'):
         return form_detail(request, uid)
 
     # Build list of all available dashboard options (JSON dashboards + Python module).
