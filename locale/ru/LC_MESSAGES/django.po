@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-17 21:11+0000\n"
+"POT-Creation-Date: 2026-06-18 06:46+0000\n"
 "Language: ru\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -221,7 +221,9 @@ msgstr "Удалить эту панель?"
 #: dashboard/templates/dashboard/editor.html:90
 #: dashboard/templates/dashboard/editor.html:228
 #: dashboard/templates/dashboard/editor_widget_form.html:171
-#: dashboard/templates/dashboard/editor_widget_form.html:333
+#: dashboard/templates/dashboard/editor_widget_form.html:307
+#: dashboard/templates/dashboard/editor_widget_form.html:384
+#: dashboard/templates/dashboard/editor_widget_form.html:451
 msgid "Supprimer"
 msgstr "Удалить"
 
@@ -252,14 +254,14 @@ msgstr "Поля, отображаемые как фильтры в верхне
 #: dashboard/templates/dashboard/editor.html:71
 #: dashboard/templates/dashboard/editor.html:163
 #: dashboard/templates/dashboard/editor_widget_form.html:154
-#: dashboard/templates/dashboard/editor_widget_form.html:324
+#: dashboard/templates/dashboard/editor_widget_form.html:442
 msgid "Monter"
 msgstr "Вверх"
 
 #: dashboard/templates/dashboard/editor.html:81
 #: dashboard/templates/dashboard/editor.html:175
 #: dashboard/templates/dashboard/editor_widget_form.html:155
-#: dashboard/templates/dashboard/editor_widget_form.html:325
+#: dashboard/templates/dashboard/editor_widget_form.html:443
 msgid "Descendre"
 msgstr "Вниз"
 
@@ -272,6 +274,7 @@ msgid "Aucun filtre configuré."
 msgstr "Фильтры не настроены."
 
 #: dashboard/templates/dashboard/editor.html:110
+#: dashboard/templates/dashboard/editor_widget_form.html:313
 msgid "Champ"
 msgstr "Поле"
 
@@ -290,7 +293,8 @@ msgstr "напр., Страна"
 
 #: dashboard/templates/dashboard/editor.html:124
 #: dashboard/templates/dashboard/editor_widget_form.html:189
-#: dashboard/templates/dashboard/editor_widget_form.html:251
+#: dashboard/templates/dashboard/editor_widget_form.html:329
+#: dashboard/templates/dashboard/editor_widget_form.html:336
 #: dashboard/templates/dashboard/my_group.html:87
 msgid "Ajouter"
 msgstr "Добавить"
@@ -465,7 +469,7 @@ msgstr "Значения — цвет и метка"
 #: dashboard/templates/dashboard/editor_widget_form.html:93
 #: dashboard/templates/dashboard/editor_widget_form.html:163
 #: dashboard/templates/dashboard/editor_widget_form.html:218
-#: dashboard/templates/dashboard/editor_widget_form.html:331
+#: dashboard/templates/dashboard/editor_widget_form.html:449
 msgid "Couleur"
 msgstr "Цвет"
 
@@ -514,12 +518,12 @@ msgid "Séries"
 msgstr "Серии"
 
 #: dashboard/templates/dashboard/editor_widget_form.html:167
-#: dashboard/templates/dashboard/editor_widget_form.html:332
+#: dashboard/templates/dashboard/editor_widget_form.html:450
 msgid "Libellé affiché dans la légende"
 msgstr "Метка в легенде"
 
 #: dashboard/templates/dashboard/editor_widget_form.html:174
-#: dashboard/templates/dashboard/editor_widget_form.html:304
+#: dashboard/templates/dashboard/editor_widget_form.html:422
 msgid "Aucune série sélectionnée."
 msgstr "Серии не выбраны."
 
@@ -528,7 +532,7 @@ msgid "Ajouter un champ de série"
 msgstr "Добавить поле серии"
 
 #: dashboard/templates/dashboard/editor_widget_form.html:193
-#: dashboard/templates/dashboard/editor_widget_form.html:243
+#: dashboard/templates/dashboard/editor_widget_form.html:255
 msgid "Aucun champ disponible (schéma non chargé)."
 msgstr "Нет доступных полей (схема не загружена)."
 
@@ -536,18 +540,67 @@ msgstr "Нет доступных полей (схема не загружена
 msgid "Couleurs par valeur —"
 msgstr "Цвета по значению —"
 
-#: dashboard/templates/dashboard/editor_widget_form.html:230
+#: dashboard/templates/dashboard/editor_widget_form.html:236
+msgid "Mode tableau croisé (pivot)"
+msgstr "Режим сводной таблицы (pivot)"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:242
 msgid "Colonnes à afficher"
 msgstr "Столбцы для отображения"
 
-#: dashboard/templates/dashboard/editor_widget_form.html:251
+#: dashboard/templates/dashboard/editor_widget_form.html:264
+msgid "Champ lignes"
+msgstr "Поле строк"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:266
+#: dashboard/templates/dashboard/editor_widget_form.html:275
+msgid "Choisir"
+msgstr "Выбрать"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:273
+msgid "Champ colonnes"
+msgstr "Поле столбцов"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:289
+msgid "Filtres du widget"
+msgstr "Фильтры виджета"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:290
+msgid "(appliqués avant le calcul)"
+msgstr "(применяются до расчёта)"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:301
+#: dashboard/templates/dashboard/editor_widget_form.html:322
+#: dashboard/templates/dashboard/editor_widget_form.html:372
+msgid "vide"
+msgstr "пусто"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:301
+#: dashboard/templates/dashboard/editor_widget_form.html:321
+#: dashboard/templates/dashboard/editor_widget_form.html:372
+msgid "non vide"
+msgstr "не пусто"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:319
+msgid "égal à"
+msgstr "равно"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:320
+msgid "différent de"
+msgstr "не равно"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:326
+msgid "Valeur"
+msgstr "Значение"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:336
 #: dashboard/templates/dashboard/group_edit.html:85
 #: dashboard/templates/dashboard/settings.html:73
 #: dashboard/templates/dashboard/settings.html:102
 msgid "Enregistrer"
 msgstr "Сохранить"
 
-#: dashboard/templates/dashboard/editor_widget_form.html:253
+#: dashboard/templates/dashboard/editor_widget_form.html:338
 #: dashboard/templates/dashboard/group_edit.html:87
 msgid "Annuler"
 msgstr "Отмена"
@@ -729,6 +782,8 @@ msgid "Indicateur"
 msgstr "Показатель"
 
 #: dashboard/templates/dashboard/module_dashboard.html:146
+#: dashboard/templates/dashboard/widgets/data_table.html:19
+#: dashboard/templates/dashboard/widgets/data_table.html:35
 msgid "Total"
 msgstr "Итого"
 
@@ -1190,12 +1245,13 @@ msgid "Désactiver"
 msgstr "Деактивировать"
 
 #: dashboard/templates/dashboard/widgets/bar_chart.html:19
-#: dashboard/templates/dashboard/widgets/data_table.html:25
+#: dashboard/templates/dashboard/widgets/data_table.html:45
+#: dashboard/templates/dashboard/widgets/data_table.html:67
 #: dashboard/templates/dashboard/widgets/pie_chart.html:18
 msgid "Aucune donnée."
 msgstr "Нет данных."
 
-#: dashboard/templates/dashboard/widgets/data_table.html:31
+#: dashboard/templates/dashboard/widgets/data_table.html:74
 msgid "Aucun champ sélectionné."
 msgstr "Поле не выбрано."
 

@@ -596,9 +596,29 @@ _WIDGET_COLORS = [
 _COL_CLASS = {1: 'col-12', 2: 'col-md-6', 3: 'col-md-4'}
 
 
+def _apply_widget_filters(submissions, widget_filters):
+    def _match(sub, f):
+        val = str(sub.get(f.get('field', ''), '') or '')
+        op, target = f.get('op', 'eq'), f.get('value', '')
+        if op == 'eq':
+            return val == target
+        if op == 'neq':
+            return val != target
+        if op == 'empty':
+            return not val
+        if op == 'notempty':
+            return bool(val)
+        return True
+    return [s for s in submissions if all(_match(s, f) for f in widget_filters)]
+
+
 def _render_widget(widget, submissions, schema):
     wtype = widget.get('type', '')
     title = widget.get('title', '')
+
+    widget_filters = widget.get('widget_filters', [])
+    if widget_filters:
+        submissions = _apply_widget_filters(submissions, widget_filters)
 
     if wtype == 'summary_stat':
         field = widget.get('field') or None
@@ -640,11 +660,52 @@ def _render_widget(widget, submissions, schema):
         data = {'labels': labels, 'values': values, 'colors': colors}
 
     elif wtype == 'data_table':
-        fields = widget.get('fields', [])
         question_labels = api_client.get_question_labels(schema)
-        headers = [question_labels.get(f, f) for f in fields]
-        rows_data = [[str(sub.get(f, '')) for f in fields] for sub in submissions[:200]]
-        data = {'headers': headers, 'rows': rows_data}
+        if widget.get('pivot_mode'):
+            row_field = widget.get('pivot_row_field', '')
+            col_field = widget.get('pivot_col_field', '')
+            cl_row = api_client.get_choice_labels(schema, row_field) if row_field else {}
+            cl_col = api_client.get_choice_labels(schema, col_field) if col_field else {}
+            row_order, row_seen = [], set()
+            col_order, col_seen = [], set()
+            for sub in submissions:
+                rv = str(sub.get(row_field, '') or '')
+                cv = str(sub.get(col_field, '') or '')
+                if rv and rv not in row_seen:
+                    row_seen.add(rv); row_order.append(rv)
+                if cv and cv not in col_seen:
+                    col_seen.add(cv); col_order.append(cv)
+            counts = {rv: {cv: 0 for cv in col_order} for rv in row_order}
+            row_totals = {rv: 0 for rv in row_order}
+            col_totals = {cv: 0 for cv in col_order}
+            for sub in submissions:
+                rv = str(sub.get(row_field, '') or '')
+                cv = str(sub.get(col_field, '') or '')
+                if rv in row_seen and cv in col_seen:
+                    counts[rv][cv] += 1
+                    row_totals[rv] += 1
+                    col_totals[cv] += 1
+            data = {
+                'pivot': True,
+                'row_label': question_labels.get(row_field, row_field),
+                'col_label': question_labels.get(col_field, col_field),
+                'col_headers': [cl_col.get(cv, cv) for cv in col_order],
+                'rows': [
+                    {
+                        'label': cl_row.get(rv, rv),
+                        'cells': [counts[rv][cv] for cv in col_order],
+                        'total': row_totals[rv],
+                    }
+                    for rv in row_order
+                ],
+                'col_totals': [col_totals[cv] for cv in col_order],
+                'grand_total': sum(row_totals.values()),
+            }
+        else:
+            fields = widget.get('fields', [])
+            headers = [question_labels.get(f, f) for f in fields]
+            rows_data = [[str(sub.get(f, '')) for f in fields] for sub in submissions[:200]]
+            data = {'headers': headers, 'rows': rows_data}
 
     elif wtype == 'grouped_chart':
         field1 = widget.get('field', '')
@@ -1050,7 +1111,12 @@ def _build_widget_from_post(post):
         widget['field'] = post.get('field', '').strip() or None
         widget['aggregation'] = post.get('aggregation', 'count')
     elif wtype == 'data_table':
-        widget['fields'] = [f.strip() for f in post.getlist('fields') if f.strip()]
+        if post.get('pivot_mode') == '1':
+            widget['pivot_mode'] = True
+            widget['pivot_row_field'] = post.get('pivot_row_field', '').strip()
+            widget['pivot_col_field'] = post.get('pivot_col_field', '').strip()
+        else:
+            widget['fields'] = [f.strip() for f in post.getlist('fields') if f.strip()]
     elif wtype == 'grouped_chart':
         widget['field'] = post.get('field', '').strip()
         widget['chart_style'] = post.get('chart_style', 'bar')
@@ -1079,6 +1145,19 @@ def _build_widget_from_post(post):
                 series_value_colors.setdefault(f, {})[v] = c
         if series_value_colors:
             widget['series_value_colors'] = series_value_colors
+
+    # Per-widget filters (all widget types)
+    wf_fields = post.getlist('wf_field')
+    wf_ops    = post.getlist('wf_op')
+    wf_vals   = post.getlist('wf_val')
+    wf_labels = post.getlist('wf_label')
+    widget_filters = []
+    for f, op, v, lbl in zip(wf_fields, wf_ops, wf_vals, wf_labels):
+        if f:
+            widget_filters.append({'field': f, 'op': op or 'eq', 'value': v, 'label': lbl or f})
+    if widget_filters:
+        widget['widget_filters'] = widget_filters
+
     return widget
 
 
@@ -1247,6 +1326,7 @@ def dashboard_editor(request, uid, pk):
             w['series_meta'] = series_meta
             w['series_paths'] = series_paths
             w['pie_meta'] = w.get('pie_meta', {})
+            w['widget_filters'] = w.get('widget_filters', [])
             widgets_ctx.append({**w, 'widget_idx': j, 'edit_key': f'{i}-{j}'})
         cols = max(row.get('columns', 1), min(len(widgets_ctx), 3))
         rows_ctx.append({**row, 'row_idx': i, 'columns': cols, 'widgets': widgets_ctx})

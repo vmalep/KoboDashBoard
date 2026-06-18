@@ -227,22 +227,107 @@
       {# data_table fields #}
       <div class="wf-group" id="wf_data_table_{{ row_idx }}_{{ widget_idx }}">
         <div class="mb-3">
-          <label class="form-label small fw-semibold">{% trans "Colonnes à afficher" %}</label>
-          <div style="max-height:200px;overflow-y:auto;border:1px solid #dee2e6;border-radius:.375rem;padding:.5rem">
-            {% for path, label, ftype in field_choices %}
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="fields" value="{{ path }}"
-                     id="fc_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}"
-                     {% if widget.fields and path in widget.fields %}checked{% endif %}>
-              <label class="form-check-label small" for="fc_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}">
-                {{ label }} <span class="text-muted">{{ path }}</span>
-              </label>
-            </div>
-            {% endfor %}
-            {% if not field_choices %}
-            <span class="text-muted small">{% trans "Aucun champ disponible (schéma non chargé)." %}</span>
-            {% endif %}
+          <div class="form-check form-switch mb-2">
+            <input class="form-check-input" type="checkbox" name="pivot_mode" value="1"
+                   id="pivot_{{ row_idx }}_{{ widget_idx }}"
+                   {% if widget.pivot_mode %}checked{% endif %}
+                   onchange="togglePivot('{{ row_idx }}_{{ widget_idx }}')">
+            <label class="form-check-label small fw-semibold" for="pivot_{{ row_idx }}_{{ widget_idx }}">
+              {% trans "Mode tableau croisé (pivot)" %}
+            </label>
           </div>
+
+          {# Standard columns #}
+          <div id="dt_std_{{ row_idx }}_{{ widget_idx }}" {% if widget.pivot_mode %}style="display:none"{% endif %}>
+            <label class="form-label small fw-semibold">{% trans "Colonnes à afficher" %}</label>
+            <div style="max-height:200px;overflow-y:auto;border:1px solid #dee2e6;border-radius:.375rem;padding:.5rem">
+              {% for path, label, ftype in field_choices %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="fields" value="{{ path }}"
+                       id="fc_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}"
+                       {% if widget.fields and path in widget.fields %}checked{% endif %}>
+                <label class="form-check-label small" for="fc_{{ row_idx }}_{{ widget_idx }}_{{ forloop.counter }}">
+                  {{ label }} <span class="text-muted">{{ path }}</span>
+                </label>
+              </div>
+              {% endfor %}
+              {% if not field_choices %}
+              <span class="text-muted small">{% trans "Aucun champ disponible (schéma non chargé)." %}</span>
+              {% endif %}
+            </div>
+          </div>
+
+          {# Pivot fields #}
+          <div id="dt_pivot_{{ row_idx }}_{{ widget_idx }}" {% if not widget.pivot_mode %}style="display:none"{% endif %}>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">{% trans "Champ lignes" %}</label>
+                <select name="pivot_row_field" class="form-select form-select-sm">
+                  <option value="">— {% trans "Choisir" %} —</option>
+                  {% for path, label, ftype in field_choices %}
+                  <option value="{{ path }}" {% if widget.pivot_row_field == path %}selected{% endif %}>{{ label }} ({{ path }})</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">{% trans "Champ colonnes" %}</label>
+                <select name="pivot_col_field" class="form-select form-select-sm">
+                  <option value="">— {% trans "Choisir" %} —</option>
+                  {% for path, label, ftype in field_choices %}
+                  <option value="{{ path }}" {% if widget.pivot_col_field == path %}selected{% endif %}>{{ label }} ({{ path }})</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {# Per-widget filters (all types) #}
+      <div class="mb-3 border rounded p-2" style="background:#f8f9fa">
+        <div class="small fw-semibold mb-2 text-secondary">
+          <i class="bi bi-funnel me-1"></i>{% trans "Filtres du widget" %}
+          <span class="fw-normal text-muted ms-1">{% trans "(appliqués avant le calcul)" %}</span>
+        </div>
+        <div id="wf_rows_{{ row_idx }}_{{ widget_idx }}">
+          {% for wf in widget.widget_filters %}
+          <div class="wf-row d-flex align-items-center gap-1 mb-1">
+            <input type="hidden" name="wf_field" value="{{ wf.field }}">
+            <input type="hidden" name="wf_op"    value="{{ wf.op }}">
+            <input type="hidden" name="wf_val"   value="{{ wf.value }}">
+            <input type="hidden" name="wf_label" value="{{ wf.label }}">
+            <span class="badge bg-secondary small">{{ wf.label|default:wf.field }}</span>
+            <span class="small text-muted">
+              {% if wf.op == "eq" %}={% elif wf.op == "neq" %}≠{% elif wf.op == "empty" %}{% trans "vide" %}{% elif wf.op == "notempty" %}{% trans "non vide" %}{% endif %}
+            </span>
+            {% if wf.op == "eq" or wf.op == "neq" %}
+            <span class="small text-dark">"{{ wf.value }}"</span>
+            {% endif %}
+            <button type="button" class="btn btn-sm btn-outline-danger py-0 px-1 ms-1"
+                    onclick="this.closest('.wf-row').remove()" title="{% trans 'Supprimer' %}">×</button>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="d-flex gap-1 flex-wrap align-items-end mt-1">
+          <select id="wf_add_field_{{ row_idx }}_{{ widget_idx }}" class="form-select form-select-sm" style="max-width:200px">
+            <option value="">— {% trans "Champ" %} —</option>
+            {% for path, label, ftype in field_choices %}
+            <option value="{{ path }}" data-label="{{ label }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+          <select id="wf_add_op_{{ row_idx }}_{{ widget_idx }}" class="form-select form-select-sm" style="max-width:110px">
+            <option value="eq">= {% trans "égal à" %}</option>
+            <option value="neq">≠ {% trans "différent de" %}</option>
+            <option value="notempty">{% trans "non vide" %}</option>
+            <option value="empty">{% trans "vide" %}</option>
+          </select>
+          <input type="text" id="wf_add_val_{{ row_idx }}_{{ widget_idx }}"
+                 class="form-control form-control-sm" style="max-width:130px"
+                 placeholder="{% trans 'Valeur' %}">
+          <button type="button" class="btn btn-sm btn-outline-secondary flex-shrink-0"
+                  onclick="addWidgetFilter('{{ row_idx }}_{{ widget_idx }}')">
+            + {% trans "Ajouter" %}
+          </button>
         </div>
       </div>
 
@@ -267,6 +352,39 @@
     });
   }
   updateWidgetFields(null);
+
+  function togglePivot(suffix) {
+    var cb = document.getElementById('pivot_' + suffix);
+    document.getElementById('dt_std_'   + suffix).style.display = cb.checked ? 'none' : '';
+    document.getElementById('dt_pivot_' + suffix).style.display = cb.checked ? '' : 'none';
+  }
+
+  function addWidgetFilter(suffix) {
+    var fsel  = document.getElementById('wf_add_field_' + suffix);
+    var opsel = document.getElementById('wf_add_op_'    + suffix);
+    var vinp  = document.getElementById('wf_add_val_'   + suffix);
+    var field = fsel.value;
+    if (!field) return;
+    var label = fsel.options[fsel.selectedIndex].dataset.label || field;
+    var op    = opsel.value;
+    var val   = vinp.value;
+    var container = document.getElementById('wf_rows_' + suffix);
+    var opText = {'eq':'=','neq':'≠','empty':'{% trans "vide" %}','notempty':'{% trans "non vide" %}'}[op] || op;
+    var valHtml = (op==='eq'||op==='neq') ? '<span class="small text-dark">"'+val+'"</span>' : '';
+    var row = document.createElement('div');
+    row.className = 'wf-row d-flex align-items-center gap-1 mb-1';
+    row.innerHTML =
+      '<input type="hidden" name="wf_field" value="'+field+'">' +
+      '<input type="hidden" name="wf_op"    value="'+op+'">' +
+      '<input type="hidden" name="wf_val"   value="'+val+'">' +
+      '<input type="hidden" name="wf_label" value="'+label+'">' +
+      '<span class="badge bg-secondary small">'+label+'</span>' +
+      '<span class="small text-muted">'+opText+'</span>' +
+      valHtml +
+      '<button type="button" class="btn btn-sm btn-outline-danger py-0 px-1 ms-1" onclick="this.closest(\'.wf-row\').remove()" title="{% trans "Supprimer" %}">×</button>';
+    container.appendChild(row);
+    fsel.value = ''; vinp.value = '';
+  }
   const sel = document.getElementById('widgetType_{{ row_idx }}_{{ widget_idx }}');
   if (sel) sel.addEventListener('change', function(){ updateWidgetFields(this); });
 })();

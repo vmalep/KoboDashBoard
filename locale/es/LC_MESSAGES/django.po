@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-17 21:11+0000\n"
+"POT-Creation-Date: 2026-06-18 06:46+0000\n"
 "Language: es\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -220,7 +220,9 @@ msgstr "¿Eliminar este panel?"
 #: dashboard/templates/dashboard/editor.html:90
 #: dashboard/templates/dashboard/editor.html:228
 #: dashboard/templates/dashboard/editor_widget_form.html:171
-#: dashboard/templates/dashboard/editor_widget_form.html:333
+#: dashboard/templates/dashboard/editor_widget_form.html:307
+#: dashboard/templates/dashboard/editor_widget_form.html:384
+#: dashboard/templates/dashboard/editor_widget_form.html:451
 msgid "Supprimer"
 msgstr "Eliminar"
 
@@ -251,14 +253,14 @@ msgstr "Campos mostrados como filtros en la parte superior del panel"
 #: dashboard/templates/dashboard/editor.html:71
 #: dashboard/templates/dashboard/editor.html:163
 #: dashboard/templates/dashboard/editor_widget_form.html:154
-#: dashboard/templates/dashboard/editor_widget_form.html:324
+#: dashboard/templates/dashboard/editor_widget_form.html:442
 msgid "Monter"
 msgstr "Subir"
 
 #: dashboard/templates/dashboard/editor.html:81
 #: dashboard/templates/dashboard/editor.html:175
 #: dashboard/templates/dashboard/editor_widget_form.html:155
-#: dashboard/templates/dashboard/editor_widget_form.html:325
+#: dashboard/templates/dashboard/editor_widget_form.html:443
 msgid "Descendre"
 msgstr "Bajar"
 
@@ -271,6 +273,7 @@ msgid "Aucun filtre configuré."
 msgstr "Sin filtros configurados."
 
 #: dashboard/templates/dashboard/editor.html:110
+#: dashboard/templates/dashboard/editor_widget_form.html:313
 msgid "Champ"
 msgstr "Campo"
 
@@ -289,7 +292,8 @@ msgstr "p. ej. País"
 
 #: dashboard/templates/dashboard/editor.html:124
 #: dashboard/templates/dashboard/editor_widget_form.html:189
-#: dashboard/templates/dashboard/editor_widget_form.html:251
+#: dashboard/templates/dashboard/editor_widget_form.html:329
+#: dashboard/templates/dashboard/editor_widget_form.html:336
 #: dashboard/templates/dashboard/my_group.html:87
 msgid "Ajouter"
 msgstr "Agregar"
@@ -462,7 +466,7 @@ msgstr "Valores — color y etiqueta"
 #: dashboard/templates/dashboard/editor_widget_form.html:93
 #: dashboard/templates/dashboard/editor_widget_form.html:163
 #: dashboard/templates/dashboard/editor_widget_form.html:218
-#: dashboard/templates/dashboard/editor_widget_form.html:331
+#: dashboard/templates/dashboard/editor_widget_form.html:449
 msgid "Couleur"
 msgstr "Color"
 
@@ -511,12 +515,12 @@ msgid "Séries"
 msgstr "Series"
 
 #: dashboard/templates/dashboard/editor_widget_form.html:167
-#: dashboard/templates/dashboard/editor_widget_form.html:332
+#: dashboard/templates/dashboard/editor_widget_form.html:450
 msgid "Libellé affiché dans la légende"
 msgstr "Etiqueta mostrada en la leyenda"
 
 #: dashboard/templates/dashboard/editor_widget_form.html:174
-#: dashboard/templates/dashboard/editor_widget_form.html:304
+#: dashboard/templates/dashboard/editor_widget_form.html:422
 msgid "Aucune série sélectionnée."
 msgstr "Sin series seleccionadas."
 
@@ -525,7 +529,7 @@ msgid "Ajouter un champ de série"
 msgstr "Agregar un campo de serie"
 
 #: dashboard/templates/dashboard/editor_widget_form.html:193
-#: dashboard/templates/dashboard/editor_widget_form.html:243
+#: dashboard/templates/dashboard/editor_widget_form.html:255
 msgid "Aucun champ disponible (schéma non chargé)."
 msgstr "Ningún campo disponible (esquema no cargado)."
 
@@ -533,18 +537,67 @@ msgstr "Ningún campo disponible (esquema no cargado)."
 msgid "Couleurs par valeur —"
 msgstr "Colores por valor —"
 
-#: dashboard/templates/dashboard/editor_widget_form.html:230
+#: dashboard/templates/dashboard/editor_widget_form.html:236
+msgid "Mode tableau croisé (pivot)"
+msgstr "Modo tabla cruzada (pivot)"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:242
 msgid "Colonnes à afficher"
 msgstr "Columnas a mostrar"
 
-#: dashboard/templates/dashboard/editor_widget_form.html:251
+#: dashboard/templates/dashboard/editor_widget_form.html:264
+msgid "Champ lignes"
+msgstr "Campo filas"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:266
+#: dashboard/templates/dashboard/editor_widget_form.html:275
+msgid "Choisir"
+msgstr "Elegir"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:273
+msgid "Champ colonnes"
+msgstr "Campo columnas"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:289
+msgid "Filtres du widget"
+msgstr "Filtros del widget"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:290
+msgid "(appliqués avant le calcul)"
+msgstr "(aplicados antes del cálculo)"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:301
+#: dashboard/templates/dashboard/editor_widget_form.html:322
+#: dashboard/templates/dashboard/editor_widget_form.html:372
+msgid "vide"
+msgstr "vacío"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:301
+#: dashboard/templates/dashboard/editor_widget_form.html:321
+#: dashboard/templates/dashboard/editor_widget_form.html:372
+msgid "non vide"
+msgstr "no vacío"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:319
+msgid "égal à"
+msgstr "igual a"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:320
+msgid "différent de"
+msgstr "diferente de"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:326
+msgid "Valeur"
+msgstr "Valor"
+
+#: dashboard/templates/dashboard/editor_widget_form.html:336
 #: dashboard/templates/dashboard/group_edit.html:85
 #: dashboard/templates/dashboard/settings.html:73
 #: dashboard/templates/dashboard/settings.html:102
 msgid "Enregistrer"
 msgstr "Guardar"
 
-#: dashboard/templates/dashboard/editor_widget_form.html:253
+#: dashboard/templates/dashboard/editor_widget_form.html:338
 #: dashboard/templates/dashboard/group_edit.html:87
 msgid "Annuler"
 msgstr "Cancelar"
@@ -726,6 +779,8 @@ msgid "Indicateur"
 msgstr "Indicador"
 
 #: dashboard/templates/dashboard/module_dashboard.html:146
+#: dashboard/templates/dashboard/widgets/data_table.html:19
+#: dashboard/templates/dashboard/widgets/data_table.html:35
 msgid "Total"
 msgstr "Total"
 
@@ -1182,12 +1237,13 @@ msgid "Désactiver"
 msgstr "Desactivar"
 
 #: dashboard/templates/dashboard/widgets/bar_chart.html:19
-#: dashboard/templates/dashboard/widgets/data_table.html:25
+#: dashboard/templates/dashboard/widgets/data_table.html:45
+#: dashboard/templates/dashboard/widgets/data_table.html:67
 #: dashboard/templates/dashboard/widgets/pie_chart.html:18
 msgid "Aucune donnée."
 msgstr "Sin datos."
 
-#: dashboard/templates/dashboard/widgets/data_table.html:31
+#: dashboard/templates/dashboard/widgets/data_table.html:74
 msgid "Aucun champ sélectionné."
 msgstr "Ningún campo seleccionado."
 
