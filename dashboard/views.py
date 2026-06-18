@@ -535,6 +535,7 @@ def form_detail(request, uid):
         return redirect('/dashboard/')
     error = None
     tabs = []
+    group_tree = []
     columns = []
     page_obj = None
     form_name = uid
@@ -558,6 +559,7 @@ def form_detail(request, uid):
         question_labels = api_client.get_question_labels(schema)
 
         tabs = [{'key': k, 'label': groups[k]['label']} for k in group_order]
+        group_tree = api_client.parse_group_tree(schema, set(group_order))
         active_group = request.GET.get('group', group_order[0] if group_order else '')
 
         if active_group and active_group in groups:
@@ -578,6 +580,7 @@ def form_detail(request, uid):
         'form_name': form_name,
         'total_submissions': total_submissions,
         'tabs': tabs,
+        'group_tree': group_tree,
         'active_group': active_group,
         'columns': columns,
         'page_obj': page_obj,

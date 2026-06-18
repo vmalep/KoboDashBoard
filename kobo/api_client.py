@@ -227,3 +227,55 @@ def _extract_label(row):
     if isinstance(label, list):
         return label[0] if label else ''
     return label or ''
+
+
+def parse_group_tree(schema, valid_keys):
+    """Return flat list of nav nodes for sidebar tree.
+
+    valid_keys: set of group keys returned by parse_groups (have questions).
+    Each node: {key, label, depth, is_repeat, has_data, indent}
+      has_data=True  → clickable link
+      has_data=False → structural section header (non-clickable)
+    Section headers with no clickable descendant are pruned.
+    indent is a precomputed CSS padding-left string.
+    """
+    survey = schema.get('content', {}).get('survey', [])
+    raw = []
+    stack = []
+
+    if '_general' in valid_keys:
+        raw.append({'key': '_general', 'label': 'General', 'depth': 0,
+                    'is_repeat': False, 'has_data': True})
+
+    for row in survey:
+        row_type = row.get('type', '')
+        name = row.get('name') or row.get('$autoname', '')
+        label = _extract_label(row) or name
+
+        if row_type in ('begin_group', 'begin_repeat'):
+            raw.append({'key': name, 'label': label, 'depth': len(stack),
+                        'is_repeat': row_type == 'begin_repeat',
+                        'has_data': name in valid_keys})
+            stack.append(name)
+        elif row_type in ('end_group', 'end_repeat'):
+            if stack:
+                stack.pop()
+
+    # Prune header-only nodes that have no clickable descendant
+    result = []
+    for i, node in enumerate(raw):
+        if node['has_data']:
+            result.append(node)
+        else:
+            for j in range(i + 1, len(raw)):
+                if raw[j]['depth'] <= node['depth']:
+                    break
+                if raw[j]['has_data']:
+                    result.append(node)
+                    break
+
+    # Precompute indent style (1.25rem per depth level + 0.75rem base)
+    for node in result:
+        node['indent'] = f'{node["depth"] * 1.25 + 0.75}rem'
+
+    return result
